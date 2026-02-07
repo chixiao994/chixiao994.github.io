@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎋 纯中医对战系统 🎋</title>
+    <title>🎋 伤寒论六经辨证对战系统 🎋</title>
     <style>
         /* ====== 中医主题CSS ====== */
         * {
@@ -23,20 +23,20 @@
         
         .yin-yang-container {
             text-align: center;
-            margin: 20px auto;
+            margin: 10px auto 20px;
         }
         
         .yin-yang {
             display: inline-block;
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             background: 
-                radial-gradient(circle at 30% 50%, #000 12px, transparent 13px),
-                radial-gradient(circle at 70% 50%, #fff 12px, transparent 13px),
+                radial-gradient(circle at 30% 50%, #000 10px, transparent 11px),
+                radial-gradient(circle at 70% 50%, #fff 10px, transparent 11px),
                 linear-gradient(to right, #fff 50%, #000 50%);
             border-radius: 50%;
             border: 2px solid #2E7D32;
-            animation: rotate 10s linear infinite;
+            animation: rotate 20s linear infinite;
         }
         
         @keyframes rotate {
@@ -65,15 +65,33 @@
         }
         
         .game-header h1 {
-            font-size: 24px;
+            font-size: 22px;
             margin: 10px 0;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
         
         .game-header .subtitle {
-            font-size: 14px;
+            font-size: 13px;
             opacity: 0.9;
+            margin-top: 5px;
         }
+        
+        /* 六经标签 */
+        .channel-indicator {
+            display: inline-block;
+            padding: 3px 8px;
+            margin: 0 3px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .taiyang { background: #FF9800; color: white; }
+        .yangming { background: #F44336; color: white; }
+        .shaoyang { background: #9C27B0; color: white; }
+        .taiyin { background: #2196F3; color: white; }
+        .shaoyin { background: #3F51B5; color: white; }
+        .jueyin { background: #009688; color: white; }
         
         /* 标签页 */
         .tabs {
@@ -84,10 +102,10 @@
         
         .tab {
             flex: 1;
-            padding: 15px;
+            padding: 12px 5px;
             text-align: center;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 14px;
             transition: all 0.3s;
             border-right: 1px solid #C8E6C9;
         }
@@ -132,19 +150,19 @@
             background: linear-gradient(to bottom, #4CAF50, #2E7D32);
             color: white;
             border: none;
-            padding: 12px 24px;
-            border-radius: 25px;
-            font-size: 16px;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
             cursor: pointer;
-            margin: 10px 5px;
+            margin: 8px 5px;
             transition: all 0.3s;
             font-family: inherit;
-            box-shadow: 0 4px 6px rgba(76, 175, 80, 0.2);
+            box-shadow: 0 3px 5px rgba(76, 175, 80, 0.2);
         }
         
         .tcm-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 8px rgba(76, 175, 80, 0.3);
+            box-shadow: 0 5px 8px rgba(76, 175, 80, 0.3);
         }
         
         .tcm-button:active {
@@ -162,20 +180,20 @@
         /* 四诊选项 */
         .examination-options {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 10px;
-            margin: 20px 0;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 8px;
+            margin: 15px 0;
         }
         
         .option-button {
             background: #F1F8E9;
             border: 2px solid #C8E6C9;
-            padding: 15px 10px;
-            border-radius: 10px;
+            padding: 12px 8px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s;
             text-align: center;
-            font-size: 14px;
+            font-size: 13px;
         }
         
         .option-button:hover {
@@ -194,16 +212,16 @@
         .diagnosis-result {
             background: #F1F8E9;
             border-left: 5px solid #2E7D32;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 0 10px 10px 0;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
         }
         
         .result-item {
-            margin: 10px 0;
-            padding: 10px;
+            margin: 8px 0;
+            padding: 8px;
             background: white;
-            border-radius: 8px;
+            border-radius: 6px;
             border: 1px solid #C8E6C9;
         }
         
@@ -213,23 +231,24 @@
             margin-bottom: 5px;
             border-bottom: 1px dashed #C8E6C9;
             padding-bottom: 5px;
+            font-size: 15px;
         }
         
         /* 治疗卡片 */
         .treatment-card {
             background: white;
             border: 2px solid #C8E6C9;
-            border-radius: 10px;
-            padding: 15px;
-            margin: 15px 0;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 10px 0;
             transition: all 0.3s;
             cursor: pointer;
         }
         
         .treatment-card:hover {
-            transform: translateX(5px);
+            transform: translateX(3px);
             border-color: #4CAF50;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
         }
         
         .treatment-card.selected {
@@ -240,52 +259,54 @@
         .treatment-name {
             color: #2E7D32;
             font-weight: bold;
-            font-size: 18px;
-            margin-bottom: 5px;
+            font-size: 16px;
+            margin-bottom: 4px;
         }
         
         .treatment-desc {
             color: #666;
-            font-size: 14px;
+            font-size: 13px;
+            line-height: 1.4;
         }
         
         /* 患者状态 */
         .patient-status {
             background: linear-gradient(135deg, #FFF3E0, #FFECB3);
             border: 2px solid #FFB74D;
-            border-radius: 10px;
-            padding: 15px;
-            margin: 20px 0;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 15px 0;
         }
         
         .status-bar {
-            height: 20px;
+            height: 16px;
             background: #E0E0E0;
-            border-radius: 10px;
-            margin: 10px 0;
+            border-radius: 8px;
+            margin: 8px 0;
             overflow: hidden;
         }
         
         .status-fill {
             height: 100%;
             background: linear-gradient(to right, #4CAF50, #8BC34A);
-            border-radius: 10px;
+            border-radius: 8px;
             transition: width 1s ease-in-out;
         }
         
         /* 消息提示 */
         .message {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 20px;
-            border-radius: 10px;
+            top: 15px;
+            right: 15px;
+            padding: 12px 16px;
+            border-radius: 8px;
             background: #2E7D32;
             color: white;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             z-index: 1000;
             animation: slideIn 0.3s ease-out;
-            max-width: 300px;
+            max-width: 280px;
+            font-size: 13px;
         }
         
         @keyframes slideIn {
@@ -293,26 +314,32 @@
             to { transform: translateX(0); opacity: 1; }
         }
         
-        /* 药材卡片 */
-        .herb-card {
-            background: white;
-            border: 1px solid #C8E6C9;
-            border-radius: 8px;
-            padding: 10px;
-            margin: 5px;
-            display: inline-block;
-            cursor: pointer;
+        /* 六经经络图 */
+        .meridian-diagram {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 15px 0;
         }
         
-        .herb-card.selected {
-            background: #C8E6C9;
-            border-color: #2E7D32;
+        .meridian-point {
+            padding: 8px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .meridian-point:hover {
+            transform: scale(1.05);
         }
         
         /* 响应式设计 */
         @media (max-width: 768px) {
             .game-container {
-                margin: 10px;
+                margin: 5px;
                 border-radius: 10px;
             }
             
@@ -322,8 +349,8 @@
             
             .tab {
                 flex: 1 0 45%;
-                padding: 12px 8px;
-                font-size: 14px;
+                padding: 10px 5px;
+                font-size: 13px;
             }
             
             .content {
@@ -335,22 +362,28 @@
             }
             
             .tcm-button {
-                padding: 10px 15px;
-                font-size: 14px;
+                padding: 8px 15px;
+                font-size: 13px;
             }
         }
         
         @media (max-width: 480px) {
             .game-header h1 {
-                font-size: 20px;
+                font-size: 18px;
             }
             
             .tab {
                 flex: 1 0 100%;
+                padding: 8px 5px;
+                font-size: 12px;
             }
             
             .examination-options {
                 grid-template-columns: 1fr;
+            }
+            
+            .meridian-diagram {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
     </style>
@@ -363,55 +396,64 @@
     <div class="game-container" id="game-container">
         <!-- 头部 -->
         <div class="game-header">
-            <h1>🌿 纯中医对战系统 🎋</h1>
-            <div class="subtitle">体验中医辨证论治精髓 · 传承千年医学智慧</div>
+            <h1>📜 伤寒论六经辨证对战系统 🌿</h1>
+            <div class="subtitle">基于《伤寒论》经典 · 传承仲景辨证精髓</div>
         </div>
         
         <!-- 标签页 -->
         <div class="tabs">
             <div class="tab active" data-tab="home">🏠 首页</div>
             <div class="tab" data-tab="diagnosis">📝 四诊辨证</div>
-            <div class="tab" data-tab="treatment">🌱 治疗开方</div>
-            <div class="tab" data-tab="progress">📊 学习进度</div>
-            <div class="tab" data-tab="about">📚 中医知识</div>
+            <div class="tab" data-tab="treatment">🌱 经方治疗</div>
+            <div class="tab" data-tab="progress">📊 六经进度</div>
+            <div class="tab" data-tab="theory">📚 六经理论</div>
         </div>
         
         <!-- 内容区域 -->
         <div class="content">
             <!-- 首页 -->
             <div class="tab-content active" id="home-tab">
-                <h2>欢迎来到纯中医世界</h2>
-                <p>在这里，您可以体验纯粹的中医辨证论治过程，学习中医经典理论。</p>
+                <h2>欢迎学习《伤寒论》六经辨证</h2>
+                <p>本系统基于张仲景《伤寒论》113方，体验纯正中医辨证论治。</p>
                 
-                <div class="diagnosis-result" style="margin-top: 20px;">
-                    <div class="result-title">🎯 今日医案</div>
+                <div class="diagnosis-result" style="margin-top: 15px;">
+                    <div class="result-title">🎯 今日六经医案</div>
                     <div id="todays-case"></div>
                 </div>
                 
-                <div style="text-align: center; margin: 30px 0;">
-                    <button class="tcm-button" onclick="startNewGame()">
-                        🎮 开始新对局
+                <div class="meridian-diagram">
+                    <div class="meridian-point taiyang" onclick="selectChannelCase('太阳')">太阳病</div>
+                    <div class="meridian-point yangming" onclick="selectChannelCase('阳明')">阳明病</div>
+                    <div class="meridian-point shaoyang" onclick="selectChannelCase('少阳')">少阳病</div>
+                    <div class="meridian-point taiyin" onclick="selectChannelCase('太阴')">太阴病</div>
+                    <div class="meridian-point shaoyin" onclick="selectChannelCase('少阴')">少阴病</div>
+                    <div class="meridian-point jueyin" onclick="selectChannelCase('厥阴')">厥阴病</div>
+                </div>
+                
+                <div style="text-align: center; margin: 20px 0;">
+                    <button class="tcm-button" onclick="startRandomGame()">
+                        🎲 随机六经医案
                     </button>
-                    <button class="tcm-button secondary" onclick="switchTab('progress')">
-                        📚 继续学习
+                    <button class="tcm-button secondary" onclick="startChannelGame('太阳')">
+                        🌞 太阳病篇
                     </button>
                 </div>
                 
                 <div class="patient-status">
-                    <div class="result-title">📈 您的学习数据</div>
-                    <div>辨证准确率: <span id="diagnosis-rate">0%</span></div>
+                    <div class="result-title">📈 您的六经掌握度</div>
+                    <div>综合辨证准确率: <span id="diagnosis-rate">0%</span></div>
                     <div class="status-bar">
                         <div class="status-fill" id="accuracy-bar" style="width: 0%"></div>
                     </div>
-                    <div>已学习医案: <span id="cases-learned">0</span> 个</div>
-                    <div>中医等级: <span id="tcm-level">学徒</span></div>
+                    <div>已掌握经方: <span id="formulas-mastered">0</span> 首</div>
+                    <div>六经进度: <span id="channel-progress">0/6</span></div>
                 </div>
             </div>
             
             <!-- 四诊辨证 -->
             <div class="tab-content" id="diagnosis-tab">
-                <h2>📝 四诊合参</h2>
-                <p>请根据医案信息，进行四诊收集病情资料</p>
+                <h2>📝 四诊合参与六经辨证</h2>
+                <p id="current-channel-info">请根据症状进行四诊，确定六经归属</p>
                 
                 <div class="patient-status">
                     <div class="result-title">👤 当前患者</div>
@@ -427,11 +469,11 @@
                 </div>
                 
                 <div id="diagnosis-result" class="diagnosis-result" style="display: none;">
-                    <div class="result-title">🧠 辨证结论</div>
+                    <div class="result-title">🧠 六经辨证结论</div>
                     <div id="diagnosis-output"></div>
                 </div>
                 
-                <div style="text-align: center; margin-top: 20px;">
+                <div style="text-align: center; margin-top: 15px;">
                     <button class="tcm-button" onclick="submitDiagnosis()" id="submit-btn">
                         ✅ 提交辨证
                     </button>
@@ -441,10 +483,10 @@
                 </div>
             </div>
             
-            <!-- 治疗开方 -->
+            <!-- 经方治疗 -->
             <div class="tab-content" id="treatment-tab">
-                <h2>🌱 治疗开方</h2>
-                <p>根据辨证结果，选择合适的治疗方案</p>
+                <h2>🌱 《伤寒论》经方应用</h2>
+                <p id="treatment-guide">根据六经辨证，选择对应经方</p>
                 
                 <div class="diagnosis-result">
                     <div class="result-title">📋 当前辨证</div>
@@ -452,27 +494,31 @@
                 </div>
                 
                 <div id="treatment-options">
-                    <!-- 治疗方案动态加载 -->
+                    <!-- 经方选项动态加载 -->
                 </div>
                 
-                <div id="prescription-result" style="display: none;">
-                    <div class="result-title">📜 处方详情</div>
-                    <div id="prescription-detail"></div>
+                <div id="formula-detail" style="display: none;">
+                    <div class="result-title">📜 经方详情</div>
+                    <div id="formula-detail-content"></div>
                 </div>
                 
-                <div style="text-align: center; margin-top: 20px;">
+                <div style="text-align: center; margin-top: 15px;">
                     <button class="tcm-button" onclick="applyTreatment()" id="apply-btn">
-                        💊 应用治疗
+                        💊 应用经方
                     </button>
                 </div>
             </div>
             
-            <!-- 学习进度 -->
+            <!-- 六经进度 -->
             <div class="tab-content" id="progress-tab">
-                <h2>📊 学习进度</h2>
-                <p>记录您的学习历程和成就</p>
+                <h2>📊 六经学习进度</h2>
+                <p>记录您掌握《伤寒论》各经的程度</p>
                 
-                <div class="diagnosis-result">
+                <div id="channel-progress-bars">
+                    <!-- 六经进度条动态加载 -->
+                </div>
+                
+                <div class="diagnosis-result" style="margin-top: 15px;">
                     <div class="result-title">🏆 已解锁成就</div>
                     <div id="achievements-list"></div>
                 </div>
@@ -480,62 +526,73 @@
                 <div class="patient-status">
                     <div class="result-title">📈 学习统计</div>
                     <div>总对局数: <span id="total-games">0</span></div>
-                    <div>获胜次数: <span id="wins">0</span></div>
-                    <div>辨证准确率: <span id="overall-accuracy">0%</span></div>
+                    <div>经方正确率: <span id="formula-accuracy">0%</span></div>
                     <div>已学习医案: <span id="total-cases">0</span> 个</div>
+                    <div>掌握六经: <span id="mastered-channels">0/6</span></div>
                 </div>
                 
-                <div style="text-align: center; margin-top: 20px;">
-                    <button class="tcm-button" onclick="resetProgress()">
+                <div style="text-align: center; margin-top: 15px;">
+                    <button class="tcm-button danger" onclick="resetProgress()">
                         🔄 重置进度
                     </button>
                 </div>
             </div>
             
-            <!-- 中医知识 -->
-            <div class="tab-content" id="about-tab">
-                <h2>📚 中医知识库</h2>
-                <p>学习纯中医理论知识</p>
+            <!-- 六经理论 -->
+            <div class="tab-content" id="theory-tab">
+                <h2>📚 《伤寒论》六经辨证理论</h2>
+                <p>张仲景辨证论治体系的核心</p>
                 
-                <div class="treatment-card" onclick="toggleKnowledge('eight')">
-                    <div class="treatment-name">⚖️ 八纲辨证</div>
-                    <div class="treatment-desc">阴阳、表里、寒热、虚实</div>
-                    <div id="eight-content" style="display: none; margin-top: 10px;">
-                        八纲辨证是中医辨证的总纲，包括：
-                        <ul>
-                            <li><strong>阴阳</strong>：总纲，阳证多实热，阴证多虚寒</li>
-                            <li><strong>表里</strong>：辨别病位深浅</li>
-                            <li><strong>寒热</strong>：辨别疾病性质</li>
-                            <li><strong>虚实</strong>：辨别邪正盛衰</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="treatment-card" onclick="toggleKnowledge('six')">
-                    <div class="treatment-name">🔄 六经辨证</div>
+                <div class="treatment-card" onclick="toggleTheory('six_overview')">
+                    <div class="treatment-name">🔄 六经辨证总纲</div>
                     <div class="treatment-desc">太阳、阳明、少阳、太阴、少阴、厥阴</div>
-                    <div id="six-content" style="display: none; margin-top: 10px;">
-                        源自《伤寒论》，用于外感病的辨证：
-                        <ul>
-                            <li><strong>太阳病</strong>：表证，脉浮，头项强痛</li>
-                            <li><strong>阳明病</strong>：里热实证，但热不寒</li>
-                            <li><strong>少阳病</strong>：半表半里，寒热往来</li>
-                            <li><strong>太阴病</strong>：脾虚寒证，腹痛吐利</li>
-                            <li><strong>少阴病</strong>：心肾虚衰，脉微细</li>
-                            <li><strong>厥阴病</strong>：寒热错杂，厥热胜复</li>
-                        </ul>
+                    <div id="six_overview" style="display: none; margin-top: 10px; font-size: 13px;">
+                        <div style="margin: 8px 0;"><span class="channel-indicator taiyang">太阳病</span>：表证，脉浮，头项强痛而恶寒</div>
+                        <div style="margin: 8px 0;"><span class="channel-indicator yangming">阳明病</span>：里热实证，胃家实是也</div>
+                        <div style="margin: 8px 0;"><span class="channel-indicator shaoyang">少阳病</span>：半表半里证，口苦咽干目眩</div>
+                        <div style="margin: 8px 0;"><span class="channel-indicator taiyin">太阴病</span>：脾虚寒证，腹满而吐，食不下</div>
+                        <div style="margin: 8px 0;"><span class="channel-indicator shaoyin">少阴病</span>：心肾虚衰，脉微细，但欲寐</div>
+                        <div style="margin: 8px 0;"><span class="channel-indicator jueyin">厥阴病</span>：寒热错杂证，消渴，气上撞心</div>
                     </div>
                 </div>
                 
-                <div class="treatment-card" onclick="toggleKnowledge('formulas')">
-                    <div class="treatment-name">📜 经典方剂</div>
-                    <div class="treatment-desc">《伤寒论》经方介绍</div>
-                    <div id="formulas-content" style="display: none; margin-top: 10px;">
-                        <strong>桂枝汤</strong>：太阳中风证，发热汗出恶风<br>
-                        <strong>麻黄汤</strong>：太阳伤寒证，恶寒发热无汗<br>
-                        <strong>小柴胡汤</strong>：少阳证，寒热往来胸胁苦满<br>
-                        <strong>白虎汤</strong>：阳明经证，大热大汗大渴<br>
-                        <strong>大承气汤</strong>：阳明腑实证，痞满燥实<br>
+                <div class="treatment-card" onclick="toggleTheory('taiyang_detail')">
+                    <div class="treatment-name">🌞 太阳病篇详解</div>
+                    <div class="treatment-desc">桂枝汤证、麻黄汤证、葛根汤证</div>
+                    <div id="taiyang_detail" style="display: none; margin-top: 10px; font-size: 13px;">
+                        <strong>三大证型：</strong>
+                        <div style="margin: 5px 0;">1. <strong>中风证</strong>：发热汗出恶风，脉浮缓 → 桂枝汤</div>
+                        <div style="margin: 5px 0;">2. <strong>伤寒证</strong>：恶寒发热无汗，脉浮紧 → 麻黄汤</div>
+                        <div style="margin: 5px 0;">3. <strong>温病证</strong>：发热而渴，不恶寒 → 葛根汤</div>
+                        <div style="margin-top: 8px;"><strong>传变：</strong>太阳→阳明（过汗伤津）或太阳→少阳（表邪未尽）</div>
+                    </div>
+                </div>
+                
+                <div class="treatment-card" onclick="toggleTheory('yangming_detail')">
+                    <div class="treatment-name">🔥 阳明病篇详解</div>
+                    <div class="treatment-desc">白虎汤证、承气汤证</div>
+                    <div id="yangming_detail" style="display: none; margin-top: 10px; font-size: 13px;">
+                        <strong>两大证型：</strong>
+                        <div style="margin: 5px 0;">1. <strong>经证</strong>：身大热，汗大出，口大渴，脉洪大 → 白虎汤</div>
+                        <div style="margin: 5px 0;">2. <strong>腑证</strong>：日晡潮热，谵语，腹满痛，不大便 → 承气汤类</div>
+                        <div style="margin-top: 8px;"><strong>辨证要点：</strong>阳明之为病，胃家实是也</div>
+                        <div><strong>治疗原则：</strong>热者寒之，实者泻之</div>
+                    </div>
+                </div>
+                
+                <div class="treatment-card" onclick="toggleTheory('formula_list')">
+                    <div class="treatment-name">📜 《伤寒论》主要经方</div>
+                    <div class="treatment-desc">113方中的核心方剂</div>
+                    <div id="formula_list" style="display: none; margin-top: 10px; font-size: 13px;">
+                        <div style="margin: 5px 0;"><strong>桂枝汤</strong>：太阳中风证，调和营卫第一方</div>
+                        <div style="margin: 5px 0;"><strong>麻黄汤</strong>：太阳伤寒证，发汗解表峻剂</div>
+                        <div style="margin: 5px 0;"><strong>葛根汤</strong>：太阳温病证，项背强几几</div>
+                        <div style="margin: 5px 0;"><strong>白虎汤</strong>：阳明经证，清气分大热</div>
+                        <div style="margin: 5px 0;"><strong>大承气汤</strong>：阳明腑实证，峻下热结</div>
+                        <div style="margin: 5px 0;"><strong>小柴胡汤</strong>：少阳证，和解少阳主方</div>
+                        <div style="margin: 5px 0;"><strong>理中汤</strong>：太阴虚寒证，温中散寒</div>
+                        <div style="margin: 5px 0;"><strong>四逆汤</strong>：少阴寒化证，回阳救逆</div>
+                        <div style="margin: 5px 0;"><strong>乌梅丸</strong>：厥阴病，寒热错杂证</div>
                     </div>
                 </div>
             </div>
@@ -543,169 +600,390 @@
     </div>
 
     <script>
-        // ====== 核心游戏数据 ======
-        const TCMGame = {
-            // 医案数据库
+        // ====== 《伤寒论》六经辨证系统 ======
+        const ShangHanLunSystem = {
+            // ====== 六经医案数据库（修正版） ======
             medicalCases: [
+                // === 太阳病篇 ===
                 {
                     id: 1,
                     name: "太阳中风证",
+                    channel: "太阳",
                     difficulty: "初级",
-                    symptoms: ["发热", "汗出", "恶风", "头痛", "鼻鸣"],
-                    tongue: "舌淡红，苔薄白",
-                    pulse: "脉浮缓",
+                    source: "《伤寒论》第12条",
+                    // 四诊信息
+                    inspection: "面色正常，舌淡红苔薄白",
+                    auscultation: "语言清晰，呼吸平稳",
+                    inquiry: "发热，汗出，恶风，头痛，鼻鸣干呕",
+                    palpation: "脉浮缓",
+                    // 辨证
                     correctDiagnosis: "太阳中风证",
                     correctTreatment: "桂枝汤",
-                    explanation: "风邪袭表，卫强营弱，宜解肌祛风，调和营卫",
-                    treatmentDetail: "桂枝三两，芍药三两，甘草二两，生姜三两，大枣十二枚"
+                    pathogenesis: "风邪袭表，卫强营弱，腠理开泄",
+                    treatmentPrinciple: "解肌祛风，调和营卫",
+                    // 方剂详情
+                    formulaDetail: "桂枝三两，芍药三两，甘草二两（炙），生姜三两（切），大枣十二枚（擘）",
+                    preparation: "上五味，㕮咀三味，以水七升，微火煮取三升，去滓，适寒温，服一升",
+                    administration: "服已须臾，啜热稀粥一升余，以助药力。温覆令一时许，遍身漐漐微似有汗者益佳",
+                    // 游戏设置
+                    initialSeverity: 55,
+                    progressionRate: 5
                 },
                 {
                     id: 2,
                     name: "太阳伤寒证",
+                    channel: "太阳",
                     difficulty: "初级",
-                    symptoms: ["恶寒", "发热", "无汗", "头身疼痛", "气喘"],
-                    tongue: "舌淡红，苔薄白",
-                    pulse: "脉浮紧",
+                    source: "《伤寒论》第35条",
+                    inspection: "面色苍白，舌淡红苔薄白",
+                    auscultation: "呼吸急促，时有咳嗽",
+                    inquiry: "恶寒，发热，无汗，头身疼痛，气喘",
+                    palpation: "脉浮紧",
                     correctDiagnosis: "太阳伤寒证",
                     correctTreatment: "麻黄汤",
-                    explanation: "寒邪束表，卫阳被郁，宜发汗解表，宣肺平喘",
-                    treatmentDetail: "麻黄三两，桂枝二两，杏仁七十个，甘草一两"
+                    pathogenesis: "寒邪束表，卫阳被郁，腠理闭塞",
+                    treatmentPrinciple: "发汗解表，宣肺平喘",
+                    formulaDetail: "麻黄三两（去节），桂枝二两（去皮），甘草一两（炙），杏仁七十个（去皮尖）",
+                    preparation: "上四味，以水九升，先煮麻黄减二升，去上沫，内诸药，煮取二升半，去滓",
+                    administration: "温服八合，覆取微似汗，不须啜粥",
+                    initialSeverity: 60,
+                    progressionRate: 7
                 },
                 {
                     id: 3,
-                    name: "少阳证",
+                    name: "太阳温病证",
+                    channel: "太阳",
                     difficulty: "中级",
-                    symptoms: ["寒热往来", "胸胁苦满", "默默不欲饮食", "心烦喜呕"],
-                    tongue: "舌红，苔薄白",
-                    pulse: "脉弦",
+                    source: "《伤寒论》第31条",
+                    inspection: "面红，舌边尖红苔薄黄",
+                    auscultation: "语言有力，呼吸稍促",
+                    inquiry: "发热，口渴，项背强几几，无汗恶风",
+                    palpation: "脉浮数",
+                    correctDiagnosis: "太阳温病证",
+                    correctTreatment: "葛根汤",
+                    pathogenesis: "风寒外束，经气不舒，津液不能上承",
+                    treatmentPrinciple: "发汗解肌，升津舒经",
+                    formulaDetail: "葛根四两，麻黄三两（去节），桂枝二两（去皮），生姜三两（切），甘草二两（炙），芍药二两，大枣十二枚（擘）",
+                    preparation: "上七味，以水一斗，先煮麻黄、葛根减二升，去白沫，内诸药，煮取三升，去滓",
+                    administration: "温服一升，覆取微似汗",
+                    initialSeverity: 58,
+                    progressionRate: 6
+                },
+                
+                // === 阳明病篇 ===
+                {
+                    id: 4,
+                    name: "阳明经热证",
+                    channel: "阳明",
+                    difficulty: "中级",
+                    source: "《伤寒论》第176条",
+                    inspection: "面赤，舌红苔黄燥",
+                    auscultation: "语言洪亮，呼吸气粗",
+                    inquiry: "身大热，汗大出，口大渴，心烦",
+                    palpation: "脉洪大",
+                    correctDiagnosis: "阳明经热证",
+                    correctTreatment: "白虎汤",
+                    pathogenesis: "阳明热盛，弥漫周身，未与燥屎相结",
+                    treatmentPrinciple: "清热生津",
+                    formulaDetail: "知母六两，石膏一斤（碎），甘草二两（炙），粳米六合",
+                    preparation: "上四味，以水一斗，煮米熟汤成，去滓",
+                    administration: "温服一升，日三服",
+                    initialSeverity: 70,
+                    progressionRate: 8
+                },
+                {
+                    id: 5,
+                    name: "阳明腑实证",
+                    channel: "阳明",
+                    difficulty: "高级",
+                    source: "《伤寒论》第208条",
+                    inspection: "面红目赤，舌红苔黄燥起刺",
+                    auscultation: "谵语，呼吸浊重",
+                    inquiry: "日晡潮热，谵语，腹满痛，不大便五六日，手足濈然汗出",
+                    palpation: "脉沉实",
+                    correctDiagnosis: "阳明腑实证",
+                    correctTreatment: "大承气汤",
+                    pathogenesis: "阳明热盛，燥屎内结，腑气不通",
+                    treatmentPrinciple: "峻下热结，急下存阴",
+                    formulaDetail: "大黄四两（酒洗），厚朴半斤（炙，去皮），枳实五枚（炙），芒硝三合",
+                    preparation: "上四味，以水一斗，先煮二物取五升，去滓，内大黄更煮取二升，去滓，内芒硝，更上微火一二沸",
+                    administration: "分温再服，得下余勿服",
+                    initialSeverity: 80,
+                    progressionRate: 10
+                },
+                
+                // === 少阳病篇 ===
+                {
+                    id: 6,
+                    name: "少阳证",
+                    channel: "少阳",
+                    difficulty: "中级",
+                    source: "《伤寒论》第96条",
+                    inspection: "面色正常，舌红苔薄白",
+                    auscultation: "叹息频作，时有干呕",
+                    inquiry: "寒热往来，胸胁苦满，默默不欲饮食，心烦喜呕",
+                    palpation: "脉弦",
                     correctDiagnosis: "少阳证",
                     correctTreatment: "小柴胡汤",
-                    explanation: "邪犯少阳，枢机不利，宜和解少阳",
-                    treatmentDetail: "柴胡半斤，黄芩三两，人参三两，半夏半升，甘草三两，生姜三两，大枣十二枚"
+                    pathogenesis: "邪犯少阳，枢机不利，正邪分争",
+                    treatmentPrinciple: "和解少阳",
+                    formulaDetail: "柴胡半斤，黄芩三两，人参三两，半夏半升（洗），甘草三两（炙），生姜三两（切），大枣十二枚（擘）",
+                    preparation: "上七味，以水一斗二升，煮取六升，去滓，再煎取三升",
+                    administration: "温服一升，日三服",
+                    initialSeverity: 65,
+                    progressionRate: 6
+                },
+                
+                // === 太阴病篇 ===
+                {
+                    id: 7,
+                    name: "太阴虚寒证",
+                    channel: "太阴",
+                    difficulty: "中级",
+                    source: "《伤寒论》第273条",
+                    inspection: "面色萎黄，舌淡胖有齿痕苔白滑",
+                    auscultation: "语言低微，时有肠鸣",
+                    inquiry: "腹满而吐，食不下，自利益甚，时腹自痛",
+                    palpation: "脉缓弱",
+                    correctDiagnosis: "太阴虚寒证",
+                    correctTreatment: "理中汤",
+                    pathogenesis: "脾阳虚弱，寒湿内盛，运化失常",
+                    treatmentPrinciple: "温中散寒，健脾益气",
+                    formulaDetail: "人参、干姜、甘草（炙）、白术各三两",
+                    preparation: "上四味，捣筛，蜜和为丸如鸡子黄许大",
+                    administration: "以沸汤数合和一丸，研碎，温服之，日三四，夜二服",
+                    initialSeverity: 60,
+                    progressionRate: 5
+                },
+                
+                // === 少阴病篇 ===
+                {
+                    id: 8,
+                    name: "少阴寒化证",
+                    channel: "少阴",
+                    difficulty: "高级",
+                    source: "《伤寒论》第323条",
+                    inspection: "面色㿠白，舌淡苔白滑",
+                    auscultation: "语言低微，呼吸微弱",
+                    inquiry: "脉微细，但欲寐，四肢厥冷，下利清谷",
+                    palpation: "脉微欲绝",
+                    correctDiagnosis: "少阴寒化证",
+                    correctTreatment: "四逆汤",
+                    pathogenesis: "心肾阳虚，阴寒内盛，阳气衰微",
+                    treatmentPrinciple: "回阳救逆",
+                    formulaDetail: "甘草二两（炙），干姜一两半，附子一枚（生用，去皮，破八片）",
+                    preparation: "上三味，以水三升，煮取一升二合，去滓",
+                    administration: "分温再服。强人可大附子一枚，干姜三两",
+                    initialSeverity: 85,
+                    progressionRate: 12
+                },
+                
+                // === 厥阴病篇 ===
+                {
+                    id: 9,
+                    name: "厥阴寒热错杂证",
+                    channel: "厥阴",
+                    difficulty: "专家",
+                    source: "《伤寒论》第338条",
+                    inspection: "面色晦暗，舌红苔黄白相兼",
+                    auscultation: "时作呻吟，呼吸不匀",
+                    inquiry: "消渴，气上撞心，心中疼热，饥而不欲食，食则吐蛔",
+                    palpation: "脉弦",
+                    correctDiagnosis: "厥阴寒热错杂证",
+                    correctTreatment: "乌梅丸",
+                    pathogenesis: "上热下寒，寒热错杂，蛔虫扰动",
+                    treatmentPrinciple: "清上温下，安蛔止痛",
+                    formulaDetail: "乌梅三百枚，细辛六两，干姜十两，黄连十六两，当归四两，附子六两（炮），蜀椒四两，桂枝六两，人参六两，黄柏六两",
+                    preparation: "上十味，异捣筛，合治之，以苦酒渍乌梅一宿，去核，蒸之五斗米下，饭熟捣成泥，和药令相得",
+                    administration: "内臼中，与蜜杵二千下，丸如梧桐子大，先食饮服十丸，日三服，稍加至二十丸",
+                    initialSeverity: 75,
+                    progressionRate: 8
                 }
             ],
             
-            // 治疗选项
-            treatments: [
-                {
-                    id: "guizhi",
-                    name: "桂枝汤",
-                    type: "经方",
-                    indication: "太阳中风证",
-                    effect: 25
-                },
-                {
-                    id: "mahuang",
-                    name: "麻黄汤",
-                    type: "经方",
-                    indication: "太阳伤寒证",
-                    effect: 30
-                },
-                {
-                    id: "xiaochaihu",
-                    name: "小柴胡汤",
-                    type: "经方",
-                    indication: "少阳证",
-                    effect: 20
-                },
-                {
-                    id: "baihu",
-                    name: "白虎汤",
-                    type: "经方",
-                    indication: "阳明经证",
-                    effect: 35
-                }
+            // ====== 《伤寒论》经方数据库 ======
+            formulas: [
+                // 太阳病方
+                { id: "guizhi", name: "桂枝汤", channel: "太阳", indication: "太阳中风证", effect: 25 },
+                { id: "mahuang", name: "麻黄汤", channel: "太阳", indication: "太阳伤寒证", effect: 30 },
+                { id: "gegen", name: "葛根汤", channel: "太阳", indication: "太阳温病证", effect: 28 },
+                
+                // 阳明病方
+                { id: "baihu", name: "白虎汤", channel: "阳明", indication: "阳明经热证", effect: 35 },
+                { id: "dachengqi", name: "大承气汤", channel: "阳明", indication: "阳明腑实证", effect: 40 },
+                { id: "xiaochengqi", name: "小承气汤", channel: "阳明", indication: "阳明腑实轻证", effect: 30 },
+                { id: "tiaowei", name: "调胃承气汤", channel: "阳明", indication: "阳明燥实初结", effect: 25 },
+                
+                // 少阳病方
+                { id: "xiaochaihu", name: "小柴胡汤", channel: "少阳", indication: "少阳证", effect: 22 },
+                { id: "dachaihu", name: "大柴胡汤", channel: "少阳阳明", indication: "少阳阳明合病", effect: 35 },
+                
+                // 太阴病方
+                { id: "lizhong", name: "理中汤", channel: "太阴", indication: "太阴虚寒证", effect: 25 },
+                
+                // 少阴病方
+                { id: "sini", name: "四逆汤", channel: "少阴", indication: "少阴寒化证", effect: 45 },
+                { id: "baitong", name: "白通汤", channel: "少阴", indication: "少阴病下利脉微", effect: 40 },
+                { id: "huanglian_ejiao", name: "黄连阿胶汤", channel: "少阴", indication: "少阴热化证", effect: 30 },
+                
+                // 厥阴病方
+                { id: "wumei", name: "乌梅丸", channel: "厥阴", indication: "厥阴寒热错杂证", effect: 35 },
+                { id: "danggui_sini", name: "当归四逆汤", channel: "厥阴", indication: "厥阴血虚寒厥证", effect: 28 }
             ],
             
-            // 四诊选项
+            // ====== 四诊选项数据库 ======
             examinationOptions: {
                 inspection: [
-                    { text: "面色红润，精神尚可", value: "normal" },
-                    { text: "面色㿠白，精神萎靡", value: "pale" },
-                    { text: "面色潮红，烦躁不安", value: "flushed" },
-                    { text: "面色萎黄，形体消瘦", value: "yellowish" }
+                    { text: "面色正常，舌淡红苔薄白", value: "normal", channels: ["太阳"] },
+                    { text: "面色苍白，舌淡红苔薄白", value: "pale", channels: ["太阳", "太阴"] },
+                    { text: "面赤，舌红苔黄燥", value: "red_dry", channels: ["阳明"] },
+                    { text: "面色萎黄，舌淡胖有齿痕", value: "yellowish", channels: ["太阴"] },
+                    { text: "面色㿠白，舌淡苔白滑", value: "pale_slippery", channels: ["少阴"] },
+                    { text: "面色晦暗，舌红苔黄白", value: "dark_mixed", channels: ["厥阴"] }
                 ],
                 auscultation: [
-                    { text: "语言清晰，呼吸平稳", value: "normal" },
-                    { text: "语言低微，气短懒言", value: "weak" },
-                    { text: "咳嗽声重，痰鸣漉漉", value: "cough" },
-                    { text: "谵语郑声，呼吸气粗", value: "delirium" }
+                    { text: "语言清晰，呼吸平稳", value: "normal", channels: ["太阳"] },
+                    { text: "呼吸急促，时有咳嗽", value: "rapid_cough", channels: ["太阳"] },
+                    { text: "语言洪亮，呼吸气粗", value: "loud_coarse", channels: ["阳明"] },
+                    { text: "谵语，呼吸浊重", value: "delirium", channels: ["阳明"] },
+                    { text: "叹息频作，时有干呕", value: "sigh_dry_vomit", channels: ["少阳"] },
+                    { text: "语言低微，呼吸微弱", value: "weak_faint", channels: ["少阴"] }
                 ],
                 inquiry: [
-                    { text: "恶寒发热，无汗头痛", value: "chills" },
-                    { text: "但热不寒，口渴喜饮", value: "fever" },
-                    { text: "寒热往来，胸胁苦满", value: "alternating" },
-                    { text: "但寒不热，四肢厥冷", value: "cold" }
+                    { text: "发热汗出恶风头痛", value: "fever_sweat_chills", channels: ["太阳"] },
+                    { text: "恶寒发热无汗身痛", value: "chills_fever_no_sweat", channels: ["太阳"] },
+                    { text: "发热口渴项背强几几", value: "fever_thirst_stiff", channels: ["太阳"] },
+                    { text: "身大热汗大出口大渴", value: "big_fever_sweat_thirst", channels: ["阳明"] },
+                    { text: "日晡潮热谵语便秘", value: "tidal_fever_delirium", channels: ["阳明"] },
+                    { text: "寒热往来胸胁苦满", value: "alternating_chest", channels: ["少阳"] },
+                    { text: "腹满而吐食不下利", value: "full_vomit_diarrhea", channels: ["太阴"] },
+                    { text: "四肢厥冷下利脉微", value: "cold_limbs_diarrhea", channels: ["少阴"] },
+                    { text: "消渴气上撞心饥不食", value: "thirst_chest_hunger", channels: ["厥阴"] }
                 ],
                 palpation: [
-                    { text: "脉浮缓，舌淡红苔薄白", value: "float_slow" },
-                    { text: "脉浮紧，舌淡红苔薄白", value: "float_tight" },
-                    { text: "脉弦，舌红苔薄白", value: "string" },
-                    { text: "脉洪大，舌红苔黄燥", value: "surge" }
+                    { text: "脉浮缓", value: "float_slow", channels: ["太阳"] },
+                    { text: "脉浮紧", value: "float_tight", channels: ["太阳"] },
+                    { text: "脉浮数", value: "float_rapid", channels: ["太阳"] },
+                    { text: "脉洪大", value: "surge", channels: ["阳明"] },
+                    { text: "脉沉实", value: "deep_forceful", channels: ["阳明"] },
+                    { text: "脉弦", value: "string", channels: ["少阳", "厥阴"] },
+                    { text: "脉缓弱", value: "slow_weak", channels: ["太阴"] },
+                    { text: "脉微欲绝", value: "faint", channels: ["少阴"] }
                 ]
             },
             
-            // 当前游戏状态
+            // ====== 当前游戏状态 ======
             currentState: {
                 case: null,
                 examination: {},
                 diagnosis: null,
-                selectedTreatment: null,
+                selectedFormula: null,
                 diseaseSeverity: 60,
-                gameStarted: false
+                gameStarted: false,
+                currentChannel: ""
             },
             
-            // 玩家进度
+            // ====== 玩家学习进度 ======
             playerProgress: {
                 totalGames: 0,
                 wins: 0,
                 diagnosisAccuracy: 0,
+                formulaAccuracy: 0,
                 casesLearned: [],
+                formulasMastered: [],
+                channelsMastered: {},
                 achievements: []
             },
             
-            // 初始化
+            // ====== 六经掌握度默认值 ======
+            channelMastery: {
+                "太阳": { cases: 0, correct: 0, mastery: 0 },
+                "阳明": { cases: 0, correct: 0, mastery: 0 },
+                "少阳": { cases: 0, correct: 0, mastery: 0 },
+                "太阴": { cases: 0, correct: 0, mastery: 0 },
+                "少阴": { cases: 0, correct: 0, mastery: 0 },
+                "厥阴": { cases: 0, correct: 0, mastery: 0 }
+            },
+            
+            // ====== 初始化方法 ======
             init() {
                 this.loadProgress();
                 this.updateProgressDisplay();
                 this.loadRandomCase();
                 this.initEventListeners();
+                this.showMessage("系统已加载《伤寒论》六经辨证体系", "info");
             },
             
-            // 加载玩家进度
             loadProgress() {
-                const saved = localStorage.getItem('tcm-game-progress');
+                const saved = localStorage.getItem('shanghanlun-progress');
                 if (saved) {
                     this.playerProgress = JSON.parse(saved);
                 }
+                
+                // 初始化六经掌握度
+                const savedChannels = localStorage.getItem('channel-mastery');
+                if (savedChannels) {
+                    this.channelMastery = JSON.parse(savedChannels);
+                }
             },
             
-            // 保存进度
             saveProgress() {
-                localStorage.setItem('tcm-game-progress', JSON.stringify(this.playerProgress));
+                localStorage.setItem('shanghanlun-progress', JSON.stringify(this.playerProgress));
+                localStorage.setItem('channel-mastery', JSON.stringify(this.channelMastery));
             },
             
-            // 加载随机医案
+            // ====== 医案管理 ======
             loadRandomCase() {
                 const randomIndex = Math.floor(Math.random() * this.medicalCases.length);
                 this.currentState.case = this.medicalCases[randomIndex];
+                this.currentState.diseaseSeverity = this.currentState.case.initialSeverity || 60;
+                this.currentState.currentChannel = this.currentState.case.channel;
                 
-                // 更新界面显示
+                this.updateCaseDisplay();
+            },
+            
+            loadChannelCase(channel) {
+                const channelCases = this.medicalCases.filter(caseItem => caseItem.channel === channel);
+                if (channelCases.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * channelCases.length);
+                    this.currentState.case = channelCases[randomIndex];
+                    this.currentState.diseaseSeverity = this.currentState.case.initialSeverity || 60;
+                    this.currentState.currentChannel = channel;
+                    
+                    this.updateCaseDisplay();
+                    return true;
+                }
+                return false;
+            },
+            
+            updateCaseDisplay() {
+                if (!this.currentState.case) return;
+                
+                const caseData = this.currentState.case;
                 document.getElementById('todays-case').innerHTML = `
-                    <strong>${this.currentState.case.name}</strong><br>
-                    症状: ${this.currentState.case.symptoms.join('、')}<br>
-                    难度: ${this.currentState.case.difficulty}
+                    <strong>${caseData.name}</strong>
+                    <span class="channel-indicator ${this.getChannelClass(caseData.channel)}">
+                        ${caseData.channel}病
+                    </span><br>
+                    症状: ${caseData.inquiry.split('，')[0]}...<br>
+                    难度: ${caseData.difficulty}
                 `;
                 
                 document.getElementById('patient-info').innerHTML = `
-                    <strong>${this.currentState.case.name}</strong><br>
-                    主诉: ${this.currentState.case.symptoms.slice(0, 3).join('、')}...
+                    <strong>${caseData.name}</strong>
+                    <span class="channel-indicator ${this.getChannelClass(caseData.channel)}">
+                        ${caseData.channel}病
+                    </span><br>
+                    主诉: ${caseData.inquiry.split('，').slice(0, 3).join('，')}
                 `;
+                
+                document.getElementById('current-channel-info').innerHTML = 
+                    `当前医案属于<span class="channel-indicator ${this.getChannelClass(caseData.channel)}">
+                    ${caseData.channel}病</span>，请进行四诊辨证`;
             },
             
-            // 初始化事件监听
+            // ====== 标签页管理 ======
             initEventListeners() {
-                // 标签页切换
                 document.querySelectorAll('.tab').forEach(tab => {
                     tab.addEventListener('click', () => {
                         const tabId = tab.dataset.tab;
@@ -714,36 +992,34 @@
                 });
             },
             
-            // 切换标签页
             switchTab(tabId) {
-                // 更新标签页
                 document.querySelectorAll('.tab').forEach(t => {
                     t.classList.remove('active');
                 });
                 document.querySelector(`.tab[data-tab="${tabId}"]`).classList.add('active');
                 
-                // 更新内容
                 document.querySelectorAll('.tab-content').forEach(content => {
                     content.classList.remove('active');
                 });
                 document.getElementById(`${tabId}-tab`).classList.add('active');
                 
-                // 特殊处理
                 if (tabId === 'diagnosis') {
                     this.renderExamination();
                 } else if (tabId === 'treatment') {
-                    this.renderTreatmentOptions();
+                    this.renderFormulaOptions();
+                } else if (tabId === 'progress') {
+                    this.renderChannelProgress();
                 }
             },
             
-            // 渲染四诊界面
+            // ====== 四诊辨证系统 ======
             renderExamination() {
                 if (!this.currentState.case) return;
                 
                 const section = document.getElementById('examination-section');
-                let html = '';
+                const currentChannel = this.currentState.currentChannel;
                 
-                // 四诊项目
+                let html = '';
                 const exams = [
                     { title: "👁️ 望诊", key: "inspection", options: this.examinationOptions.inspection },
                     { title: "👂 闻诊", key: "auscultation", options: this.examinationOptions.auscultation },
@@ -753,133 +1029,179 @@
                 
                 exams.forEach(exam => {
                     html += `
-                        <div style="margin: 20px 0;">
+                        <div style="margin: 15px 0;">
                             <div class="result-title">${exam.title}</div>
                             <div class="examination-options">
-                                ${exam.options.map(opt => `
-                                    <div class="option-button" 
-                                         onclick="TCMGame.selectExamination('${exam.key}', '${opt.value}')"
-                                         id="${exam.key}-${opt.value}">
-                                        ${opt.text}
-                                    </div>
-                                `).join('')}
+                                ${exam.options.map(opt => {
+                                    const isChannelMatch = opt.channels && opt.channels.includes(currentChannel);
+                                    return `
+                                        <div class="option-button" 
+                                             onclick="ShangHanLunSystem.selectExamination('${exam.key}', '${opt.value}')"
+                                             id="${exam.key}-${opt.value}"
+                                             style="${isChannelMatch ? 'border-color: #FF9800;' : ''}">
+                                            ${opt.text}
+                                            ${isChannelMatch ? ' 🔥' : ''}
+                                        </div>
+                                    `;
+                                }).join('')}
                             </div>
                         </div>
                     `;
                 });
                 
                 section.innerHTML = html;
-                
-                // 重置当前选择
                 this.currentState.examination = {};
             },
             
-            // 选择四诊项目
             selectExamination(type, value) {
-                // 清除当前类型的其他选择
                 const options = document.querySelectorAll(`[id^="${type}-"]`);
                 options.forEach(opt => {
                     opt.classList.remove('selected');
                 });
                 
-                // 标记当前选择
                 document.getElementById(`${type}-${value}`).classList.add('selected');
-                
-                // 保存选择
                 this.currentState.examination[type] = value;
                 
-                // 检查是否四诊完成
                 this.checkExaminationComplete();
             },
             
-            // 检查四诊是否完成
             checkExaminationComplete() {
                 const types = ['inspection', 'auscultation', 'inquiry', 'palpation'];
                 const completed = types.every(type => this.currentState.examination[type]);
                 
                 if (completed) {
-                    // 自动进行辨证
                     this.performDiagnosis();
                 }
             },
             
-            // 进行辨证
             performDiagnosis() {
-                // 基于规则进行辨证
+                if (!this.currentState.case) return;
+                
                 let diagnosis = "";
                 let accuracy = 0;
+                let channel = "";
                 
-                // 根据四诊结果判断
+                const caseData = this.currentState.case;
                 const palpation = this.currentState.examination.palpation;
                 const inquiry = this.currentState.examination.inquiry;
                 
-                if (palpation === 'float_slow' && inquiry === 'chills') {
-                    diagnosis = "太阳中风证";
-                    accuracy = 0.95;
-                } else if (palpation === 'float_tight' && inquiry === 'chills') {
-                    diagnosis = "太阳伤寒证";
-                    accuracy = 0.95;
-                } else if (palpation === 'string' && inquiry === 'alternating') {
-                    diagnosis = "少阳证";
-                    accuracy = 0.9;
-                } else {
-                    diagnosis = "辨证待定";
-                    accuracy = 0.5;
-                }
+                // 根据四诊结果匹配医案
+                const palpationMatch = this.checkPalpationMatch(palpation, caseData.palpation);
+                const inquiryMatch = this.checkInquiryMatch(inquiry, caseData.inquiry);
                 
-                this.currentState.diagnosis = { text: diagnosis, accuracy: accuracy };
+                accuracy = (palpationMatch + inquiryMatch) / 2;
                 
-                // 显示结果
+                diagnosis = caseData.correctDiagnosis;
+                channel = caseData.channel;
+                
+                this.currentState.diagnosis = { 
+                    text: diagnosis, 
+                    accuracy: accuracy,
+                    channel: channel
+                };
+                
                 this.showDiagnosisResult();
             },
             
-            // 显示辨证结果
+            checkPalpationMatch(selected, correct) {
+                const pulseMap = {
+                    "float_slow": "脉浮缓",
+                    "float_tight": "脉浮紧", 
+                    "float_rapid": "脉浮数",
+                    "surge": "脉洪大",
+                    "deep_forceful": "脉沉实",
+                    "string": "脉弦",
+                    "slow_weak": "脉缓弱",
+                    "faint": "脉微欲绝"
+                };
+                
+                return pulseMap[selected] === correct ? 1 : 0.5;
+            },
+            
+            checkInquiryMatch(selected, correct) {
+                const inquiryMap = {
+                    "fever_sweat_chills": "发热汗出恶风",
+                    "chills_fever_no_sweat": "恶寒发热无汗",
+                    "fever_thirst_stiff": "发热口渴",
+                    "big_fever_sweat_thirst": "身大热汗大出口大渴",
+                    "tidal_fever_delirium": "日晡潮热谵语",
+                    "alternating_chest": "寒热往来胸胁",
+                    "full_vomit_diarrhea": "腹满而吐",
+                    "cold_limbs_diarrhea": "四肢厥冷",
+                    "thirst_chest_hunger": "消渴气上撞心"
+                };
+                
+                const selectedText = inquiryMap[selected] || "";
+                return correct.includes(selectedText) ? 1 : 0.3;
+            },
+            
             showDiagnosisResult() {
                 const resultDiv = document.getElementById('diagnosis-result');
                 const outputDiv = document.getElementById('diagnosis-output');
                 
                 const accuracyPercent = Math.round(this.currentState.diagnosis.accuracy * 100);
+                const isCorrect = this.currentState.diagnosis.text === this.currentState.case.correctDiagnosis;
                 
                 outputDiv.innerHTML = `
                     <div class="result-item">
-                        <div>证型: <strong>${this.currentState.diagnosis.text}</strong></div>
+                        <div>六经归属: 
+                            <span class="channel-indicator ${this.getChannelClass(this.currentState.diagnosis.channel)}">
+                                ${this.currentState.diagnosis.channel}病
+                            </span>
+                        </div>
+                        <div>具体证型: <strong>${this.currentState.diagnosis.text}</strong></div>
                         <div>辨证准确度: ${accuracyPercent}%</div>
-                        ${this.currentState.diagnosis.text === this.currentState.case.correctDiagnosis ? 
-                          '<div style="color: #4CAF50;">✅ 辨证正确！</div>' : 
-                          `<div style="color: #F44336;">❌ 应为: ${this.currentState.case.correctDiagnosis}</div>`}
+                        <div>${isCorrect ? 
+                          '<span style="color: #4CAF50;">✅ 辨证正确！请进行经方治疗</span>' : 
+                          `<span style="color: #F44336;">❌ 应为: ${this.currentState.case.correctDiagnosis}</span>`}</div>
                     </div>
                 `;
                 
                 resultDiv.style.display = 'block';
-                document.getElementById('submit-btn').innerText = '下一步：治疗';
+                document.getElementById('submit-btn').innerText = '下一步：选择经方';
                 
-                // 更新当前诊断显示
                 document.getElementById('current-diagnosis').innerHTML = `
+                    <span class="channel-indicator ${this.getChannelClass(this.currentState.diagnosis.channel)}">
+                        ${this.currentState.diagnosis.channel}病
+                    </span>
                     <strong>${this.currentState.diagnosis.text}</strong>
-                    <div style="font-size: 14px; color: #666;">
+                    <div style="font-size: 13px; color: #666;">
                         准确度: ${accuracyPercent}%
                     </div>
                 `;
+                
+                document.getElementById('treatment-guide').innerHTML = 
+                    `根据<span class="channel-indicator ${this.getChannelClass(this.currentState.diagnosis.channel)}">
+                    ${this.currentState.diagnosis.channel}病</span>的辨证结果，选择对应经方`;
             },
             
-            // 渲染治疗方案
-            renderTreatmentOptions() {
+            // ====== 经方治疗系统 ======
+            renderFormulaOptions() {
                 const optionsDiv = document.getElementById('treatment-options');
+                if (!this.currentState.diagnosis) {
+                    optionsDiv.innerHTML = '<div class="result-item">请先完成六经辨证</div>';
+                    return;
+                }
+                
+                const currentChannel = this.currentState.diagnosis.channel;
+                const channelFormulas = this.formulas.filter(f => f.channel === currentChannel || 
+                    f.channel.includes(currentChannel));
+                
                 let html = '<div class="examination-options">';
                 
-                this.treatments.forEach(treatment => {
-                    const isCorrect = treatment.indication === this.currentState.case.correctDiagnosis;
-                    const isSelected = this.currentState.selectedTreatment === treatment.id;
+                channelFormulas.forEach(formula => {
+                    const isCorrect = formula.indication === this.currentState.case.correctDiagnosis;
+                    const isSelected = this.currentState.selectedFormula === formula.id;
                     
                     html += `
                         <div class="treatment-card ${isSelected ? 'selected' : ''}" 
-                             onclick="TCMGame.selectTreatment('${treatment.id}')"
-                             id="treatment-${treatment.id}">
-                            <div class="treatment-name">${treatment.name}</div>
+                             onclick="ShangHanLunSystem.selectFormula('${formula.id}')"
+                             id="formula-${formula.id}">
+                            <div class="treatment-name">${formula.name}</div>
                             <div class="treatment-desc">
-                                主治: ${treatment.indication}<br>
-                                类型: ${treatment.type}
-                                ${isCorrect ? '<br><span style="color: #4CAF50;">✅ 对症</span>' : ''}
+                                主治: ${formula.indication}<br>
+                                六经: ${formula.channel}
+                                ${isCorrect ? '<br><span style="color: #4CAF50;">✅ 对症经方</span>' : ''}
                             </div>
                         </div>
                     `;
@@ -889,102 +1211,91 @@
                 optionsDiv.innerHTML = html;
             },
             
-            // 选择治疗方案
-            selectTreatment(treatmentId) {
-                // 清除其他选择
+            selectFormula(formulaId) {
                 document.querySelectorAll('.treatment-card').forEach(card => {
                     card.classList.remove('selected');
                 });
                 
-                // 标记当前选择
-                document.getElementById(`treatment-${treatmentId}`).classList.add('selected');
+                document.getElementById(`formula-${formulaId}`).classList.add('selected');
+                this.currentState.selectedFormula = formulaId;
                 
-                // 保存选择
-                this.currentState.selectedTreatment = treatmentId;
-                
-                // 显示处方详情
-                this.showPrescriptionDetail(treatmentId);
+                this.showFormulaDetail(formulaId);
             },
             
-            // 显示处方详情
-            showPrescriptionDetail(treatmentId) {
-                const treatment = this.treatments.find(t => t.id === treatmentId);
-                const isCorrect = treatment.indication === this.currentState.case.correctDiagnosis;
+            showFormulaDetail(formulaId) {
+                const formula = this.formulas.find(f => f.id === formulaId);
+                const caseData = this.currentState.case;
+                const isCorrect = formula.indication === caseData.correctDiagnosis;
                 
-                document.getElementById('prescription-detail').innerHTML = `
+                document.getElementById('formula-detail-content').innerHTML = `
                     <div class="result-item">
-                        <div>方剂: <strong>${treatment.name}</strong></div>
-                        <div>主治: ${treatment.indication}</div>
-                        <div>预计疗效: ${treatment.effect} 点</div>
+                        <div>方名: <strong>${formula.name}</strong></div>
+                        <div>主治: ${formula.indication}</div>
+                        <div>六经: ${formula.channel}</div>
+                        <div>预计疗效: ${formula.effect} 点</div>
                         <div>${isCorrect ? 
-                            '<span style="color: #4CAF50;">✅ 方证对应</span>' : 
+                            '<span style="color: #4CAF50;">✅ 方证对应，符合《伤寒论》原意</span>' : 
                             '<span style="color: #F44336;">❌ 方证不符</span>'}</div>
                     </div>
                 `;
                 
-                document.getElementById('prescription-result').style.display = 'block';
+                document.getElementById('formula-detail').style.display = 'block';
             },
             
-            // 应用治疗
             applyTreatment() {
-                if (!this.currentState.selectedTreatment) {
-                    this.showMessage('请先选择一个治疗方案', 'warning');
+                if (!this.currentState.selectedFormula) {
+                    this.showMessage('请先选择一个经方', 'warning');
                     return;
                 }
                 
-                const treatment = this.treatments.find(t => t.id === this.currentState.selectedTreatment);
-                const isCorrect = treatment.indication === this.currentState.case.correctDiagnosis;
+                const formula = this.formulas.find(f => f.id === this.currentState.selectedFormula);
+                const isCorrect = formula.indication === this.currentState.case.correctDiagnosis;
                 
                 // 计算治疗效果
-                let effect = treatment.effect;
+                let effect = formula.effect;
+                const diagnosisAccuracy = this.currentState.diagnosis.accuracy;
+                
+                effect *= diagnosisAccuracy; // 辨证准确度影响疗效
+                
                 if (!isCorrect) {
-                    effect = Math.floor(effect * 0.3); // 方证不符，效果大打折扣
+                    effect *= 0.3; // 方证不符，效果大打折扣
                 }
                 
-                // 更新病情严重度
-                this.currentState.diseaseSeverity = Math.max(0, this.currentState.diseaseSeverity - effect);
+                effect = Math.round(effect);
                 
-                // 更新显示
+                // 更新病情
+                this.currentState.diseaseSeverity = Math.max(0, this.currentState.diseaseSeverity - effect);
                 document.getElementById('disease-severity').textContent = this.currentState.diseaseSeverity;
                 document.getElementById('severity-bar').style.width = `${this.currentState.diseaseSeverity}%`;
                 
                 // 判断胜负
-                if (this.currentState.diseaseSeverity <= 0) {
-                    this.gameWin();
+                if (this.currentState.diseaseSeverity <= 20) {
+                    this.gameWin(isCorrect);
                 } else {
-                    // 病情进展
-                    const progression = Math.floor(Math.random() * 10) + 5;
-                    this.currentState.diseaseSeverity = Math.min(100, this.currentState.diseaseSeverity + progression);
-                    
-                    // 更新显示
-                    setTimeout(() => {
-                        document.getElementById('disease-severity').textContent = this.currentState.diseaseSeverity;
-                        document.getElementById('severity-bar').style.width = `${this.currentState.diseaseSeverity}%`;
-                        
-                        if (this.currentState.diseaseSeverity >= 100) {
-                            this.gameLose();
-                        } else {
-                            this.showMessage(`病情有所${isCorrect ? '好转' : '加重'}，请继续治疗`, 
-                                           isCorrect ? 'success' : 'warning');
-                        }
-                    }, 1000);
+                    this.gameContinue(isCorrect, effect);
                 }
-                
-                // 更新玩家进度
-                this.updatePlayerProgress(isCorrect);
             },
             
-            // 游戏胜利
-            gameWin() {
-                this.showMessage('🎉 治疗成功！患者康复', 'success');
+            gameWin(isCorrect) {
+                const diagnosisAccuracy = Math.round(this.currentState.diagnosis.accuracy * 100);
+                this.showMessage(`🎉 治疗成功！患者康复。辨证准确度${diagnosisAccuracy}%`, 'success');
+                
                 this.playerProgress.wins++;
                 this.playerProgress.totalGames++;
                 
-                // 解锁成就
+                // 记录经方掌握
+                if (!this.playerProgress.formulasMastered.includes(this.currentState.case.correctTreatment)) {
+                    this.playerProgress.formulasMastered.push(this.currentState.case.correctTreatment);
+                }
+                
+                // 记录医案学习
                 if (!this.playerProgress.casesLearned.includes(this.currentState.case.id)) {
                     this.playerProgress.casesLearned.push(this.currentState.case.id);
                 }
                 
+                // 更新六经掌握度
+                this.updateChannelMastery(true);
+                
                 this.saveProgress();
                 this.updateProgressDisplay();
                 
@@ -995,10 +1306,32 @@
                 }, 3000);
             },
             
-            // 游戏失败
+            gameContinue(isCorrect, effect) {
+                // 病情进展
+                const progression = this.currentState.case.progressionRate || 8;
+                this.currentState.diseaseSeverity = Math.min(100, this.currentState.diseaseSeverity + progression);
+                
+                setTimeout(() => {
+                    document.getElementById('disease-severity').textContent = this.currentState.diseaseSeverity;
+                    document.getElementById('severity-bar').style.width = `${this.currentState.diseaseSeverity}%`;
+                    
+                    if (this.currentState.diseaseSeverity >= 80) {
+                        this.gameLose();
+                    } else {
+                        this.showMessage(`病情${isCorrect ? '好转但未愈' : '加重'}，请继续治疗`, 
+                                       isCorrect ? 'warning' : 'danger');
+                    }
+                }, 1000);
+                
+                // 更新六经掌握度
+                this.updateChannelMastery(isCorrect);
+            },
+            
             gameLose() {
                 this.showMessage('💀 治疗失败，病情恶化', 'danger');
                 this.playerProgress.totalGames++;
+                
+                this.updateChannelMastery(false);
                 this.saveProgress();
                 this.updateProgressDisplay();
                 
@@ -1009,79 +1342,102 @@
                 }, 3000);
             },
             
-            // 更新玩家进度
-            updatePlayerProgress(correctTreatment) {
-                // 计算本次辨证准确度
-                const diagnosisAccuracy = this.currentState.diagnosis.accuracy;
-                
-                // 更新平均准确度
-                if (this.playerProgress.diagnosisAccuracy === 0) {
-                    this.playerProgress.diagnosisAccuracy = diagnosisAccuracy;
-                } else {
-                    this.playerProgress.diagnosisAccuracy = 
-                        (this.playerProgress.diagnosisAccuracy + diagnosisAccuracy) / 2;
+            updateChannelMastery(success) {
+                const channel = this.currentState.currentChannel;
+                if (!this.channelMastery[channel]) {
+                    this.channelMastery[channel] = { cases: 0, correct: 0, mastery: 0 };
                 }
                 
-                // 检查成就
-                this.checkAchievements();
+                this.channelMastery[channel].cases++;
+                if (success) {
+                    this.channelMastery[channel].correct++;
+                }
+                
+                this.channelMastery[channel].mastery = 
+                    this.channelMastery[channel].correct / this.channelMastery[channel].cases;
             },
             
-            // 检查成就
-            checkAchievements() {
-                const achievements = [];
-                
-                // 首胜成就
-                if (this.playerProgress.wins === 1 && !this.playerProgress.achievements.includes('first_win')) {
-                    achievements.push({ id: 'first_win', name: '初战告捷', desc: '赢得第一场对局' });
-                }
-                
-                // 辨证大师
-                if (this.playerProgress.diagnosisAccuracy > 0.8 && !this.playerProgress.achievements.includes('diagnosis_master')) {
-                    achievements.push({ id: 'diagnosis_master', name: '辨证大师', desc: '辨证准确率超过80%' });
-                }
-                
-                // 医案收集
-                if (this.playerProgress.casesLearned.length >= 3 && !this.playerProgress.achievements.includes('case_collector')) {
-                    achievements.push({ id: 'case_collector', name: '医案收藏家', desc: '学习3个以上医案' });
-                }
-                
-                // 添加新成就
-                achievements.forEach(achievement => {
-                    if (!this.playerProgress.achievements.includes(achievement.id)) {
-                        this.playerProgress.achievements.push(achievement.id);
-                        this.showMessage(`🏆 解锁成就: ${achievement.name}`, 'success');
-                    }
-                });
-            },
-            
-            // 更新进度显示
+            // ====== 学习进度系统 ======
             updateProgressDisplay() {
-                const accuracyPercent = Math.round(this.playerProgress.diagnosisAccuracy * 100);
-                
+                // 总体准确度
+                const accuracyPercent = Math.round(this.playerProgress.diagnosisAccuracy * 100) || 0;
                 document.getElementById('diagnosis-rate').textContent = `${accuracyPercent}%`;
                 document.getElementById('accuracy-bar').style.width = `${accuracyPercent}%`;
-                document.getElementById('cases-learned').textContent = this.playerProgress.casesLearned.length;
-                document.getElementById('tcm-level').textContent = this.getTCMLevel();
                 
+                // 经方掌握
+                document.getElementById('formulas-mastered').textContent = this.playerProgress.formulasMastered.length;
+                
+                // 六经进度
+                const masteredChannels = Object.keys(this.channelMastery).filter(
+                    channel => this.channelMastery[channel].mastery >= 0.7
+                ).length;
+                document.getElementById('channel-progress').textContent = `${masteredChannels}/6`;
+                
+                // 统计数据
                 document.getElementById('total-games').textContent = this.playerProgress.totalGames;
-                document.getElementById('wins').textContent = this.playerProgress.wins;
-                document.getElementById('overall-accuracy').textContent = `${accuracyPercent}%`;
                 document.getElementById('total-cases').textContent = this.playerProgress.casesLearned.length;
+                document.getElementById('mastered-channels').textContent = `${masteredChannels}/6`;
                 
-                // 更新成就列表
+                // 经方准确率
+                const formulaAccuracy = this.playerProgress.totalGames > 0 ? 
+                    Math.round((this.playerProgress.wins / this.playerProgress.totalGames) * 100) : 0;
+                document.getElementById('formula-accuracy').textContent = `${formulaAccuracy}%`;
+                
+                // 成就列表
+                this.renderAchievements();
+            },
+            
+            renderChannelProgress() {
+                const progressDiv = document.getElementById('channel-progress-bars');
+                let html = '<div class="result-title">六经掌握度</div>';
+                
+                for (const [channel, data] of Object.entries(this.channelMastery)) {
+                    const masteryPercent = Math.round(data.mastery * 100);
+                    const masteryClass = masteryPercent >= 70 ? 'taiyang' : 
+                                       masteryPercent >= 50 ? 'yangming' : 'shaoyin';
+                    
+                    html += `
+                        <div style="margin: 10px 0;">
+                            <div>${channel}病: 
+                                <span class="channel-indicator ${this.getChannelClass(channel)}">
+                                    ${data.correct}/${data.cases} 例
+                                </span>
+                                <span style="float: right;">${masteryPercent}%</span>
+                            </div>
+                            <div class="status-bar">
+                                <div class="status-fill" style="width: ${masteryPercent}%; background: 
+                                    ${masteryPercent >= 70 ? '#4CAF50' : 
+                                     masteryPercent >= 50 ? '#FF9800' : '#F44336'}">
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                progressDiv.innerHTML = html;
+            },
+            
+            renderAchievements() {
                 const achievementsList = document.getElementById('achievements-list');
-                let achievementsHtml = '';
-                
-                const allAchievements = [
-                    { id: 'first_win', name: '初战告捷', desc: '赢得第一场对局' },
-                    { id: 'diagnosis_master', name: '辨证大师', desc: '辨证准确率超过80%' },
-                    { id: 'case_collector', name: '医案收藏家', desc: '学习3个以上医案' }
+                const achievements = [
+                    { id: 'first_win', name: '初战告捷', desc: '赢得第一场对局', check: () => this.playerProgress.wins >= 1 },
+                    { id: 'taiyang_master', name: '太阳明医', desc: '太阳病辨证准确率80%以上', 
+                      check: () => this.channelMastery['太阳']?.mastery >= 0.8 },
+                    { id: 'formula_10', name: '经方十首', desc: '掌握10首以上经方', 
+                      check: () => this.playerProgress.formulasMastered.length >= 10 },
+                    { id: 'six_channels', name: '六经通晓', desc: '全部六经均有学习记录', 
+                      check: () => Object.keys(this.channelMastery).length >= 6 }
                 ];
                 
-                allAchievements.forEach(achievement => {
-                    const isUnlocked = this.playerProgress.achievements.includes(achievement.id);
+                let achievementsHtml = '';
+                achievements.forEach(achievement => {
+                    const isUnlocked = achievement.check();
+                    if (isUnlocked && !this.playerProgress.achievements.includes(achievement.id)) {
+                        this.playerProgress.achievements.push(achievement.id);
+                    }
+                    
                     achievementsHtml += `
-                        <div style="margin: 10px 0; padding: 10px; background: ${isUnlocked ? '#C8E6C9' : '#F5F5F5'}; 
+                        <div style="margin: 8px 0; padding: 8px; background: ${isUnlocked ? '#C8E6C9' : '#F5F5F5'}; 
                                     border-radius: 5px; border-left: 4px solid ${isUnlocked ? '#4CAF50' : '#9E9E9E'}">
                             ${isUnlocked ? '✅' : '🔒'} ${achievement.name}
                             <div style="font-size: 12px; color: #666;">${achievement.desc}</div>
@@ -1092,37 +1448,36 @@
                 achievementsList.innerHTML = achievementsHtml;
             },
             
-            // 获取中医等级
-            getTCMLevel() {
-                const accuracy = this.playerProgress.diagnosisAccuracy;
-                const wins = this.playerProgress.wins;
-                
-                if (accuracy > 0.8 && wins > 5) return '大医';
-                if (accuracy > 0.7 && wins > 3) return '良医';
-                if (accuracy > 0.6 && wins > 1) return '医师';
-                if (accuracy > 0.4) return '医士';
-                return '学徒';
+            // ====== 辅助方法 ======
+            getChannelClass(channel) {
+                const channelClasses = {
+                    "太阳": "taiyang",
+                    "阳明": "yangming", 
+                    "少阳": "shaoyang",
+                    "太阴": "taiyin",
+                    "少阴": "shaoyin",
+                    "厥阴": "jueyin"
+                };
+                return channelClasses[channel] || "";
             },
             
-            // 重置游戏状态
             resetGameState() {
                 this.currentState = {
                     case: null,
                     examination: {},
                     diagnosis: null,
-                    selectedTreatment: null,
+                    selectedFormula: null,
                     diseaseSeverity: 60,
-                    gameStarted: false
+                    gameStarted: false,
+                    currentChannel: ""
                 };
             },
             
-            // 显示消息
             showMessage(text, type = 'info') {
                 const messageDiv = document.createElement('div');
                 messageDiv.className = 'message';
                 messageDiv.textContent = text;
                 
-                // 不同类型不同颜色
                 const colors = {
                     success: '#4CAF50',
                     warning: '#FF9800',
@@ -1133,7 +1488,6 @@
                 
                 document.body.appendChild(messageDiv);
                 
-                // 3秒后消失
                 setTimeout(() => {
                     messageDiv.style.animation = 'slideIn 0.3s ease-out reverse';
                     setTimeout(() => {
@@ -1142,69 +1496,94 @@
                 }, 3000);
             },
             
-            // 重置学习进度
             resetProgress() {
-                if (confirm('确定要重置所有学习进度吗？这将清除所有数据。')) {
-                    localStorage.removeItem('tcm-game-progress');
+                if (confirm('确定要重置所有学习进度吗？这将清除所有六经学习数据。')) {
+                    localStorage.removeItem('shanghanlun-progress');
+                    localStorage.removeItem('channel-mastery');
+                    
                     this.playerProgress = {
                         totalGames: 0,
                         wins: 0,
                         diagnosisAccuracy: 0,
+                        formulaAccuracy: 0,
                         casesLearned: [],
+                        formulasMastered: [],
+                        channelsMastered: {},
                         achievements: []
                     };
+                    
+                    this.channelMastery = {
+                        "太阳": { cases: 0, correct: 0, mastery: 0 },
+                        "阳明": { cases: 0, correct: 0, mastery: 0 },
+                        "少阳": { cases: 0, correct: 0, mastery: 0 },
+                        "太阴": { cases: 0, correct: 0, mastery: 0 },
+                        "少阴": { cases: 0, correct: 0, mastery: 0 },
+                        "厥阴": { cases: 0, correct: 0, mastery: 0 }
+                    };
+                    
                     this.saveProgress();
                     this.updateProgressDisplay();
-                    this.showMessage('进度已重置', 'info');
+                    this.showMessage('学习进度已重置', 'info');
                 }
             }
         };
         
         // ====== 全局函数 ======
         function switchTab(tabId) {
-            TCMGame.switchTab(tabId);
+            ShangHanLunSystem.switchTab(tabId);
         }
         
-        function startNewGame() {
-            TCMGame.switchTab('diagnosis');
-            TCMGame.resetGameState();
-            TCMGame.loadRandomCase();
-            TCMGame.currentState.gameStarted = true;
-            TCMGame.showMessage('新对局开始！请进行四诊', 'info');
+        function startRandomGame() {
+            ShangHanLunSystem.loadRandomCase();
+            ShangHanLunSystem.switchTab('diagnosis');
+            ShangHanLunSystem.currentState.gameStarted = true;
+            ShangHanLunSystem.showMessage('随机六经医案开始！', 'info');
+        }
+        
+        function startChannelGame(channel) {
+            if (ShangHanLunSystem.loadChannelCase(channel)) {
+                ShangHanLunSystem.switchTab('diagnosis');
+                ShangHanLunSystem.currentState.gameStarted = true;
+                ShangHanLunSystem.showMessage(`${channel}病医案开始！`, 'info');
+            }
+        }
+        
+        function selectChannelCase(channel) {
+            startChannelGame(channel);
         }
         
         function submitDiagnosis() {
-            if (Object.keys(TCMGame.currentState.examination).length < 4) {
-                TCMGame.showMessage('请完成所有四诊项目', 'warning');
+            if (Object.keys(ShangHanLunSystem.currentState.examination).length < 4) {
+                ShangHanLunSystem.showMessage('请完成所有四诊项目', 'warning');
                 return;
             }
-            TCMGame.switchTab('treatment');
+            ShangHanLunSystem.switchTab('treatment');
         }
         
         function resetDiagnosis() {
-            TCMGame.currentState.examination = {};
-            TCMGame.currentState.diagnosis = null;
+            ShangHanLunSystem.currentState.examination = {};
+            ShangHanLunSystem.currentState.diagnosis = null;
             document.getElementById('diagnosis-result').style.display = 'none';
-            TCMGame.renderExamination();
+            ShangHanLunSystem.renderExamination();
         }
         
         function applyTreatment() {
-            TCMGame.applyTreatment();
+            ShangHanLunSystem.applyTreatment();
         }
         
         function resetProgress() {
-            TCMGame.resetProgress();
+            ShangHanLunSystem.resetProgress();
         }
         
-        function toggleKnowledge(type) {
-            const content = document.getElementById(`${type}-content`);
+        function toggleTheory(type) {
+            const content = document.getElementById(type);
             content.style.display = content.style.display === 'none' ? 'block' : 'none';
         }
         
-        // ====== 初始化游戏 ======
+        // ====== 启动系统 ======
         window.onload = function() {
-            TCMGame.init();
+            ShangHanLunSystem.init();
         };
     </script>
 </body>
-  </html>
+</html>
