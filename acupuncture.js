@@ -1088,11 +1088,638 @@ TCMSystem.acupuncture = {
         }
     }
 ],
-            "足太阳膀胱经": [
-                { name: "委中", code: "BL40", category: "合穴", location: "腘横纹中点", function: "舒筋活络，泄热清暑", element: "土", special: "合穴属土" },
-                { name: "肾俞", code: "BL23", category: "背俞穴", location: "腰部第2腰椎下", function: "益肾助阳，强腰利水", element: null, special: "肾背俞穴" },
-                { name: "昆仑", code: "BL60", category: "经穴", location: "足外踝后方", function: "舒筋活络，清头明目", element: "火", special: "经穴属火" }
-            ],
+// 在 acupuncture.js 的 meridians 对象中，替换 "足太阳膀胱经": [] 为以下完整数据
+"足太阳膀胱经": [
+    {
+        name: "睛明", code: "BL1",
+        dacheng: {
+            location: "《大成》：目内眦头外一分宛宛中。",
+            needling: "针一分半，留三呼，禁灸。",
+            mainIndication: "目痛视不明，迎风流泪，窝肉攀睛。",
+            specialPoint: "手足太阳、足阳明、阴蹻、阳蹻五脉之会",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "攒竹", code: "BL2",
+        dacheng: {
+            location: "《大成》：两眉头陷中。",
+            needling: "针三分，留三呼，禁灸。",
+            mainIndication: "目䀮䀮视物不明，眼中赤痛，眉棱骨痛。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "眉冲", code: "BL3",
+        dacheng: {
+            location: "《大成》：直眉头上神庭、曲差之间。",
+            needling: "针三分，禁灸。",
+            mainIndication: "五痫，头痛，鼻塞。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "曲差", code: "BL4",
+        dacheng: {
+            location: "《大成》：神庭旁一寸五分，入发际。",
+            needling: "针三分，灸三壮。",
+            mainIndication: "头项痛，目视不明，鼽衄，心中烦满。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "五处", code: "BL5",
+        dacheng: {
+            location: "《大成》：上星旁一寸五分。",
+            needling: "针三分，留七呼，灸三壮。",
+            mainIndication: "脊强反折，瘛疭癫疾，头风目眩。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "承光", code: "BL6",
+        dacheng: {
+            location: "《大成》：五处后一寸五分。",
+            needling: "针三分，禁灸。",
+            mainIndication: "风眩头痛，呕吐心烦，目生白翳。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "通天", code: "BL7",
+        dacheng: {
+            location: "《大成》：承光后一寸五分。",
+            needling: "针三分，留七呼，灸三壮。",
+            mainIndication: "头旋耳鸣，鼻塞，口喎，项强。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "络却", code: "BL8",
+        dacheng: {
+            location: "《大成》：通天后一寸五分。",
+            needling: "针三分，留五呼，灸三壮。",
+            mainIndication: "头旋耳鸣，内障目无所见，瘿瘤。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "玉枕", code: "BL9",
+        dacheng: {
+            location: "《大成》：络却后一寸五分，侠脑户旁一寸三分。",
+            needling: "针三分，留三呼，灸三壮。",
+            mainIndication: "目痛如脱，不能远视，脑风疼痛。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "天柱", code: "BL10",
+        dacheng: {
+            location: "《大成》：侠项后发际，大筋外廉陷中。",
+            needling: "针五分，灸三壮。",
+            mainIndication: "头旋脑痛，目瞑不能视，项强。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "大杼", code: "BL11",
+        dacheng: {
+            location: "《大成》：项后第一椎下，两旁相去脊各一寸五分陷中。",
+            needling: "针五分，灸七壮。",
+            mainIndication: "膝痛不可屈伸，伤寒汗不出，头痛。",
+            specialPoint: "督脉别络，手足太阳、少阳之会，骨会大杼",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "风门", code: "BL12",
+        dacheng: {
+            location: "《大成》：二椎下两旁相去脊各一寸五分。",
+            needling: "针五分，灸五壮。",
+            mainIndication: "伤风咳嗽，头痛，鼻流清涕。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "肺俞", code: "BL13",
+        dacheng: {
+            location: "《大成》：三椎下两旁相去脊各一寸五分。",
+            needling: "针三分，留七呼，灸三壮。",
+            mainIndication: "咳嗽吐血，骨蒸潮热，肺痿。",
+            specialPoint: "肺之背俞穴",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "厥阴俞", code: "BL14",
+        dacheng: {
+            location: "《大成》：四椎下两旁相去脊各一寸五分。",
+            needling: "针三分，灸七壮。",
+            mainIndication: "咳逆，心痛，胸满呕吐。",
+            specialPoint: "心包之背俞穴",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "心俞", code: "BL15",
+        dacheng: {
+            location: "《大成》：五椎下两旁相去脊各一寸五分。",
+            needling: "针三分，留七呼，禁灸。",
+            mainIndication: "心风惊悸，咳吐血，呕吐不下食。",
+            specialPoint: "心之背俞穴",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "督俞", code: "BL16",
+        dacheng: {
+            location: "《大成》：六椎下两旁相去脊各一寸五分。",
+            needling: "灸三壮，禁针。",
+            mainIndication: "寒热心痛，腹痛雷鸣。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "膈俞", code: "BL17",
+        dacheng: {
+            location: "《大成》：七椎下两旁相去脊各一寸五分。",
+            needling: "针三分，留七呼，灸三壮。",
+            mainIndication: "咳逆呕吐，食不下，诸血症。",
+            specialPoint: "血会膈俞",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "肝俞", code: "BL18",
+        dacheng: {
+            location: "《大成》：九椎下两旁相去脊各一寸五分。",
+            needling: "针三分，留六呼，灸三壮。",
+            mainIndication: "肝中风，咳引两胁急痛，目上视。",
+            specialPoint: "肝之背俞穴",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "胆俞", code: "BL19",
+        dacheng: {
+            location: "《大成》：十椎下两旁相去脊各一寸五分。",
+            needling: "针五分，灸三壮。",
+            mainIndication: "腹胀口苦，咽痛干呕，食不下。",
+            specialPoint: "胆之背俞穴",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "脾俞", code: "BL20",
+        dacheng: {
+            location: "《大成》：十一椎下两旁相去脊各一寸五分。",
+            needling: "针三分，留七呼，灸三壮。",
+            mainIndication: "腹胀引胸背痛，食饮倍多，黄疸。",
+            specialPoint: "脾之背俞穴",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "胃俞", code: "BL21",
+        dacheng: {
+            location: "《大成》：十二椎下两旁相去脊各一寸五分。",
+            needling: "针三分，留七呼，灸三壮。",
+            mainIndication: "霍乱，胃寒腹胀，食多赢瘦。",
+            specialPoint: "胃之背俞穴",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "三焦俞", code: "BL22",
+        dacheng: {
+            location: "《大成》：十三椎下两旁相去脊各一寸五分。",
+            needling: "针五分，留七呼，灸三壮。",
+            mainIndication: "脏腑积聚，水谷不化，腹痛。",
+            specialPoint: "三焦之背俞穴",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "肾俞", code: "BL23",
+        dacheng: {
+            location: "《大成》：十四椎下两旁相去脊各一寸五分。",
+            needling: "针三分，留七呼，灸三壮。",
+            mainIndication: "肾虚水脏久冷，小便频数，腰痛。",
+            specialPoint: "肾之背俞穴",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "气海俞", code: "BL24",
+        dacheng: {
+            location: "《大成》：十五椎下两旁相去脊各一寸五分。",
+            needling: "针三分，灸五壮。",
+            mainIndication: "腰痛，痔漏。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "大肠俞", code: "BL25",
+        dacheng: {
+            location: "《大成》：十六椎下两旁相去脊各一寸五分。",
+            needling: "针三分，留六呼，灸三壮。",
+            mainIndication: "脊强不得俯仰，肠鸣腹胀，绕脐痛。",
+            specialPoint: "大肠之背俞穴",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "关元俞", code: "BL26",
+        dacheng: {
+            location: "《大成》：十七椎下两旁相去脊各一寸五分。",
+            needling: "针三分，灸三壮。",
+            mainIndication: "风劳腰痛，泄利，虚胀。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "小肠俞", code: "BL27",
+        dacheng: {
+            location: "《大成》：十八椎下两旁相去脊各一寸五分。",
+            needling: "针三分，留六呼，灸三壮。",
+            mainIndication: "小便赤涩，淋沥，小腹胀满。",
+            specialPoint: "小肠之背俞穴",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "膀胱俞", code: "BL28",
+        dacheng: {
+            location: "《大成》：十九椎下两旁相去脊各一寸五分。",
+            needling: "针三分，留六呼，灸三壮。",
+            mainIndication: "小便赤涩，遗尿，阴生疮，腰脊痛。",
+            specialPoint: "膀胱之背俞穴",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "中膂俞", code: "BL29",
+        dacheng: {
+            location: "《大成》：二十椎下两旁相去脊各一寸五分。",
+            needling: "针三分，留六呼，灸三壮。",
+            mainIndication: "肾虚消渴，腰脊强痛，肠冷赤白痢。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "白环俞", code: "BL30",
+        dacheng: {
+            location: "《大成》：二十一椎下两旁相去脊各一寸五分。",
+            needling: "针五分，灸三壮。",
+            mainIndication: "腰脊痛，脚膝不遂，大小便不利。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "上髎", code: "BL31",
+        dacheng: {
+            location: "《大成》：腰骶骨下第一空，侠脊陷中。",
+            needling: "针三分，灸七壮。",
+            mainIndication: "大小便不利，呕逆，腰膝冷痛。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "次髎", code: "BL32",
+        dacheng: {
+            location: "《大成》：第二空侠脊陷中。",
+            needling: "针三分，灸七壮。",
+            mainIndication: "腰痛不得转摇，小便赤淋，心下坚胀。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "中髎", code: "BL33",
+        dacheng: {
+            location: "《大成》：第三空侠脊陷中。",
+            needling: "针二分，留十呼，灸三壮。",
+            mainIndication: "月事少，大便难，小便淋沥。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "下髎", code: "BL34",
+        dacheng: {
+            location: "《大成》：第四空侠脊陷中。",
+            needling: "针二分，留十呼，灸三壮。",
+            mainIndication: "腰痛不得转侧，肠鸣注泄，小便不利。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "会阳", code: "BL35",
+        dacheng: {
+            location: "《大成》：阴尾尻骨两旁。",
+            needling: "针八分，灸五壮。",
+            mainIndication: "腹寒热气，肠癖下血，久痔。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "承扶", code: "BL36",
+        dacheng: {
+            location: "《大成》：尻臀下阴股上纹中。",
+            needling: "针七分，留五呼，灸三壮。",
+            mainIndication: "腰脊相引如解，久痔臀肿，大便难。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "殷门", code: "BL37",
+        dacheng: {
+            location: "《大成》：承扶下六寸。",
+            needling: "针七分，留五呼，灸三壮。",
+            mainIndication: "腰脊不可俯仰，股外肿。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "浮郄", code: "BL38",
+        dacheng: {
+            location: "《大成》：委阳上一寸，屈膝得之。",
+            needling: "针五分，灸三壮。",
+            mainIndication: "小肠热，大肠结，股外筋急。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "委阳", code: "BL39",
+        dacheng: {
+            location: "《大成》：承扶下六寸，屈伸取之。",
+            needling: "针七分，留五呼，灸三壮。",
+            mainIndication: "腋下肿痛，小便淋沥，筋急身热。",
+            specialPoint: "三焦下合穴",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "委中", code: "BL40",
+        dacheng: {
+            location: "《大成》：腘中央约纹动脉陷中。",
+            needling: "针五分，留七呼，灸三壮。",
+            mainIndication: "膝痛及拇指，腰侠脊沉沉然，半身不遂。",
+            specialPoint: "膀胱脉所入为合土",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "附分", code: "BL41",
+        dacheng: {
+            location: "《大成》：第二椎下，附项内廉，两旁相去脊各三寸。",
+            needling: "针三分，灸五壮。",
+            mainIndication: "肘臂不仁，肩背拘急，风冷客于腠理。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "魄户", code: "BL42",
+        dacheng: {
+            location: "《大成》：三椎下两旁相去脊各三寸。",
+            needling: "针五分，灸五壮。",
+            mainIndication: "背膊痛，咳逆上气，虚劳肺痿。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "膏肓俞", code: "BL43",
+        dacheng: {
+            location: "《大成》：四椎下近五椎上，两旁相去脊各三寸。",
+            needling: "针三分，灸百壮至五百壮。",
+            mainIndication: "羸瘦虚损，梦中失精，上气咳逆。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "神堂", code: "BL44",
+        dacheng: {
+            location: "《大成》：五椎下两旁相去脊各三寸。",
+            needling: "针三分，灸五壮。",
+            mainIndication: "腰背脊强急，不可俯仰，洒淅寒热。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "譩譆", code: "BL45",
+        dacheng: {
+            location: "《大成》：肩膊内廉，六椎下两旁相去脊各三寸。",
+            needling: "针六分，留七呼，灸五壮。",
+            mainIndication: "温疟，肩背痛，目眩，鼻衄。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "膈关", code: "BL46",
+        dacheng: {
+            location: "《大成》：七椎下两旁相去脊各三寸陷中。",
+            needling: "针五分，灸五壮。",
+            mainIndication: "背痛恶寒，脊强俯仰难，食饮不下。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "魂门", code: "BL47",
+        dacheng: {
+            location: "《大成》：九椎下两旁相去脊各三寸陷中。",
+            needling: "针五分，灸五壮。",
+            mainIndication: "尸厥走疰，胸背连心痛，食不下。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "阳纲", code: "BL48",
+        dacheng: {
+            location: "《大成》：十椎下两旁相去脊各三寸陷中。",
+            needling: "针五分，灸五壮。",
+            mainIndication: "肠鸣腹痛，饮食不下，小便赤涩。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "意舍", code: "BL49",
+        dacheng: {
+            location: "《大成》：十一椎下两旁相去脊各三寸陷中。",
+            needling: "针五分，灸五壮。",
+            mainIndication: "腹满虚胀，大便滑泄，小便赤黄。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "胃仓", code: "BL50",
+        dacheng: {
+            location: "《大成》：十二椎下两旁相去脊各三寸。",
+            needling: "针五分，灸五壮。",
+            mainIndication: "腹满虚胀，水肿，食不下。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "肓门", code: "BL51",
+        dacheng: {
+            location: "《大成》：十三椎下两旁相去脊各三寸。",
+            needling: "针五分，灸三十壮。",
+            mainIndication: "心下痛，大便坚，妇人乳疾。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "志室", code: "BL52",
+        dacheng: {
+            location: "《大成》：十四椎下两旁相去脊各三寸陷中。",
+            needling: "针五分，灸三壮。",
+            mainIndication: "阴肿阴痛，失精，小便淋沥。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "胞肓", code: "BL53",
+        dacheng: {
+            location: "《大成》：十九椎下两旁相去脊各三寸陷中。",
+            needling: "针五分，灸五壮。",
+            mainIndication: "腰脊痛，恶寒，小腹坚急，癃闭。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "秩边", code: "BL54",
+        dacheng: {
+            location: "《大成》：二十椎下两旁相去脊各三寸陷中。",
+            needling: "针五分，灸三壮。",
+            mainIndication: "五痔发肿，小便赤，腰痛。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "合阳", code: "BL55",
+        dacheng: {
+            location: "《大成》：膝腘约纹下三寸。",
+            needling: "针六分，灸五壮。",
+            mainIndication: "腰脊强引腹痛，阴股热，膝䯒酸。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "承筋", code: "BL56",
+        dacheng: {
+            location: "《大成》：腨肠中央陷中。",
+            needling: "灸三壮，禁针。",
+            mainIndication: "腰背拘急，大便秘，腋肿，痔疮。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "承山", code: "BL57",
+        dacheng: {
+            location: "《大成》：锐腨肠下分肉间陷中。",
+            needling: "针七分，灸五壮。",
+            mainIndication: "大便不通，转筋，痔肿，战栗不能立。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "飞扬", code: "BL58",
+        dacheng: {
+            location: "《大成》：外踝骨上七寸。",
+            needling: "针三分，灸三壮。",
+            mainIndication: "痔肿痛，体重起坐不能，历节风。",
+            specialPoint: "足太阳之络穴，别走少阴",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "跗阳", code: "BL59",
+        dacheng: {
+            location: "《大成》：外踝上三寸筋骨间。",
+            needling: "针五分，留七呼，灸三壮。",
+            mainIndication: "霍乱转筋，腰痛不能久立，髀枢股䯒痛。",
+            specialPoint: "阳蹻脉之郄穴",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "昆仑", code: "BL60",
+        dacheng: {
+            location: "《大成》：足外踝后五分跟骨上陷中细脉动应手。",
+            needling: "针三分，留七呼，灸三壮。",
+            mainIndication: "腰尻脚气，足䯒肿不得履地，鼽衄。",
+            specialPoint: "膀胱脉所行为经火",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "仆参", code: "BL61",
+        dacheng: {
+            location: "《大成》：足跟骨下陷中，拱足取之。",
+            needling: "针三分，留七呼，灸三壮。",
+            mainIndication: "足痿失履不收，足跟痛，吐逆。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "申脉", code: "BL62",
+        dacheng: {
+            location: "《大成》：外踝下五分陷中，容爪甲白肉际。",
+            needling: "针三分，留七呼，灸三壮。",
+            mainIndication: "风眩，腰脚痛，胻酸不能久立。",
+            specialPoint: "阳蹻脉所生",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "金门", code: "BL63",
+        dacheng: {
+            location: "《大成》：外踝下少后，丘墟后，申脉前。",
+            needling: "针一分，灸三壮。",
+            mainIndication: "霍乱转筋，尸厥，癫痫，小儿发痫。",
+            specialPoint: "膀胱之郄穴，阳维所别属",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "京骨", code: "BL64",
+        dacheng: {
+            location: "《大成》：足外侧大骨下，赤白肉际陷中。",
+            needling: "针三分，留七呼，灸三壮。",
+            mainIndication: "头痛如破，腰痛不可屈伸，身后痛。",
+            specialPoint: "膀胱脉所过为原",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "束骨", code: "BL65",
+        dacheng: {
+            location: "《大成》：足小指外侧本节后陷中。",
+            needling: "针三分，留三呼，灸三壮。",
+            mainIndication: "腰脊痛如折，髀不可曲，腘如结。",
+            specialPoint: "膀胱脉所注为俞木",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "足通谷", code: "BL66",
+        dacheng: {
+            location: "《大成》：足小指外侧本节前陷中。",
+            needling: "针二分，留五呼，灸三壮。",
+            mainIndication: "头重目眩，项痛，鼽衄。",
+            specialPoint: "膀胱脉所溜为荥水",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "至阴", code: "BL67",
+        dacheng: {
+            location: "《大成》：足小指外侧，去爪甲角如韭叶。",
+            needling: "针一分，留五呼，灸三壮。",
+            mainIndication: "目生翳，鼻塞头重，小便不利。",
+            specialPoint: "膀胱脉所出为井金",
+            volume: "卷六·考正穴法"
+        }
+    }
+],
             "足少阴肾经": [
                 { name: "太溪", code: "KI3", category: "输穴/原穴", location: "足内踝后方", function: "滋阴益肾，壮阳强腰", element: "土", special: "输穴属土/原穴" },
                 { name: "涌泉", code: "KI1", category: "井穴", location: "足底前部", function: "开窍醒神，滋肾清热", element: "木", special: "井穴属木" }
