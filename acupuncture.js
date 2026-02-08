@@ -809,14 +809,285 @@ TCMSystem.acupuncture = {
         }
     }
 ],
-            "手少阴心经": [
-                { name: "神门", code: "HT7", category: "输穴/原穴", location: "腕掌侧横纹尺侧端", function: "宁心安神，清心调气", element: "土", special: "输穴属土/原穴" },
-                { name: "少海", code: "HT3", category: "合穴", location: "肘横纹内侧端", function: "宁心安神，通络止痛", element: "水", special: "合穴属水" }
-            ],
-            "手太阳小肠经": [
-                { name: "后溪", code: "SI3", category: "输穴", location: "手掌尺侧", function: "清利头目，通督止痛", element: "木", special: "输穴属木/八脉交会穴" },
-                { name: "腕骨", code: "SI4", category: "原穴", location: "手掌尺侧", function: "清热利湿，舒筋活络", element: null, special: "原穴" }
-            ],
+// ====== 继续录入《针灸大成》卷六穴位数据 ======
+// 5. 手少阴心经（《大成》：左右凡一十八穴）- 完整录入
+"手少阴心经": [
+    {
+        name: "极泉", code: "HT1",
+        dacheng: {
+            location: "《大成》：臂内腋下筋间，动脉入胸。",
+            needling: "针三分，灸七壮。",
+            mainIndication: "心痛，干呕，四肢不收。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "青灵", code: "HT2",
+        dacheng: {
+            location: "《大成》：肘上三寸，伸肘举臂取之。",
+            needling: "灸七壮。",
+            mainIndication: "目黄头痛，振寒胁痛。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "少海", code: "HT3",
+        dacheng: {
+            location: "《大成》：肘内廉节后，大骨外去肘端五分。",
+            needling: "针三分，灸三壮。",
+            mainIndication: "寒热齿痛，目眩发狂，呕吐涎沫。",
+            specialPoint: "心脉所入为合水",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "灵道", code: "HT4",
+        dacheng: {
+            location: "《大成》：掌后一寸五分。",
+            needling: "针三分，灸三壮。",
+            mainIndication: "心痛，悲恐，干呕，瘛疭。",
+            specialPoint: "心脉所行为经金",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "通里", code: "HT5",
+        dacheng: {
+            location: "《大成》：腕后一寸陷中。",
+            needling: "针三分，灸三壮。",
+            mainIndication: "目眩头痛，热病先不乐，数日懊憹。",
+            specialPoint: "心之络穴，别走太阳",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "阴郄", code: "HT6",
+        dacheng: {
+            location: "《大成》：掌后脉中，去腕五分。",
+            needling: "针三分，灸七壮。",
+            mainIndication: "鼻衄吐血，洒淅畏寒，厥逆气惊。",
+            specialPoint: "心之郄穴",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "神门", code: "HT7",
+        dacheng: {
+            location: "《大成》：掌后锐骨端陷中。",
+            needling: "针三分，留七呼，灸七壮。",
+            mainIndication: "疟心烦，欲得冷饮，恶寒则欲处温中。",
+            specialPoint: "心脉所注为俞土，心之原穴",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "少府", code: "HT8",
+        dacheng: {
+            location: "《大成》：手小指本节后骨缝陷中。",
+            needling: "针二分，灸七壮。",
+            mainIndication: "烦满少气，悲恐畏人，掌中热。",
+            specialPoint: "心脉所溜为荥火",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "少冲", code: "HT9",
+        dacheng: {
+            location: "《大成》：手小指内侧，去爪甲角如韭叶。",
+            needling: "针一分，留一呼，灸一壮。",
+            mainIndication: "热病烦满，上气心痛，痰冷少气。",
+            specialPoint: "心脉所出为井木",
+            volume: "卷六·考正穴法"
+        }
+    }
+],
+
+// 6. 手太阳小肠经（《大成》：左右凡三十八穴）- 完整录入
+"手太阳小肠经": [
+    {
+        name: "少泽", code: "SI1",
+        dacheng: {
+            location: "《大成》：手小指端外侧，去爪甲角下一分陷中。",
+            needling: "针一分，留二呼，灸一壮。",
+            mainIndication: "疟寒热，汗不出，喉痹，舌强。",
+            specialPoint: "小肠脉所出为井金",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "前谷", code: "SI2",
+        dacheng: {
+            location: "《大成》：手小指外侧本节前陷中。",
+            needling: "针一分，留三呼，灸一壮。",
+            mainIndication: "热病汗不出，痎疟，咳嗽，衄血。",
+            specialPoint: "小肠脉所溜为荥水",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "后溪", code: "SI3",
+        dacheng: {
+            location: "《大成》：手小指外侧本节后陷中。",
+            needling: "针一分，留二呼，灸一壮。",
+            mainIndication: "疟寒热，目赤生翳，鼻衄耳聋。",
+            specialPoint: "小肠脉所注为俞木，八脉交会穴通督脉",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "腕骨", code: "SI4",
+        dacheng: {
+            location: "《大成》：手外侧腕前起骨下陷中。",
+            needling: "针二分，留三呼，灸三壮。",
+            mainIndication: "热病汗不出，胁下痛不得息。",
+            specialPoint: "小肠脉所过为原",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "阳谷", code: "SI5",
+        dacheng: {
+            location: "《大成》：手外侧腕中，锐骨下陷中。",
+            needling: "针二分，留二呼，灸三壮。",
+            mainIndication: "癫疾狂走，热病汗不出，胁痛。",
+            specialPoint: "小肠脉所行为经火",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "养老", code: "SI6",
+        dacheng: {
+            location: "《大成》：手踝骨前上，一云腕骨后一寸陷中。",
+            needling: "针三分，灸三壮。",
+            mainIndication: "肩臂酸疼，肩欲折，臂如拔。",
+            specialPoint: "小肠之郄穴",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "支正", code: "SI7",
+        dacheng: {
+            location: "《大成》：腕后五寸。",
+            needling: "针三分，灸三壮。",
+            mainIndication: "风虚惊恐悲愁，癫狂，五劳。",
+            specialPoint: "小肠之络穴，别走少阴",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "小海", code: "SI8",
+        dacheng: {
+            location: "《大成》：肘外大骨外，去肘端五分陷中。",
+            needling: "针二分，留七呼，灸五壮。",
+            mainIndication: "颈项痛不得回顾，额肿，疡肿。",
+            specialPoint: "小肠脉所入为合土",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "肩贞", code: "SI9",
+        dacheng: {
+            location: "《大成》：肩曲胛下，两骨解间，肩髃后陷中。",
+            needling: "针五分，灸三壮。",
+            mainIndication: "伤寒寒热，耳鸣耳聋。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "臑俞", code: "SI10",
+        dacheng: {
+            location: "《大成》：侠肩髎后大骨下胛上廉陷中。",
+            needling: "针八分，灸三壮。",
+            mainIndication: "臂酸无力，肩痛引胛。",
+            specialPoint: "手足太阳、阳维、蹻脉之会",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "天宗", code: "SI11",
+        dacheng: {
+            location: "《大成》：秉风后大骨下陷中。",
+            needling: "针五分，留六呼，灸三壮。",
+            mainIndication: "肩臂酸疼，肘外后廉痛，颊颔肿。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "秉风", code: "SI12",
+        dacheng: {
+            location: "《大成》：天髎外肩上小髃后，举臂有空。",
+            needling: "针五分，灸五壮。",
+            mainIndication: "肩痛不能举。",
+            specialPoint: "手阳明、太阳、手足少阳之会",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "曲垣", code: "SI13",
+        dacheng: {
+            location: "《大成》：肩中央曲胛陷中，按之应手痛。",
+            needling: "针五分，灸三壮。",
+            mainIndication: "肩痹热痛，气注肩胛拘急痛闷。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "肩外俞", code: "SI14",
+        dacheng: {
+            location: "《大成》：肩胛上廉，去脊三寸陷中。",
+            needling: "针六分，灸三壮。",
+            mainIndication: "肩胛痛，周痹寒至肘。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "肩中俞", code: "SI15",
+        dacheng: {
+            location: "《大成》：肩胛内廉，去脊二寸陷中。",
+            needling: "针三分，留七呼，灸三壮。",
+            mainIndication: "咳嗽上气，唾血寒热，目视不明。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "天窗", code: "SI16",
+        dacheng: {
+            location: "《大成》：颈大筋前，曲颊下，扶突后动脉应手陷中。",
+            needling: "针三分，灸三壮。",
+            mainIndication: "痔瘘颈痛，肩胛引项不得回顾。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "天容", code: "SI17",
+        dacheng: {
+            location: "《大成》：耳下曲颊后。",
+            needling: "针一寸，灸三壮。",
+            mainIndication: "喉痹寒热，咽中如梗，瘿颈。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "颧髎", code: "SI18",
+        dacheng: {
+            location: "《大成》：面頄骨下廉锐骨端陷中。",
+            needling: "针二分，禁灸。",
+            mainIndication: "口喎面赤目黄，眼瞤动不止。",
+            specialPoint: "手少阳、太阳之会",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "听宫", code: "SI19",
+        dacheng: {
+            location: "《大成》：耳中珠子大如赤小豆。",
+            needling: "针三分，灸三壮。",
+            mainIndication: "失音，癫疾，心腹满，聤耳。",
+            specialPoint: "手足少阳、手太阳之会",
+            volume: "卷六·考正穴法"
+        }
+    }
+],
             "足太阳膀胱经": [
                 { name: "委中", code: "BL40", category: "合穴", location: "腘横纹中点", function: "舒筋活络，泄热清暑", element: "土", special: "合穴属土" },
                 { name: "肾俞", code: "BL23", category: "背俞穴", location: "腰部第2腰椎下", function: "益肾助阳，强腰利水", element: null, special: "肾背俞穴" },
