@@ -729,30 +729,6 @@
                 left: 5%;
             }
         }
-        
-        /* 打印样式 */
-        @media print {
-            .meridian-flow,
-            .yin-yang-container,
-            .tcm-message,
-            .tcm-button {
-                display: none !important;
-            }
-            
-            .game-container {
-                box-shadow: none;
-                border: 1px solid #ccc;
-                margin: 0;
-                width: 100%;
-            }
-            
-            .tcm-card,
-            .point-card,
-            .diagnosis-result {
-                break-inside: avoid;
-                page-break-inside: avoid;
-            }
-        }
     </style>
 </head>
 <body>
@@ -1205,1555 +1181,1204 @@
             </div>
         </div>
     </div>
-
-    <!-- 由于代码长度限制，我将JavaScript部分放在单独的部分 -->
-<!-- 将下面的JavaScript代码放在</body>标签之前 -->
-
 <script>
-    // ====== 中医传承系统核心 ======
-    const TCMSystem = {
-        // ====== 系统状态 ======
-        currentState: {
-            activeTab: 'home',
-            activeSubTab: 'case',
-            userProgress: {
-                shanghan: { cases: 0, correct: 0, accuracy: 0 },
-                acupuncture: { cases: 0, correct: 0, accuracy: 0 },
-                formulasMastered: [],
-                pointsMastered: [],
-                achievements: []
-            },
-            currentCase: null,
-            currentDiagnosis: null,
-            selectedPoints: [],
-            timeData: null
+// ====== 中医传承系统核心 ======
+const TCMSystem = {
+    // ====== 系统状态 ======
+    currentState: {
+        activeTab: 'home',
+        activeSubTab: 'case',
+        userProgress: {
+            shanghan: { cases: 0, correct: 0, accuracy: 0 },
+            acupuncture: { cases: 0, correct: 0, accuracy: 0 },
+            formulasMastered: [],
+            pointsMastered: [],
+            achievements: []
         },
+        currentCase: null,
+        currentDiagnosis: null,
+        selectedPoints: [],
+        timeData: null
+    },
+    
+    // ====== 初始化系统 ======
+    init() {
+        this.loadProgress();
+        this.initTimeData();
+        this.initEventListeners();
+        this.updateProgressDisplay();
+        this.showMessage('中医传承系统已启动', 'info');
         
-        // ====== 初始化系统 ======
-        init() {
-            this.loadProgress();
-            this.initTimeData();
-            this.initEventListeners();
-            this.updateProgressDisplay();
-            this.showMessage('中医传承系统已启动', 'info');
-            
-            // 初始化各子系统
-            this.shanghan.init();
-            this.acupuncture.init();
-        },
+        // 初始化各子系统
+        this.shanghan.init();
+        this.acupuncture.init();
+        this.integration.init();
+        this.learning.init();
+        this.progress.init();
+    },
+    
+    // ====== 标签页管理 ======
+    initEventListeners() {
+        // 主标签页切换
+        document.querySelectorAll('.main-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.dataset.tab;
+                this.switchMainTab(tabId);
+            });
+        });
         
-        // ====== 标签页管理 ======
-        initEventListeners() {
-            // 主标签页切换
-            document.querySelectorAll('.main-tab').forEach(tab => {
-                tab.addEventListener('click', () => {
-                    const tabId = tab.dataset.tab;
-                    this.switchMainTab(tabId);
-                });
+        // 子标签页切换
+        document.querySelectorAll('.sub-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const subtabId = tab.dataset.subtab;
+                const parentTab = tab.closest('.sub-tabs').id.replace('-subtabs', '');
+                this.switchSubTab(parentTab, subtabId);
             });
-            
-            // 子标签页切换
-            document.querySelectorAll('.sub-tab').forEach(tab => {
-                tab.addEventListener('click', () => {
-                    const subtabId = tab.dataset.subtab;
-                    const parentTab = tab.closest('.sub-tabs').id.replace('-subtabs', '');
-                    this.switchSubTab(parentTab, subtabId);
-                });
-            });
-        },
+        });
+    },
+    
+    switchMainTab(tabId) {
+        // 更新主标签
+        document.querySelectorAll('.main-tab').forEach(t => {
+            t.classList.remove('active');
+        });
+        document.querySelector(`.main-tab[data-tab="${tabId}"]`).classList.add('active');
         
-        switchMainTab(tabId) {
-            // 更新主标签
-            document.querySelectorAll('.main-tab').forEach(t => {
-                t.classList.remove('active');
-            });
-            document.querySelector(`.main-tab[data-tab="${tabId}"]`).classList.add('active');
-            
-            // 更新内容
-            document.querySelectorAll('.tab-content').forEach(content => {
+        // 更新内容
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+        });
+        document.getElementById(`${tabId}-tab`).classList.add('active');
+        
+        // 更新子标签显示
+        document.querySelectorAll('.sub-tabs').forEach(sub => {
+            sub.classList.remove('active');
+        });
+        
+        if (tabId === 'shanghan') {
+            document.getElementById('shanghan-subtabs').classList.add('active');
+            this.switchSubTab('shanghan', 'case');
+        } else if (tabId === 'acupuncture') {
+            document.getElementById('acupuncture-subtabs').classList.add('active');
+            this.switchSubTab('acupuncture', 'meridian');
+        }
+        
+        this.currentState.activeTab = tabId;
+    },
+    
+    switchSubTab(parentTab, subtabId) {
+        // 更新子标签
+        const subtabs = document.getElementById(`${parentTab}-subtabs`);
+        subtabs.querySelectorAll('.sub-tab').forEach(t => {
+            t.classList.remove('active');
+        });
+        subtabs.querySelector(`.sub-tab[data-subtab="${subtabId}"]`).classList.add('active');
+        
+        // 更新内容
+        const contentId = `${parentTab}-${subtabId}`;
+        const allContents = subtabs.parentElement.nextElementSibling.querySelectorAll('.tab-content');
+        allContents.forEach(content => {
+            if (content.id.startsWith(parentTab)) {
                 content.classList.remove('active');
-            });
-            document.getElementById(`${tabId}-tab`).classList.add('active');
-            
-            // 更新子标签显示
-            document.querySelectorAll('.sub-tabs').forEach(sub => {
-                sub.classList.remove('active');
-            });
-            
-            if (tabId === 'shanghan') {
-                document.getElementById('shanghan-subtabs').classList.add('active');
-                this.switchSubTab('shanghan', 'case');
-            } else if (tabId === 'acupuncture') {
-                document.getElementById('acupuncture-subtabs').classList.add('active');
-                this.switchSubTab('acupuncture', 'meridian');
             }
-            
-            this.currentState.activeTab = tabId;
-        },
+        });
         
-        switchSubTab(parentTab, subtabId) {
-            // 更新子标签
-            const subtabs = document.getElementById(`${parentTab}-subtabs`);
-            subtabs.querySelectorAll('.sub-tab').forEach(t => {
-                t.classList.remove('active');
-            });
-            subtabs.querySelector(`.sub-tab[data-subtab="${subtabId}"]`).classList.add('active');
+        const targetContent = document.getElementById(contentId);
+        if (targetContent) {
+            targetContent.classList.add('active');
+            this.currentState.activeSubTab = subtabId;
             
-            // 更新内容
-            const contentId = `${parentTab}-${subtabId}`;
-            const allContents = subtabs.parentElement.nextElementSibling.querySelectorAll('.tab-content');
-            allContents.forEach(content => {
-                if (content.id.startsWith(parentTab)) {
-                    content.classList.remove('active');
-                }
-            });
-            
-            const targetContent = document.getElementById(contentId);
-            if (targetContent) {
-                targetContent.classList.add('active');
-                this.currentState.activeSubTab = subtabId;
+            // 如果切换到医案辨证，加载一个医案
+            if (contentId === 'shanghan-case' && this.shanghan) {
+                this.shanghan.loadRandomCase();
             }
-        },
+        }
+    },
+    
+    // ====== 时间数据 ======
+    initTimeData() {
+        const now = new Date();
+        this.currentState.timeData = {
+            year: now.getFullYear(),
+            month: now.getMonth() + 1,
+            day: now.getDate(),
+            hour: now.getHours(),
+            minute: now.getMinutes(),
+            second: now.getSeconds()
+        };
+    },
+    
+    // ====== 进度管理 ======
+    loadProgress() {
+        const saved = localStorage.getItem('tcm-system-progress');
+        if (saved) {
+            this.currentState.userProgress = JSON.parse(saved);
+        }
+    },
+    
+    saveProgress() {
+        localStorage.setItem('tcm-system-progress', JSON.stringify(this.currentState.userProgress));
+    },
+    
+    updateProgressDisplay() {
+        const shanghanAccuracy = this.currentState.userProgress.shanghan.accuracy || 0;
+        const acuAccuracy = this.currentState.userProgress.acupuncture.accuracy || 0;
         
-        // ====== 时间数据 ======
-        initTimeData() {
-            const now = new Date();
-            this.currentState.timeData = {
-                year: now.getFullYear(),
-                month: now.getMonth() + 1,
-                day: now.getDate(),
-                hour: now.getHours(),
-                minute: now.getMinutes(),
-                second: now.getSeconds()
-            };
-        },
+        document.getElementById('shanghan-progress').style.width = `${shanghanAccuracy}%`;
+        document.getElementById('shanghan-accuracy').textContent = `${shanghanAccuracy}%`;
         
-        // ====== 进度管理 ======
-        loadProgress() {
-            const saved = localStorage.getItem('tcm-system-progress');
-            if (saved) {
-                this.currentState.userProgress = JSON.parse(saved);
-            }
-        },
+        document.getElementById('acu-progress').style.width = `${acuAccuracy}%`;
+        document.getElementById('acu-accuracy').textContent = `${acuAccuracy}%`;
+    },
+    
+    // ====== 消息系统 ======
+    showMessage(text, type = 'info') {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'tcm-message';
+        messageDiv.textContent = text;
         
-        saveProgress() {
-            localStorage.setItem('tcm-system-progress', JSON.stringify(this.currentState.userProgress));
-        },
+        const colors = {
+            success: '#4CAF50',
+            warning: '#FF9800',
+            danger: '#F44336',
+            info: '#5D4037'
+        };
+        messageDiv.style.borderLeftColor = colors[type] || colors.info;
         
-        updateProgressDisplay() {
-            const shanghanAccuracy = this.currentState.userProgress.shanghan.accuracy || 0;
-            const acuAccuracy = this.currentState.userProgress.acupuncture.accuracy || 0;
-            
-            document.getElementById('shanghan-progress').style.width = `${shanghanAccuracy}%`;
-            document.getElementById('shanghan-accuracy').textContent = `${shanghanAccuracy}%`;
-            
-            document.getElementById('acu-progress').style.width = `${acuAccuracy}%`;
-            document.getElementById('acu-accuracy').textContent = `${acuAccuracy}%`;
-        },
+        document.body.appendChild(messageDiv);
         
-        // ====== 消息系统 ======
-        showMessage(text, type = 'info') {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'tcm-message';
-            messageDiv.textContent = text;
-            
-            const colors = {
-                success: '#4CAF50',
-                warning: '#FF9800',
-                danger: '#F44336',
-                info: '#5D4037'
-            };
-            messageDiv.style.borderLeftColor = colors[type] || colors.info;
-            
-            document.body.appendChild(messageDiv);
-            
+        setTimeout(() => {
+            messageDiv.style.opacity = '0';
             setTimeout(() => {
-                messageDiv.style.opacity = '0';
-                setTimeout(() => {
-                    document.body.removeChild(messageDiv);
-                }, 400);
-            }, 3000);
+                document.body.removeChild(messageDiv);
+            }, 400);
+        }, 3000);
+    },
+    
+    // ====== 通用工具方法 ======
+    getChannelClass(channel) {
+        const classMap = {
+            '太阳': 'taiyang',
+            '阳明': 'yangming',
+            '少阳': 'shaoyang',
+            '太阴': 'taiyin',
+            '少阴': 'shaoyin',
+            '厥阴': 'jueyin'
+        };
+        return classMap[channel] || '';
+    },
+    
+    // ====== 综合案例系统 ======
+    startIntegratedCase() {
+        this.switchMainTab('integration');
+        this.showMessage('开始综合治疗案例', 'success');
+    },
+    
+    applyIntegratedTreatment() {
+        this.showMessage('综合治疗方案已应用', 'success');
+    },
+    
+    startDailyChallenge() {
+        this.showMessage('今日挑战功能开发中', 'info');
+    }
+};
+</script>    
+<script>
+// ====== 《伤寒论》子系统 ======
+TCMSystem.shanghan = {
+    // 医案数据库
+    medicalCases: [
+        {
+            id: 1,
+            name: "太阳中风证",
+            channel: "太阳",
+            difficulty: "初级",
+            symptoms: ["发热", "汗出", "恶风", "头痛", "鼻鸣干呕"],
+            tongue: "舌淡红，苔薄白",
+            pulse: "脉浮缓",
+            correctDiagnosis: "太阳中风证",
+            correctTreatment: "桂枝汤",
+            pathogenesis: "风邪袭表，卫强营弱，腠理开泄",
+            formulaDetail: "桂枝三两，芍药三两，甘草二两（炙），生姜三两（切），大枣十二枚（擘）",
+            progression: "若误治或失治，可传阳明或少阳"
         },
-        
-        // ====== 通用工具方法 ======
-        getChannelClass(channel) {
-            const classMap = {
-                '太阳': 'taiyang',
-                '阳明': 'yangming',
-                '少阳': 'shaoyang',
-                '太阴': 'taiyin',
-                '少阴': 'shaoyin',
-                '厥阴': 'jueyin'
-            };
-            return classMap[channel] || '';
+        {
+            id: 2,
+            name: "太阳伤寒证",
+            channel: "太阳",
+            difficulty: "初级",
+            symptoms: ["发热", "恶寒", "无汗", "头痛", "身痛", "骨节疼痛"],
+            tongue: "舌淡红，苔薄白",
+            pulse: "脉浮紧",
+            correctDiagnosis: "太阳伤寒证",
+            correctTreatment: "麻黄汤",
+            pathogenesis: "寒邪束表，卫阳被遏，营阴郁滞",
+            formulaDetail: "麻黄三两（去节），桂枝二两（去皮），甘草一两（炙），杏仁七十个（去皮尖）",
+            progression: "可传阳明化热"
         },
-        
-        // ====== 综合案例系统 ======
-        startIntegratedCase() {
-            this.switchMainTab('integration');
-            this.showMessage('开始综合治疗案例', 'success');
+        {
+            id: 3,
+            name: "阳明经热证",
+            channel: "阳明",
+            difficulty: "中级",
+            symptoms: ["大热", "大汗", "大渴", "脉洪大", "面赤", "心烦"],
+            tongue: "舌红，苔黄燥",
+            pulse: "脉洪大",
+            correctDiagnosis: "阳明经热证",
+            correctTreatment: "白虎汤",
+            pathogenesis: "阳明气分热盛，津液耗伤",
+            formulaDetail: "石膏一斤（碎），知母六两，甘草二两（炙），粳米六合",
+            progression: "热盛伤津，可致腑实"
         },
-        
-        applyIntegratedTreatment() {
-            this.showMessage('综合治疗方案已应用', 'success');
+        {
+            id: 4,
+            name: "阳明腑实证",
+            channel: "阳明",
+            difficulty: "中级",
+            symptoms: ["潮热", "谵语", "腹满痛", "大便不通", "手足濈然汗出"],
+            tongue: "舌红，苔黄燥起刺",
+            pulse: "脉沉实",
+            correctDiagnosis: "阳明腑实证",
+            correctTreatment: "大承气汤",
+            pathogenesis: "燥屎内结，腑气不通，热实互结",
+            formulaDetail: "大黄四两（酒洗），厚朴半斤（炙，去皮），枳实五枚（炙），芒硝三合",
+            progression: "可致热厥、痉病"
         },
-        
-        startDailyChallenge() {
-            this.showMessage('今日挑战功能开发中', 'info');
+        {
+            id: 5,
+            name: "少阳证",
+            channel: "少阳",
+            difficulty: "中级",
+            symptoms: ["往来寒热", "胸胁苦满", "默默不欲饮食", "心烦喜呕", "口苦", "咽干", "目眩"],
+            tongue: "舌红，苔白或微黄",
+            pulse: "脉弦",
+            correctDiagnosis: "少阳证",
+            correctTreatment: "小柴胡汤",
+            pathogenesis: "邪犯少阳，枢机不利，胆火上炎",
+            formulaDetail: "柴胡半斤，黄芩三两，人参三两，半夏半升（洗），甘草三两（炙），生姜三两（切），大枣十二枚（擘）",
+            progression: "可兼太阳表证或阳明里证"
+        },
+        {
+            id: 6,
+            name: "太阴虚寒证",
+            channel: "太阴",
+            difficulty: "中级",
+            symptoms: ["腹满而吐", "食不下", "自利益甚", "时腹自痛", "口不渴"],
+            tongue: "舌淡胖，苔白滑",
+            pulse: "脉沉缓或弱",
+            correctDiagnosis: "太阴虚寒证",
+            correctTreatment: "理中汤",
+            pathogenesis: "脾阳虚弱，寒湿内盛，运化失职",
+            formulaDetail: "人参三两，干姜三两，甘草三两（炙），白术三两",
+            progression: "可传少阴，发展为全身虚寒"
+        },
+        {
+            id: 7,
+            name: "少阴寒化证",
+            channel: "少阴",
+            difficulty: "高级",
+            symptoms: ["畏寒", "肢厥", "下利清谷", "小便清长", "但欲寐"],
+            tongue: "舌淡，苔白滑",
+            pulse: "脉微细",
+            correctDiagnosis: "少阴寒化证",
+            correctTreatment: "四逆汤",
+            pathogenesis: "心肾阳虚，阴寒内盛",
+            formulaDetail: "附子一枚（生用，去皮，破八片），干姜一两半，甘草二两（炙）",
+            progression: "阳虚欲脱，可致亡阳"
+        },
+        {
+            id: 8,
+            name: "厥阴寒热错杂证",
+            channel: "厥阴",
+            difficulty: "高级",
+            symptoms: ["消渴", "气上撞心", "心中疼热", "饥而不欲食", "食则吐蛔"],
+            tongue: "舌红，苔黄白相间",
+            pulse: "脉弦或弦细",
+            correctDiagnosis: "厥阴寒热错杂证",
+            correctTreatment: "乌梅丸",
+            pathogenesis: "寒热错杂，阴阳之气不相顺接",
+            formulaDetail: "乌梅三百枚，细辛六两，干姜十两，黄连十六两，当归四两，附子六两（炮），蜀椒四两（出汗），桂枝六两（去皮），人参六两，黄柏六两",
+            progression: "厥热胜复，病情复杂多变"
         }
-    };
-
-    // ====== 《伤寒论》子系统 ======
-    TCMSystem.shanghan = {
-        // 医案数据库
-        medicalCases: [
-            {
-                id: 1,
-                name: "太阳中风证",
-                channel: "太阳",
-                difficulty: "初级",
-                symptoms: ["发热", "汗出", "恶风", "头痛", "鼻鸣干呕"],
-                tongue: "舌淡红，苔薄白",
-                pulse: "脉浮缓",
-                correctDiagnosis: "太阳中风证",
-                correctTreatment: "桂枝汤",
-                pathogenesis: "风邪袭表，卫强营弱，腠理开泄",
-                formulaDetail: "桂枝三两，芍药三两，甘草二两（炙），生姜三两（切），大枣十二枚（擘）",
-                progression: "若误治或失治，可传阳明或少阳"
-            },
-            // ... 其他医案（同前）
-        ],
+    ],
+    
+    init() {
+        this.loadRandomCase();
+    },
+    
+    loadRandomCase() {
+        const randomIndex = Math.floor(Math.random() * this.medicalCases.length);
+        TCMSystem.currentState.currentCase = this.medicalCases[randomIndex];
+        this.renderCurrentCase();
+    },
+    
+    renderCurrentCase() {
+        const caseInfo = TCMSystem.currentState.currentCase;
+        if (!caseInfo) return;
         
-        init() {
-            this.loadRandomCase();
-        },
+        const caseDiv = document.getElementById('current-case-info');
+        caseDiv.innerHTML = `
+            <div class="result-item">
+                <div><strong>医案名称：</strong>${caseInfo.name}</div>
+                <div><span class="channel-tag ${TCMSystem.getChannelClass(caseInfo.channel)}">
+                    ${caseInfo.channel}病
+                </span></div>
+                <div><strong>主要症状：</strong>${caseInfo.symptoms.join('、')}</div>
+                <div><strong>舌象：</strong>${caseInfo.tongue}</div>
+                <div><strong>脉象：</strong>${caseInfo.pulse}</div>
+                <div><strong>病机分析：</strong>${caseInfo.pathogenesis}</div>
+            </div>
+        `;
         
-        loadRandomCase() {
-            const randomIndex = Math.floor(Math.random() * this.medicalCases.length);
-            TCMSystem.currentState.currentCase = this.medicalCases[randomIndex];
-            this.renderCurrentCase();
-        },
+        // 渲染诊断选项
+        this.renderDiagnosisOptions();
+    },
+    
+    renderDiagnosisOptions() {
+        const optionsDiv = document.getElementById('case-options');
+        const channels = ["太阳中风证", "太阳伤寒证", "阳明经热证", "阳明腑实证", 
+                        "少阳证", "太阴虚寒证", "少阴寒化证", "厥阴寒热错杂证"];
         
-        renderCurrentCase() {
-            const caseInfo = TCMSystem.currentState.currentCase;
-            if (!caseInfo) return;
-            
-            const caseDiv = document.getElementById('current-case-info');
-            caseDiv.innerHTML = `
-                <div class="result-item">
-                    <div><strong>医案名称：</strong>${caseInfo.name}</div>
-                    <div><span class="channel-tag ${TCMSystem.getChannelClass(caseInfo.channel)}">
-                        ${caseInfo.channel}病
-                    </span></div>
-                    <div><strong>主要症状：</strong>${caseInfo.symptoms.join('、')}</div>
-                    <div><strong>舌象：</strong>${caseInfo.tongue}</div>
-                    <div><strong>脉象：</strong>${caseInfo.pulse}</div>
-                    <div><strong>病机分析：</strong>${caseInfo.pathogenesis}</div>
+        let html = '';
+        channels.forEach(channel => {
+            html += `
+                <div class="option-button" onclick="TCMSystem.shanghan.selectDiagnosis('${channel}')">
+                    ${channel}
                 </div>
             `;
-            
-            // 渲染诊断选项
-            this.renderDiagnosisOptions();
-        },
+        });
+        optionsDiv.innerHTML = html;
+    },
+    
+    selectDiagnosis(diagnosis) {
+        TCMSystem.currentState.currentDiagnosis = diagnosis;
         
-        renderDiagnosisOptions() {
-            const optionsDiv = document.getElementById('case-options');
-            const channels = ["太阳中风证", "太阳伤寒证", "阳明经热证", "阳明腑实证", 
-                            "少阳证", "太阴虚寒证", "少阴寒化证", "厥阴寒热错杂证"];
-            
-            let html = '';
-            channels.forEach(channel => {
-                html += `
-                    <div class="option-button" onclick="TCMSystem.shanghan.selectDiagnosis('${channel}')">
-                        ${channel}
-                    </div>
-                `;
-            });
-            optionsDiv.innerHTML = html;
-        },
+        // 更新UI
+        document.querySelectorAll('.option-button').forEach(btn => {
+            btn.classList.remove('selected');
+        });
+        event.target.classList.add('selected');
         
-        selectDiagnosis(diagnosis) {
-            TCMSystem.currentState.currentDiagnosis = diagnosis;
-            
-            // 更新UI
-            document.querySelectorAll('.option-button').forEach(btn => {
-                btn.classList.remove('selected');
-            });
-            event.target.classList.add('selected');
-            
-            document.getElementById('submit-diagnosis-btn').style.display = 'block';
-            TCMSystem.showMessage(`选择诊断：${diagnosis}`, 'info');
-        },
+        document.getElementById('submit-diagnosis-btn').style.display = 'block';
+        TCMSystem.showMessage(`选择诊断：${diagnosis}`, 'info');
+    },
+    
+    submitDiagnosis() {
+        if (!TCMSystem.currentState.currentDiagnosis) {
+            TCMSystem.showMessage('请先选择诊断', 'warning');
+            return;
+        }
         
-        submitDiagnosis() {
-            if (!TCMSystem.currentState.currentDiagnosis) {
-                TCMSystem.showMessage('请先选择诊断', 'warning');
-                return;
-            }
-            
-            const caseInfo = TCMSystem.currentState.currentCase;
-            const isCorrect = TCMSystem.currentState.currentDiagnosis === caseInfo.correctDiagnosis;
-            
-            const resultDiv = document.getElementById('shanghan-diagnosis-output');
-            resultDiv.innerHTML = `
-                <div>
-                    <strong>您的诊断：</strong>${TCMSystem.currentState.currentDiagnosis}<br>
-                    <strong>正确诊断：</strong>${caseInfo.correctDiagnosis}<br>
-                    <strong>结果：</strong>${isCorrect ? 
-                        '<span style="color:#4CAF50">✅ 诊断正确！</span>' : 
-                        '<span style="color:#F44336">❌ 诊断错误</span>'}<br>
-                    <strong>推荐经方：</strong>${caseInfo.correctTreatment}<br>
-                    <strong>方剂组成：</strong>${caseInfo.formulaDetail}
+        const caseInfo = TCMSystem.currentState.currentCase;
+        const isCorrect = TCMSystem.currentState.currentDiagnosis === caseInfo.correctDiagnosis;
+        
+        const resultDiv = document.getElementById('shanghan-diagnosis-output');
+        resultDiv.innerHTML = `
+            <div>
+                <strong>您的诊断：</strong>${TCMSystem.currentState.currentDiagnosis}<br>
+                <strong>正确诊断：</strong>${caseInfo.correctDiagnosis}<br>
+                <strong>结果：</strong>${isCorrect ? 
+                    '<span style="color:#4CAF50">✅ 诊断正确！</span>' : 
+                    '<span style="color:#F44336">❌ 诊断错误</span>'}<br>
+                <strong>推荐经方：</strong>${caseInfo.correctTreatment}<br>
+                <strong>方剂组成：</strong>${caseInfo.formulaDetail}
+            </div>
+        `;
+        
+        document.getElementById('shanghan-result').style.display = 'block';
+        document.getElementById('next-formula-btn').style.display = 'block';
+        
+        // 更新进度
+        if (isCorrect) {
+            TCMSystem.currentState.userProgress.shanghan.cases++;
+            TCMSystem.currentState.userProgress.shanghan.correct++;
+        } else {
+            TCMSystem.currentState.userProgress.shanghan.cases++;
+        }
+        
+        TCMSystem.currentState.userProgress.shanghan.accuracy = 
+            Math.round((TCMSystem.currentState.userProgress.shanghan.correct / 
+            TCMSystem.currentState.userProgress.shanghan.cases) * 100) || 0;
+        
+        TCMSystem.saveProgress();
+        TCMSystem.updateProgressDisplay();
+    },
+    
+    showFormulas() {
+        document.getElementById('formula-section').style.display = 'block';
+        this.renderFormulaOptions();
+    },
+    
+    renderFormulaOptions() {
+        const formulas = [
+            { name: "桂枝汤", indication: "太阳中风证" },
+            { name: "麻黄汤", indication: "太阳伤寒证" },
+            { name: "葛根汤", indication: "太阳温病证" },
+            { name: "白虎汤", indication: "阳明经热证" },
+            { name: "大承气汤", indication: "阳明腑实证" },
+            { name: "小柴胡汤", indication: "少阳证" },
+            { name: "理中汤", indication: "太阴虚寒证" },
+            { name: "四逆汤", indication: "少阴寒化证" },
+            { name: "乌梅丸", indication: "厥阴寒热错杂证" }
+        ];
+        
+        const formulaDiv = document.getElementById('formula-selection');
+        let html = '';
+        formulas.forEach(formula => {
+            const isCorrect = formula.indication === TCMSystem.currentState.currentCase.correctDiagnosis;
+            html += `
+                <div class="option-button" onclick="TCMSystem.shanghan.selectFormula('${formula.name}')"
+                     style="${isCorrect ? 'border-color:#4CAF50' : ''}">
+                    ${formula.name}<br>
+                    <small>主治：${formula.indication}</small>
+                    ${isCorrect ? '<br><small style="color:#4CAF50">✅ 对症</small>' : ''}
                 </div>
             `;
-            
-            document.getElementById('shanghan-result').style.display = 'block';
-            document.getElementById('next-formula-btn').style.display = 'block';
-            
-            // 更新进度
-            if (isCorrect) {
-                TCMSystem.currentState.userProgress.shanghan.cases++;
-                TCMSystem.currentState.userProgress.shanghan.correct++;
-            } else {
-                TCMSystem.currentState.userProgress.shanghan.cases++;
-            }
-            
-            TCMSystem.currentState.userProgress.shanghan.accuracy = 
-                Math.round((TCMSystem.currentState.userProgress.shanghan.correct / 
-                TCMSystem.currentState.userProgress.shanghan.cases) * 100) || 0;
-            
+        });
+        formulaDiv.innerHTML = html;
+    },
+    
+    selectFormula(formulaName) {
+        TCMSystem.currentState.selectedFormula = formulaName;
+        TCMSystem.showMessage(`选择经方：${formulaName}`, 'info');
+    },
+    
+    applyTreatment() {
+        if (!TCMSystem.currentState.selectedFormula) {
+            TCMSystem.showMessage('请先选择经方', 'warning');
+            return;
+        }
+        
+        const caseInfo = TCMSystem.currentState.currentCase;
+        const isCorrect = TCMSystem.currentState.selectedFormula === caseInfo.correctTreatment;
+        
+        const resultDiv = document.getElementById('formula-result-output');
+        resultDiv.innerHTML = `
+            <div>
+                <strong>应用经方：</strong>${TCMSystem.currentState.selectedFormula}<br>
+                <strong>正确经方：</strong>${caseInfo.correctTreatment}<br>
+                <strong>治疗效果：</strong>${isCorrect ? 
+                    '<span style="color:#4CAF50">✅ 治疗成功！患者康复</span>' : 
+                    '<span style="color:#F44336">❌ 治疗无效，病情加重</span>'}<br>
+                ${isCorrect ? '<strong>治疗分析：</strong>方证对应，效如桴鼓' : 
+                             '<strong>治疗分析：</strong>方证不符，延误病情'}
+            </div>
+        `;
+        
+        document.getElementById('formula-result').style.display = 'block';
+        
+        // 记录经方掌握
+        if (isCorrect && !TCMSystem.currentState.userProgress.formulasMastered.includes(caseInfo.correctTreatment)) {
+            TCMSystem.currentState.userProgress.formulasMastered.push(caseInfo.correctTreatment);
             TCMSystem.saveProgress();
-            TCMSystem.updateProgressDisplay();
-        },
-        
-        showFormulas() {
-            document.getElementById('formula-section').style.display = 'block';
-            this.renderFormulaOptions();
-        },
-        
-        renderFormulaOptions() {
-            const formulas = [
-                { name: "桂枝汤", indication: "太阳中风证" },
-                { name: "麻黄汤", indication: "太阳伤寒证" },
-                { name: "葛根汤", indication: "太阳温病证" },
-                { name: "白虎汤", indication: "阳明经热证" },
-                { name: "大承气汤", indication: "阳明腑实证" },
-                { name: "小柴胡汤", indication: "少阳证" },
-                { name: "理中汤", indication: "太阴虚寒证" },
-                { name: "四逆汤", indication: "少阴寒化证" },
-                { name: "乌梅丸", indication: "厥阴寒热错杂证" }
-            ];
-            
-            const formulaDiv = document.getElementById('formula-selection');
-            let html = '';
-            formulas.forEach(formula => {
-                const isCorrect = formula.indication === TCMSystem.currentState.currentCase.correctDiagnosis;
-                html += `
-                    <div class="option-button" onclick="TCMSystem.shanghan.selectFormula('${formula.name}')"
-                         style="${isCorrect ? 'border-color:#4CAF50' : ''}">
-                        ${formula.name}<br>
-                        <small>主治：${formula.indication}</small>
-                        ${isCorrect ? '<br><small style="color:#4CAF50">✅ 对症</small>' : ''}
-                    </div>
-                `;
-            });
-            formulaDiv.innerHTML = html;
-        },
-        
-        selectFormula(formulaName) {
-            TCMSystem.currentState.selectedFormula = formulaName;
-            TCMSystem.showMessage(`选择经方：${formulaName}`, 'info');
-        },
-        
-        applyTreatment() {
-            if (!TCMSystem.currentState.selectedFormula) {
-                TCMSystem.showMessage('请先选择经方', 'warning');
-                return;
-            }
-            
-            const caseInfo = TCMSystem.currentState.currentCase;
-            const isCorrect = TCMSystem.currentState.selectedFormula === caseInfo.correctTreatment;
-            
-            const resultDiv = document.getElementById('formula-result-output');
-            resultDiv.innerHTML = `
-                <div>
-                    <strong>应用经方：</strong>${TCMSystem.currentState.selectedFormula}<br>
-                    <strong>正确经方：</strong>${caseInfo.correctTreatment}<br>
-                    <strong>治疗效果：</strong>${isCorrect ? 
-                        '<span style="color:#4CAF50">✅ 治疗成功！患者康复</span>' : 
-                        '<span style="color:#F44336">❌ 治疗无效，病情加重</span>'}<br>
-                    ${isCorrect ? '<strong>治疗分析：</strong>方证对应，效如桴鼓' : 
-                                 '<strong>治疗分析：</strong>方证不符，延误病情'}
-                </div>
-            `;
-            
-            document.getElementById('formula-result').style.display = 'block';
-            
-            // 记录经方掌握
-            if (isCorrect && !TCMSystem.currentState.userProgress.formulasMastered.includes(caseInfo.correctTreatment)) {
-                TCMSystem.currentState.userProgress.formulasMastered.push(caseInfo.correctTreatment);
-                TCMSystem.saveProgress();
-            }
-            
-            TCMSystem.showMessage(isCorrect ? '治疗成功！' : '治疗失败', isCorrect ? 'success' : 'danger');
         }
-    };
-
-    // ====== 《针灸大成》子系统 ======
-    TCMSystem.acupuncture = {
-        // 穴位数据库
-        pointsDatabase: {
-            // 同前完整数据库
-        },
         
-        init() {
-            // 初始化针灸系统
-        },
-        
-        // 各种配穴法的实现...
-    };
-
-    // ====== 启动系统 ======
-    window.onload = function() {
-        TCMSystem.init();
-    };
-</script>
+        TCMSystem.showMessage(isCorrect ? '治疗成功！' : '治疗失败', isCorrect ? 'success' : 'danger');
+    }
+};
+</script>    
 <script>
 // ====== 《针灸大成》子系统 ======
 TCMSystem.acupuncture = {
-    // ====== 穴位数据库 ======
+    // ====== 十二正经完整穴位数据库 ======
     pointsDatabase: {
-        // 十四正经主要穴位
         meridians: {
-            "肺经": [
-                { name: "中府", code: "LU1", category: "募穴", location: "胸前壁外上方", function: "宣肺止咳，化痰平喘", special: "肺募穴" },
-                { name: "尺泽", code: "LU5", category: "合穴", location: "肘横纹中", function: "清肺泻热，止咳平喘", special: "合穴属水" },
-                { name: "列缺", code: "LU7", category: "络穴", location: "前臂桡侧", function: "宣肺解表，通调任脉", special: "络穴/八脉交会穴" },
-                { name: "太渊", code: "LU9", category: "输穴/原穴", location: "腕横纹桡侧", function: "补肺益气，止咳化痰", special: "输穴属土/原穴/脉会" },
-                { name: "少商", code: "LU11", category: "井穴", location: "拇指桡侧", function: "清肺利咽，开窍醒神", special: "井穴属木" }
+            "手太阴肺经": [
+                { name: "中府", code: "LU1", category: "募穴", location: "胸前壁外上方", function: "宣肺止咳，化痰平喘", element: null, special: "肺募穴" },
+                { name: "尺泽", code: "LU5", category: "合穴", location: "肘横纹中", function: "清肺泻热，止咳平喘", element: "水", special: "合穴属水" },
+                { name: "列缺", code: "LU7", category: "络穴", location: "前臂桡侧", function: "宣肺解表，通调任脉", element: null, special: "络穴/八脉交会穴" },
+                { name: "太渊", code: "LU9", category: "输穴/原穴", location: "腕横纹桡侧", function: "补肺益气，止咳化痰", element: "土", special: "输穴属土/原穴/脉会" },
+                { name: "鱼际", code: "LU10", category: "荥穴", location: "手掌大鱼际", function: "清肺泻热，利咽开音", element: "火", special: "荥穴属火" },
+                { name: "少商", code: "LU11", category: "井穴", location: "拇指桡侧", function: "清肺利咽，开窍醒神", element: "木", special: "井穴属木" }
             ],
-            "大肠经": [
-                { name: "合谷", code: "LI4", category: "原穴", location: "手背第1、2掌骨间", function: "疏风解表，通络止痛", special: "原穴" },
-                { name: "曲池", code: "LI11", category: "合穴", location: "肘横纹外侧端", function: "清热祛风，调和营卫", special: "合穴属土" },
-                { name: "肩髃", code: "LI15", category: "", location: "肩峰前下方", function: "疏风活络，通利关节", special: "" },
-                { name: "迎香", code: "LI20", category: "", location: "鼻翼外缘中点旁", function: "通利鼻窍，疏风解表", special: "" }
+            "手阳明大肠经": [
+                { name: "商阳", code: "LI1", category: "井穴", location: "食指桡侧", function: "清热解表，开窍苏厥", element: "金", special: "井穴属金" },
+                { name: "合谷", code: "LI4", category: "原穴", location: "手背第1、2掌骨间", function: "疏风解表，通络止痛", element: null, special: "原穴" },
+                { name: "阳溪", code: "LI5", category: "经穴", location: "腕背横纹桡侧", function: "清热散风，舒筋利节", element: "火", special: "经穴属火" },
+                { name: "手三里", code: "LI10", category: "", location: "前臂桡侧", function: "通经活络，清热明目", element: null, special: "" },
+                { name: "曲池", code: "LI11", category: "合穴", location: "肘横纹外侧端", function: "清热祛风，调和营卫", element: "土", special: "合穴属土" },
+                { name: "肩髃", code: "LI15", category: "", location: "肩峰前下方", function: "疏风活络，通利关节", element: null, special: "" },
+                { name: "迎香", code: "LI20", category: "", location: "鼻翼外缘中点旁", function: "通利鼻窍，疏风解表", element: null, special: "" }
             ],
-            "胃经": [
-                { name: "足三里", code: "ST36", category: "合穴", location: "小腿前外侧", function: "健脾和胃，扶正培元", special: "合穴属土/保健要穴" },
-                { name: "天枢", code: "ST25", category: "募穴", location: "腹部", function: "调理肠胃，理气止痛", special: "大肠募穴" },
-                { name: "梁丘", code: "ST34", category: "郄穴", location: "大腿前侧", function: "和胃止痛，通经活络", special: "郄穴" },
-                { name: "内庭", code: "ST44", category: "荥穴", location: "足背第2、3趾间", function: "清胃泻火，理气止痛", special: "荥穴属水" }
+            "足阳明胃经": [
+                { name: "承泣", code: "ST1", category: "", location: "目下眶缘", function: "散风清热，明目止痛", element: null, special: "" },
+                { name: "地仓", code: "ST4", category: "", location: "口角外侧", function: "疏风活络，止痉镇痛", element: null, special: "" },
+                { name: "颊车", code: "ST6", category: "", location: "下颌角前上方", function: "祛风清热，开关通络", element: null, special: "" },
+                { name: "天枢", code: "ST25", category: "募穴", location: "腹部脐旁", function: "调理肠胃，理气止痛", element: null, special: "大肠募穴" },
+                { name: "梁丘", code: "ST34", category: "郄穴", location: "大腿前侧", function: "和胃止痛，通经活络", element: null, special: "郄穴" },
+                { name: "足三里", code: "ST36", category: "合穴", location: "小腿前外侧", function: "健脾和胃，扶正培元", element: "土", special: "合穴属土/保健要穴" },
+                { name: "丰隆", code: "ST40", category: "络穴", location: "小腿前外侧", function: "化痰定喘，宁心安神", element: null, special: "络穴" },
+                { name: "解溪", code: "ST41", category: "经穴", location: "足背踝关节", function: "清胃化痰，镇静安神", element: "火", special: "经穴属火" },
+                { name: "内庭", code: "ST44", category: "荥穴", location: "足背第2、3趾间", function: "清胃泻火，理气止痛", element: "水", special: "荥穴属水" },
+                { name: "厉兑", code: "ST45", category: "井穴", location: "足第2趾外侧", function: "清热和胃，通经活络", element: "金", special: "井穴属金" }
             ],
-            "脾经": [
-                { name: "三阴交", code: "SP6", category: "", location: "小腿内侧", function: "健脾利湿，调和肝肾", special: "肝脾肾三经交会" },
-                { name: "血海", code: "SP10", category: "", location: "大腿内侧", function: "调经统血，健脾化湿", special: "" },
-                { name: "阴陵泉", code: "SP9", category: "合穴", location: "小腿内侧", function: "健脾利湿，通利三焦", special: "合穴属水" },
-                { name: "公孙", code: "SP4", category: "络穴", location: "足内侧缘", function: "健脾和胃，调理冲任", special: "络穴/八脉交会穴" },
-                { name: "太白", code: "SP3", category: "输穴/原穴", location: "足内侧", function: "健脾和胃，益气化湿", special: "输穴属土/原穴" }
+            "足太阴脾经": [
+                { name: "隐白", code: "SP1", category: "井穴", location: "足大趾内侧", function: "健脾宁神，调经统血", element: "木", special: "井穴属木" },
+                { name: "太白", code: "SP3", category: "输穴/原穴", location: "足内侧缘", function: "健脾和胃，益气化湿", element: "土", special: "输穴属土/原穴" },
+                { name: "公孙", code: "SP4", category: "络穴", location: "足内侧缘", function: "健脾和胃，调理冲任", element: null, special: "络穴/八脉交会穴" },
+                { name: "三阴交", code: "SP6", category: "", location: "小腿内侧", function: "健脾利湿，调和肝肾", element: null, special: "肝脾肾三经交会" },
+                { name: "阴陵泉", code: "SP9", category: "合穴", location: "小腿内侧", function: "健脾利湿，通利三焦", element: "水", special: "合穴属水" },
+                { name: "血海", code: "SP10", category: "", location: "大腿内侧", function: "调经统血，健脾化湿", element: null, special: "" },
+                { name: "大包", code: "SP21", category: "脾之大络", location: "侧胸部", function: "统血养经，宽胸止痛", element: null, special: "脾之大络" }
             ],
-            "心经": [
-                { name: "神门", code: "HT7", category: "输穴/原穴", location: "腕掌侧横纹尺侧端", function: "宁心安神，清心调气", special: "输穴属土/原穴" },
-                { name: "少海", code: "HT3", category: "合穴", location: "肘横纹内侧端", function: "宁心安神，通络止痛", special: "合穴属水" },
-                { name: "通里", code: "HT5", category: "络穴", location: "前臂掌侧", function: "宁心安神，通利舌窍", special: "络穴" },
-                { name: "少府", code: "HT8", category: "荥穴", location: "手掌第4、5掌骨间", function: "清心泻火，宁心安神", special: "荥穴属火" }
+            "手少阴心经": [
+                { name: "极泉", code: "HT1", category: "", location: "腋窝顶点", function: "宽胸宁心，活络止痛", element: null, special: "" },
+                { name: "少海", code: "HT3", category: "合穴", location: "肘横纹内侧端", function: "宁心安神，通络止痛", element: "水", special: "合穴属水" },
+                { name: "通里", code: "HT5", category: "络穴", location: "前臂掌侧", function: "宁心安神，通利舌窍", element: null, special: "络穴" },
+                { name: "阴郄", code: "HT6", category: "郄穴", location: "前臂掌侧", function: "宁心安神，清心除烦", element: null, special: "郄穴" },
+                { name: "神门", code: "HT7", category: "输穴/原穴", location: "腕掌侧横纹尺侧端", function: "宁心安神，清心调气", element: "土", special: "输穴属土/原穴" },
+                { name: "少府", code: "HT8", category: "荥穴", location: "手掌第4、5掌骨间", function: "清心泻火，宁心安神", element: "火", special: "荥穴属火" },
+                { name: "少冲", code: "HT9", category: "井穴", location: "手小指桡侧", function: "清心开窍，泻热醒神", element: "木", special: "井穴属木" }
             ],
-            "小肠经": [
-                { name: "后溪", code: "SI3", category: "输穴", location: "手掌尺侧", function: "清利头目，通督止痛", special: "输穴属木/八脉交会穴" },
-                { name: "听宫", code: "SI19", category: "", location: "耳屏前", function: "开窍聪耳，宁神定志", special: "" },
-                { name: "养老", code: "SI6", category: "郄穴", location: "前臂背面尺侧", function: "明目舒筋，通络止痛", special: "郄穴" }
+            "手太阳小肠经": [
+                { name: "少泽", code: "SI1", category: "井穴", location: "手小指尺侧", function: "清热利咽，通乳开窍", element: "金", special: "井穴属金" },
+                { name: "后溪", code: "SI3", category: "输穴", location: "手掌尺侧", function: "清利头目，通督止痛", element: "木", special: "输穴属木/八脉交会穴" },
+                { name: "腕骨", code: "SI4", category: "原穴", location: "手掌尺侧", function: "清热利湿，舒筋活络", element: null, special: "原穴" },
+                { name: "养老", code: "SI6", category: "郄穴", location: "前臂背面尺侧", function: "明目舒筋，通络止痛", element: null, special: "郄穴" },
+                { name: "小海", code: "SI8", category: "合穴", location: "肘内侧", function: "清热通络，安神定志", element: "土", special: "合穴属土" },
+                { name: "肩贞", code: "SI9", category: "", location: "肩关节后下方", function: "舒筋活络，清热止痛", element: null, special: "" },
+                { name: "天宗", code: "SI11", category: "", location: "肩胛部", function: "舒筋活络，理气消肿", element: null, special: "" },
+                { name: "听宫", code: "SI19", category: "", location: "耳屏前", function: "开窍聪耳，宁神定志", element: null, special: "" }
             ],
-            "膀胱经": [
-                { name: "委中", code: "BL40", category: "合穴", location: "腘横纹中点", function: "舒筋活络，泄热清暑", special: "合穴属土" },
-                { name: "肾俞", code: "BL23", category: "背俞穴", location: "第2腰椎棘突下", function: "益肾助阳，强腰利水", special: "肾背俞穴" },
-                { name: "昆仑", code: "BL60", category: "经穴", location: "足外踝后方", function: "舒筋活络，清头明目", special: "经穴属火" },
-                { name: "至阴", code: "BL67", category: "井穴", location: "足小趾外侧", function: "正胎催产，清头明目", special: "井穴属金" }
+            "足太阳膀胱经": [
+                { name: "睛明", code: "BL1", category: "", location: "目内眦角", function: "明目退翳，祛风清热", element: null, special: "" },
+                { name: "攒竹", code: "BL2", category: "", location: "眉头凹陷中", function: "清热明目，祛风通络", element: null, special: "" },
+                { name: "肺俞", code: "BL13", category: "背俞穴", location: "背部第3胸椎下", function: "宣肺理气，清热和营", element: null, special: "肺背俞穴" },
+                { name: "心俞", code: "BL15", category: "背俞穴", location: "背部第5胸椎下", function: "宁心安神，宽胸止痛", element: null, special: "心背俞穴" },
+                { name: "肝俞", code: "BL18", category: "背俞穴", location: "背部第9胸椎下", function: "疏肝利胆，明目安神", element: null, special: "肝背俞穴" },
+                { name: "脾俞", code: "BL20", category: "背俞穴", location: "背部第11胸椎下", function: "健脾和胃，利湿升清", element: null, special: "脾背俞穴" },
+                { name: "肾俞", code: "BL23", category: "背俞穴", location: "腰部第2腰椎下", function: "益肾助阳，强腰利水", element: null, special: "肾背俞穴" },
+                { name: "委中", code: "BL40", category: "合穴", location: "腘横纹中点", function: "舒筋活络，泄热清暑", element: "土", special: "合穴属土" },
+                { name: "承山", code: "BL57", category: "", location: "小腿后侧", function: "理气止痛，舒筋活络", element: null, special: "" },
+                { name: "昆仑", code: "BL60", category: "经穴", location: "足外踝后方", function: "舒筋活络，清头明目", element: "火", special: "经穴属火" },
+                { name: "申脉", code: "BL62", category: "八脉交会穴", location: "足外踝下方", function: "清热安神，利腰膝", element: null, special: "八脉交会穴" },
+                { name: "至阴", code: "BL67", category: "井穴", location: "足小趾外侧", function: "正胎催产，清头明目", element: "金", special: "井穴属金" }
             ],
-            "肾经": [
-                { name: "太溪", code: "KI3", category: "输穴/原穴", location: "足内踝后方", function: "滋阴益肾，壮阳强腰", special: "输穴属土/原穴" },
-                { name: "涌泉", code: "KI1", category: "井穴", location: "足底前部", function: "开窍醒神，滋肾清热", special: "井穴属木" },
-                { name: "照海", code: "KI6", category: "八脉交会穴", location: "足内踝下方", function: "滋阴清热，调经止痛", special: "八脉交会穴" },
-                { name: "复溜", code: "KI7", category: "经穴", location: "小腿内侧", function: "补肾益阴，温阳利水", special: "经穴属金" }
+            "足少阴肾经": [
+                { name: "涌泉", code: "KI1", category: "井穴", location: "足底前部", function: "开窍醒神，滋肾清热", element: "木", special: "井穴属木" },
+                { name: "然谷", code: "KI2", category: "荥穴", location: "足内侧缘", function: "滋阴清热，利湿消肿", element: "火", special: "荥穴属火" },
+                { name: "太溪", code: "KI3", category: "输穴/原穴", location: "足内踝后方", function: "滋阴益肾，壮阳强腰", element: "土", special: "输穴属土/原穴" },
+                { name: "照海", code: "KI6", category: "八脉交会穴", location: "足内踝下方", function: "滋阴清热，调经止痛", element: null, special: "八脉交会穴" },
+                { name: "复溜", code: "KI7", category: "经穴", location: "小腿内侧", function: "补肾益阴，温阳利水", element: "金", special: "经穴属金" },
+                { name: "阴谷", code: "KI10", category: "合穴", location: "腘窝内侧", function: "益肾调经，理气止痛", element: "水", special: "合穴属水" }
             ],
-            "心包经": [
-                { name: "内关", code: "PC6", category: "络穴", location: "前臂掌侧", function: "宁心安神，和胃降逆", special: "络穴/八脉交会穴" },
-                { name: "大陵", code: "PC7", category: "输穴/原穴", location: "腕掌横纹中点", function: "宁心安神，和营通络", special: "输穴属土/原穴" },
-                { name: "劳宫", code: "PC8", category: "荥穴", location: "手掌心", function: "清心泻火，开窍醒神", special: "荥穴属火" }
+            "手厥阴心包经": [
+                { name: "天池", code: "PC1", category: "", location: "胸部第4肋间隙", function: "宽胸理气，活血化瘀", element: null, special: "" },
+                { name: "曲泽", code: "PC3", category: "合穴", location: "肘横纹中", function: "清心泻火，降逆止呕", element: "水", special: "合穴属水" },
+                { name: "间使", code: "PC5", category: "经穴", location: "前臂掌侧", function: "宁心安神，和胃祛痰", element: "金", special: "经穴属金" },
+                { name: "内关", code: "PC6", category: "络穴", location: "前臂掌侧", function: "宁心安神，和胃降逆", element: null, special: "络穴/八脉交会穴" },
+                { name: "大陵", code: "PC7", category: "输穴/原穴", location: "腕掌横纹中点", function: "宁心安神，和营通络", element: "土", special: "输穴属土/原穴" },
+                { name: "劳宫", code: "PC8", category: "荥穴", location: "手掌心", function: "清心泻火，开窍醒神", element: "火", special: "荥穴属火" },
+                { name: "中冲", code: "PC9", category: "井穴", location: "手中指尖端", function: "苏厥开窍，清心泻热", element: "木", special: "井穴属木" }
             ],
-            "三焦经": [
-                { name: "外关", code: "TE5", category: "络穴", location: "前臂背侧", function: "清热解表，通经活络", special: "络穴/八脉交会穴" },
-                { name: "支沟", code: "TE6", category: "经穴", location: "前臂背侧", function: "清热理气，降逆通便", special: "经穴属火" },
-                { name: "翳风", code: "TE17", category: "", location: "耳垂后方", function: "聪耳通窍，散风泄热", special: "" }
+            "手少阳三焦经": [
+                { name: "关冲", code: "TE1", category: "井穴", location: "手环指尺侧", function: "清热解表，宣达三焦", element: "金", special: "井穴属金" },
+                { name: "中渚", code: "TE3", category: "输穴", location: "手背部", function: "清热通络，开窍益聪", element: "木", special: "输穴属木" },
+                { name: "阳池", code: "TE4", category: "原穴", location: "腕背横纹中", function: "清热通络，疏调三焦", element: null, special: "原穴" },
+                { name: "外关", code: "TE5", category: "络穴", location: "前臂背侧", function: "清热解表，通经活络", element: null, special: "络穴/八脉交会穴" },
+                { name: "支沟", code: "TE6", category: "经穴", location: "前臂背侧", function: "清热理气，降逆通便", element: "火", special: "经穴属火" },
+                { name: "天井", code: "TE10", category: "合穴", location: "肘尖上方", function: "行气散结，安神通络", element: "土", special: "合穴属土" },
+                { name: "肩髎", code: "TE14", category: "", location: "肩峰后下方", function: "祛风除湿，通经活络", element: null, special: "" },
+                { name: "翳风", code: "TE17", category: "", location: "耳垂后方", function: "聪耳通窍，散风泄热", element: null, special: "" },
+                { name: "耳门", code: "TE21", category: "", location: "耳屏上切迹前", function: "开窍聪耳，泄热活络", element: null, special: "" },
+                { name: "丝竹空", code: "TE23", category: "", location: "眉梢凹陷处", function: "清头明目，散风止痛", element: null, special: "" }
             ],
-            "胆经": [
-                { name: "阳陵泉", code: "GB34", category: "合穴", location: "小腿外侧", function: "舒筋活络，疏肝利胆", special: "合穴属土/筋会" },
-                { name: "风池", code: "GB20", category: "", location: "颈后枕骨下", function: "祛风解表，清头明目", special: "" },
-                { name: "肩井", code: "GB21", category: "", location: "肩上", function: "祛风清热，活络消肿", special: "" },
-                { name: "足临泣", code: "GB41", category: "输穴", location: "足背外侧", function: "疏肝解郁，聪耳明目", special: "输穴属木/八脉交会穴" },
-                { name: "丘墟", code: "GB40", category: "原穴", location: "足外踝前下方", function: "疏肝利胆，消肿止痛", special: "原穴" }
+            "足少阳胆经": [
+                { name: "瞳子髎", code: "GB1", category: "", location: "目外眦旁", function: "明目退翳，平肝熄风", element: null, special: "" },
+                { name: "听会", code: "GB2", category: "", location: "耳屏间切迹前", function: "开窍聪耳，通经活络", element: null, special: "" },
+                { name: "风池", code: "GB20", category: "", location: "颈后枕骨下", function: "祛风解表，清头明目", element: null, special: "" },
+                { name: "肩井", code: "GB21", category: "", location: "肩上", function: "祛风清热，活络消肿", element: null, special: "" },
+                { name: "日月", code: "GB24", category: "募穴", location: "胸部第7肋间隙", function: "利胆疏肝，降逆和胃", element: null, special: "胆募穴" },
+                { name: "带脉", code: "GB26", category: "", location: "侧腹部", function: "调理带脉，利湿止带", element: null, special: "" },
+                { name: "环跳", code: "GB30", category: "", location: "臀部", function: "祛风除湿，强腰健膝", element: null, special: "" },
+                { name: "风市", code: "GB31", category: "", location: "大腿外侧", function: "祛风化湿，通经活络", element: null, special: "" },
+                { name: "阳陵泉", code: "GB34", category: "合穴", location: "小腿外侧", function: "舒筋活络，疏肝利胆", element: "土", special: "合穴属土/筋会" },
+                { name: "光明", code: "GB37", category: "络穴", location: "小腿外侧", function: "疏肝明目，活络消肿", element: null, special: "络穴" },
+                { name: "悬钟", code: "GB39", category: "髓会", location: "小腿外侧", function: "舒筋活络，补肾益髓", element: null, special: "髓会" },
+                { name: "丘墟", code: "GB40", category: "原穴", location: "足外踝前下方", function: "疏肝利胆，消肿止痛", element: null, special: "原穴" },
+                { name: "足临泣", code: "GB41", category: "输穴", location: "足背外侧", function: "疏肝解郁，聪耳明目", element: "木", special: "输穴属木/八脉交会穴" },
+                { name: "侠溪", code: "GB43", category: "荥穴", location: "足背第4、5趾间", function: "清热熄风，消肿止痛", element: "水", special: "荥穴属水" },
+                { name: "足窍阴", code: "GB44", category: "井穴", location: "足第4趾外侧", function: "疏肝利胆，通经活络", element: "金", special: "井穴属金" }
             ],
-            "肝经": [
-                { name: "太冲", code: "LR3", category: "输穴/原穴", location: "足背第1、2跖骨间", function: "疏肝理气，平肝熄风", special: "输穴属土/原穴" },
-                { name: "期门", code: "LR14", category: "募穴", location: "胸部", function: "疏肝理气，和胃降逆", special: "肝募穴" },
-                { name: "行间", code: "LR2", category: "荥穴", location: "足背第1、2趾间", function: "疏肝理气，清热熄风", special: "荥穴属火" }
-            ],
-            "督脉": [
-                { name: "百会", code: "GV20", category: "", location: "头顶正中", function: "升阳固脱，醒脑开窍", special: "诸阳之会" },
-                { name: "大椎", code: "GV14", category: "", location: "第7颈椎棘突下", function: "清热解表，截疟止痛", special: "" },
-                { name: "命门", code: "GV4", category: "", location: "第2腰椎棘突下", function: "温肾助阳，强腰健膝", special: "" },
-                { name: "腰阳关", code: "GV3", category: "", location: "第4腰椎棘突下", function: "祛寒除湿，舒筋活络", special: "" }
-            ],
-            "任脉": [
-                { name: "关元", code: "CV4", category: "募穴", location: "下腹部", function: "培元固本，补益下焦", special: "小肠募穴" },
-                { name: "气海", code: "CV6", category: "", location: "下腹部", function: "益气助阳，调经固精", special: "" },
-                { name: "中脘", code: "CV12", category: "募穴", location: "上腹部", function: "和胃健脾，降逆利水", special: "胃募穴/腑会" },
-                { name: "膻中", code: "CV17", category: "募穴", location: "胸部", function: "理气止痛，生津增液", special: "心包募穴/气会" }
+            "足厥阴肝经": [
+                { name: "大敦", code: "LR1", category: "井穴", location: "足大趾外侧", function: "疏肝理气，调经止淋", element: "木", special: "井穴属木" },
+                { name: "行间", code: "LR2", category: "荥穴", location: "足背第1、2趾间", function: "疏肝理气，清热熄风", element: "火", special: "荥穴属火" },
+                { name: "太冲", code: "LR3", category: "输穴/原穴", location: "足背第1、2跖骨间", function: "疏肝理气，平肝熄风", element: "土", special: "输穴属土/原穴" },
+                { name: "中封", code: "LR4", category: "经穴", location: "足内踝前", function: "疏肝理气，通经活络", element: "金", special: "经穴属金" },
+                { name: "蠡沟", code: "LR5", category: "络穴", location: "小腿内侧", function: "疏肝理气，调经止带", element: null, special: "络穴" },
+                { name: "中都", code: "LR6", category: "郄穴", location: "小腿内侧", function: "疏肝理气，调经止血", element: null, special: "郄穴" },
+                { name: "曲泉", code: "LR8", category: "合穴", location: "膝内侧横纹头", function: "疏肝理气，调经止带", element: "水", special: "合穴属水" },
+                { name: "章门", code: "LR13", category: "募穴/脏会", location: "侧腹部", function: "疏肝健脾，理气散结", element: null, special: "脾募穴/脏会" },
+                { name: "期门", code: "LR14", category: "募穴", location: "胸部第6肋间隙", function: "疏肝理气，和胃降逆", element: null, special: "肝募穴" }
             ]
         },
         
-        // 特殊穴位分类
-        specialPoints: {
-            // 原穴
-            yuanPoints: {
-                "肺经": "太渊",
-                "大肠经": "合谷", 
-                "胃经": "冲阳",
-                "脾经": "太白",
-                "心经": "神门",
-                "小肠经": "腕骨",
-                "膀胱经": "京骨",
-                "肾经": "太溪",
-                "心包经": "大陵",
-                "三焦经": "阳池",
-                "胆经": "丘墟",
-                "肝经": "太冲"
+        // 五行生克关系
+        elementCycle: {
+            // 五行相生: 木→火→土→金→水→木
+            generate: {
+                "木": "火",
+                "火": "土", 
+                "土": "金",
+                "金": "水",
+                "水": "木"
             },
-            
-            // 络穴
-            luoPoints: {
-                "肺经": "列缺",
-                "大肠经": "偏历",
-                "胃经": "丰隆", 
-                "脾经": "公孙",
-                "心经": "通里",
-                "小肠经": "支正",
-                "膀胱经": "飞扬",
-                "肾经": "大钟",
-                "心包经": "内关",
-                "三焦经": "外关",
-                "胆经": "光明",
-                "肝经": "蠡沟"
-            },
-            
-            // 郄穴
-            xiPoints: {
-                "肺经": "孔最",
-                "大肠经": "温溜",
-                "胃经": "梁丘",
-                "脾经": "地机",
-                "心经": "阴郄",
-                "小肠经": "养老",
-                "膀胱经": "金门",
-                "肾经": "水泉",
-                "心包经": "郄门",
-                "三焦经": "会宗",
-                "胆经": "外丘",
-                "肝经": "中都"
-            },
-            
-            // 八会穴
-            eightHuiPoints: {
-                "脏会": { name: "章门", meridian: "肝经", location: "侧腹部" },
-                "腑会": { name: "中脘", meridian: "任脉", location: "上腹部" },
-                "气会": { name: "膻中", meridian: "任脉", location: "胸部" },
-                "血会": { name: "膈俞", meridian: "膀胱经", location: "背部" },
-                "筋会": { name: "阳陵泉", meridian: "胆经", location: "小腿外侧" },
-                "脉会": { name: "太渊", meridian: "肺经", location: "腕部" },
-                "骨会": { name: "大杼", meridian: "膀胱经", location: "背部" },
-                "髓会": { name: "绝骨", meridian: "胆经", location: "小腿外侧" }
-            },
-            
-            // 背俞穴
-            backShuPoints: {
-                "肺": { name: "肺俞", meridian: "膀胱经", location: "背部" },
-                "心": { name: "心俞", meridian: "膀胱经", location: "背部" },
-                "肝": { name: "肝俞", meridian: "膀胱经", location: "背部" },
-                "脾": { name: "脾俞", meridian: "膀胱经", location: "背部" },
-                "肾": { name: "肾俞", meridian: "膀胱经", location: "腰部" },
-                "大肠": { name: "大肠俞", meridian: "膀胱经", location: "腰部" },
-                "小肠": { name: "小肠俞", meridian: "膀胱经", location: "骶部" },
-                "胃": { name: "胃俞", meridian: "膀胱经", location: "背部" },
-                "胆": { name: "胆俞", meridian: "膀胱经", location: "背部" },
-                "膀胱": { name: "膀胱俞", meridian: "膀胱经", location: "骶部" },
-                "三焦": { name: "三焦俞", meridian: "膀胱经", location: "腰部" }
-            },
-            
-            // 募穴
-            muPoints: {
-                "肺": { name: "中府", meridian: "肺经", location: "胸部" },
-                "心": { name: "巨阙", meridian: "任脉", location: "上腹部" },
-                "肝": { name: "期门", meridian: "肝经", location: "胸部" },
-                "脾": { name: "章门", meridian: "肝经", location: "侧腹部" },
-                "肾": { name: "京门", meridian: "胆经", location: "侧腹部" },
-                "大肠": { name: "天枢", meridian: "胃经", location: "腹部" },
-                "小肠": { name: "关元", meridian: "任脉", location: "下腹部" },
-                "胃": { name: "中脘", meridian: "任脉", location: "上腹部" },
-                "胆": { name: "日月", meridian: "胆经", location: "胸部" },
-                "膀胱": { name: "中极", meridian: "任脉", location: "下腹部" },
-                "三焦": { name: "石门", meridian: "任脉", location: "下腹部" }
-            },
-            
-            // 八脉交会穴
-            eightMeetingPoints: [
-                { name: "公孙", meridian: "脾经", connects: "冲脉", time: "父" },
-                { name: "内关", meridian: "心包经", connects: "阴维脉", time: "母" },
-                { name: "足临泣", meridian: "胆经", connects: "带脉", time: "夫" },
-                { name: "外关", meridian: "三焦经", connects: "阳维脉", time: "妻" },
-                { name: "列缺", meridian: "肺经", connects: "任脉", time: "主" },
-                { name: "照海", meridian: "肾经", connects: "阴跷脉", time: "客" },
-                { name: "后溪", meridian: "小肠经", connects: "督脉", time: "夫" },
-                { name: "申脉", meridian: "膀胱经", connects: "阳跷脉", time: "妻" }
-            ],
-            
-            // 五输穴五行属性
-            fiveElementPoints: {
-                "肺经": { jing: "少商(木)", ying: "鱼际(火)", shu: "太渊(土)", jing: "经渠(金)", he: "尺泽(水)" },
-                "大肠经": { jing: "商阳(金)", ying: "二间(水)", shu: "三间(木)", jing: "阳溪(火)", he: "曲池(土)" },
-                "胃经": { jing: "厉兑(金)", ying: "内庭(水)", shu: "陷谷(木)", jing: "解溪(火)", he: "足三里(土)" },
-                "脾经": { jing: "隐白(木)", ying: "大都(火)", shu: "太白(土)", jing: "商丘(金)", he: "阴陵泉(水)" },
-                "心经": { jing: "少冲(木)", ying: "少府(火)", shu: "神门(土)", jing: "灵道(金)", he: "少海(水)" },
-                "小肠经": { jing: "少泽(金)", ying: "前谷(水)", shu: "后溪(木)", jing: "阳谷(火)", he: "小海(土)" },
-                "膀胱经": { jing: "至阴(金)", ying: "通谷(水)", shu: "束骨(木)", jing: "昆仑(火)", he: "委中(土)" },
-                "肾经": { jing: "涌泉(木)", ying: "然谷(火)", shu: "太溪(土)", jing: "复溜(金)", he: "阴谷(水)" },
-                "心包经": { jing: "中冲(木)", ying: "劳宫(火)", shu: "大陵(土)", jing: "间使(金)", he: "曲泽(水)" },
-                "三焦经": { jing: "关冲(金)", ying: "液门(水)", shu: "中渚(木)", jing: "支沟(火)", he: "天井(土)" },
-                "胆经": { jing: "足窍阴(金)", ying: "侠溪(水)", shu: "足临泣(木)", jing: "阳辅(火)", he: "阳陵泉(土)" },
-                "肝经": { jing: "大敦(木)", ying: "行间(火)", shu: "太冲(土)", jing: "中封(金)", he: "曲泉(水)" }
+            // 五行相克: 木→土→水→火→金→木
+            restrict: {
+                "木": "土",
+                "土": "水",
+                "水": "火", 
+                "火": "金",
+                "金": "木"
             }
         },
         
-        // 症状-经络对应关系
-        symptomMeridianMap: {
-            "头痛": [
-                { meridian: "胆经", points: ["风池", "悬颅"], description: "偏头痛，痛在两侧" },
-                { meridian: "膀胱经", points: ["天柱", "昆仑"], description: "后头痛，痛连项背" },
-                { meridian: "胃经", points: ["头维", "解溪"], description: "前额痛" },
-                { meridian: "肝经", points: ["太冲", "行间"], description: "巅顶痛" }
-            ],
-            "咳嗽": [
-                { meridian: "肺经", points: ["尺泽", "列缺"], description: "肺气不宣" },
-                { meridian: "大肠经", points: ["合谷", "曲池"], description: "肺热壅盛" },
-                { meridian: "脾经", points: ["三阴交", "太白"], description: "痰湿咳嗽" },
-                { meridian: "肾经", points: ["太溪", "复溜"], description: "肾虚咳嗽" }
-            ],
-            "胃痛": [
-                { meridian: "胃经", points: ["足三里", "梁丘"], description: "胃腑病变" },
-                { meridian: "脾经", points: ["公孙", "三阴交"], description: "脾虚不运" },
-                { meridian: "肝经", points: ["太冲", "期门"], description: "肝气犯胃" }
-            ],
-            "腰痛": [
-                { meridian: "膀胱经", points: ["委中", "肾俞"], description: "太阳经腰痛" },
-                { meridian: "督脉", points: ["命门", "腰阳关"], description: "督脉腰痛" },
-                { meridian: "肾经", points: ["太溪", "复溜"], description: "肾虚腰痛" }
-            ],
-            "失眠": [
-                { meridian: "心经", points: ["神门", "少海"], description: "心神不宁" },
-                { meridian: "心包经", points: ["内关", "大陵"], description: "心包有热" },
-                { meridian: "肾经", points: ["涌泉", "太溪"], description: "心肾不交" },
-                { meridian: "肝经", points: ["太冲", "行间"], description: "肝火上扰" }
-            ],
-            "胸闷": [
-                { meridian: "心包经", points: ["内关", "郄门"], description: "心包瘀阻" },
-                { meridian: "肺经", points: ["中府", "尺泽"], description: "肺气郁闭" },
-                { meridian: "任脉", points: ["膻中", "巨阙"], description: "气机不畅" }
-            ],
-            "腹泻": [
-                { meridian: "脾经", points: ["公孙", "阴陵泉"], description: "脾虚湿盛" },
-                { meridian: "胃经", points: ["天枢", "足三里"], description: "肠胃不和" },
-                { meridian: "肾经", points: ["命门", "肾俞"], description: "肾阳不足" }
-            ]
-        },
+        // 脏腑表里关系
+        exteriorInteriorPairs: {
+            "手太阴肺经": "手阳明大肠经",
+            "手阳明大肠经": "手太阴肺经",
+            "足阳明胃经": "足太阴脾经",
+            "足太阴脾经": "足阳明胃经",
+            "手少阴心经": "手太阳小肠经",
+            "手太阳小肠经": "手少阴心经",
+            "足太阳膀胱经": "足少阴肾经",
+            "足少阴肾经": "足太阳膀胱经",
+            "手厥阴心包经": "手少阳三焦经",
+            "手少阳三焦经": "手厥阴心包经",
+            "足少阳胆经": "足厥阴肝经",
+            "足厥阴肝经": "足少阳胆经"
+        }
+    },
+    
+    // ====== 初始化方法 ======
+    init() {
+        this.initMeridianSelection();
+        this.initYuanLuoSelection();
+        this.initMotherChildSelection();
+    },
+    
+    // ====== 1. 循经取穴法 ======
+    initMeridianSelection() {
+        const selectionDiv = document.getElementById('acu-meridian-selection');
+        const meridians = Object.keys(this.pointsDatabase.meridians);
         
-        // ====== 初始化方法 ======
-        init() {
-            this.initMeridianSelection();
-            this.initTimeFlowInfo();
-            this.initHuiXiSelection();
-            this.initMotherChildSelection();
-            this.initFiveTransportSelection();
-            this.initShuMuSelection();
-        },
+        let html = `
+            <div class="result-title">选择病变经络（循经取穴法）</div>
+            <p><strong>原理：</strong>"经脉所过，主治所及" - 根据病变部位所属经络取穴</p>
+            <p><strong>方法：</strong>选择一条经络，系统将显示其近部穴和远端五输穴</p>
+            <div class="option-grid" style="margin: 20px 0;">
+        `;
         
-        // ====== 1. 循经取穴法 ======
-        initMeridianSelection() {
-            const selectionDiv = document.getElementById('acu-meridian-selection');
-            const meridians = Object.keys(this.pointsDatabase.meridians);
-            
-            let html = `
-                <div class="result-title">选择病变经络</div>
-                <div class="option-grid">
+        meridians.forEach(meridian => {
+            html += `
+                <div class="option-button" onclick="TCMSystem.acupuncture.selectMeridian('${meridian}')">
+                    ${meridian}<br>
+                    <small>${this.getMeridianShortName(meridian)}</small>
+                </div>
             `;
-            
-            meridians.forEach(meridian => {
-                if (meridian !== "督脉" && meridian !== "任脉") {
-                    html += `
-                        <div class="option-button" onclick="TCMSystem.acupuncture.selectMeridian('${meridian}')">
-                            ${meridian}
-                        </div>
-                    `;
-                }
-            });
-            
-            html += `</div>`;
-            selectionDiv.innerHTML = html;
-        },
+        });
         
-        selectMeridian(meridian) {
-            TCMSystem.currentState.selectedMeridian = meridian;
-            
-            // 渲染近取穴和远取穴
-            this.renderLocalPoints(meridian);
-            this.renderDistantPoints(meridian);
-            
-            TCMSystem.showMessage(`选择经络：${meridian}`, 'info');
-        },
+        html += `</div>`;
+        selectionDiv.innerHTML = html;
+    },
+    
+    getMeridianShortName(fullName) {
+        const shortNames = {
+            "手太阴肺经": "肺经",
+            "手阳明大肠经": "大肠经",
+            "足阳明胃经": "胃经",
+            "足太阴脾经": "脾经",
+            "手少阴心经": "心经",
+            "手太阳小肠经": "小肠经",
+            "足太阳膀胱经": "膀胱经",
+            "足少阴肾经": "肾经",
+            "手厥阴心包经": "心包经",
+            "手少阳三焦经": "三焦经",
+            "足少阳胆经": "胆经",
+            "足厥阴肝经": "肝经"
+        };
+        return shortNames[fullName] || fullName;
+    },
+    
+    selectMeridian(meridian) {
+        TCMSystem.currentState.selectedMeridian = meridian;
         
-        renderLocalPoints(meridian) {
-            const points = this.pointsDatabase.meridians[meridian];
-            if (!points) return;
-            
-            // 取近取穴（通常是前3个穴位）
-            const localPoints = points.slice(0, 3);
-            
-            const localDiv = document.getElementById('local-points-section');
-            let html = `
-                <div class="result-title" style="margin-top: 20px;">近取穴（局部取穴）</div>
-                <div class="option-grid">
-            `;
-            
-            localPoints.forEach(point => {
-                html += `
-                    <div class="option-button" onclick="TCMSystem.acupuncture.togglePointSelection('${meridian}', '${point.name}')">
-                        ${point.name} (${point.code})<br>
-                        <small>${point.location}</small>
-                    </div>
-                `;
-            });
-            
-            html += `</div>`;
-            localDiv.innerHTML = html;
-        },
+        // 显示经络信息
+        const localDiv = document.getElementById('local-points-section');
+        const distantDiv = document.getElementById('distant-points-section');
         
-        renderDistantPoints(meridian) {
-            const points = this.pointsDatabase.meridians[meridian];
-            if (!points) return;
-            
-            // 取远取穴（通常是五输穴、原穴等）
-            const distantPoints = points.filter(point => 
-                point.category && point.category.includes('穴')
-            ).slice(0, 3);
-            
-            const distantDiv = document.getElementById('distant-points-section');
-            let html = `
-                <div class="result-title" style="margin-top: 20px;">远取穴（远端取穴）</div>
-                <div class="option-grid">
-            `;
-            
-            distantPoints.forEach(point => {
-                html += `
-                    <div class="option-button" onclick="TCMSystem.acupuncture.togglePointSelection('${meridian}', '${point.name}')">
-                        ${point.name} (${point.code})<br>
-                        <small>${point.category} - ${point.function}</small>
-                    </div>
-                `;
-            });
-            
-            html += `</div>`;
-            distantDiv.innerHTML = html;
-        },
+        // 清空之前的内容
+        localDiv.innerHTML = '';
+        distantDiv.innerHTML = '';
         
-        selectMeridianPoints() {
-            if (!TCMSystem.currentState.selectedMeridian) {
-                TCMSystem.showMessage('请先选择经络', 'warning');
-                return;
-            }
-            
-            // 自动选择该经络的主要穴位
-            const meridian = TCMSystem.currentState.selectedMeridian;
-            const points = this.pointsDatabase.meridians[meridian];
-            
-            if (points && points.length >= 2) {
-                // 选择原穴和合穴
-                const yuanPoint = this.specialPoints.yuanPoints[meridian];
-                const hePoint = points.find(p => p.category && p.category.includes('合穴'));
-                
-                if (yuanPoint) this.togglePointSelection(meridian, yuanPoint);
-                if (hePoint) this.togglePointSelection(meridian, hePoint.name);
-                
-                TCMSystem.showMessage(`已选择${meridian}主要穴位`, 'success');
-            }
-        },
+        // 获取该经络的所有穴位
+        const points = this.pointsDatabase.meridians[meridian];
+        if (!points) return;
         
-        // ====== 2. 八会取穴法 ======
-        calculateOpenPoints() {
-            const timeData = TCMSystem.currentState.timeData;
-            if (!timeData) {
-                TCMSystem.showMessage('时间数据未初始化', 'warning');
-                return;
-            }
-            
-            // 灵龟八法简化计算
-            const now = new Date();
-            const day = now.getDate();
-            const hour = now.getHours();
-            
-            // 八卦九宫数
-            const baguaNumbers = [1, 8, 3, 4, 9, 2, 7, 6];
-            const baguaIndex = (day + hour) % 8;
-            
-            // 八脉交会穴对应八卦
-            const meetingPoints = this.specialPoints.eightMeetingPoints;
-            const openPoint = meetingPoints[baguaIndex];
-            
-            const timeDiv = document.getElementById('time-calculation');
-            timeDiv.innerHTML = `
-                <div class="result-item">
-                    <strong>灵龟八法推算结果</strong><br>
-                    当前时间：${timeData.year}年${timeData.month}月${timeData.day}日 ${timeData.hour}:${timeData.minute}<br>
-                    计算参数：日(${day}) + 时(${hour}) = ${day + hour}<br>
-                    八卦数：${baguaNumbers[baguaIndex]} (${this.getBaguaName(baguaIndex)})<br>
-                    <strong style="color:#9C27B0;">开穴：${openPoint.name} (${openPoint.meridian})</strong><br>
-                    通：${openPoint.connects}，夫妻配穴：${openPoint.time}
+        // 显示经络简介
+        localDiv.innerHTML = `
+            <div class="result-title">${meridian} 经络信息</div>
+            <div class="result-item">
+                <strong>经络走向：</strong>${this.getMeridianPath(meridian)}<br>
+                <strong>主治病证：</strong>${this.getMeridianIndications(meridian)}<br>
+                <strong>经络特点：</strong>${this.getMeridianFeatures(meridian)}
+            </div>
+        `;
+        
+        // 显示穴位（分近部和远端）
+        let localPointsHtml = `<div class="result-title" style="margin-top: 20px;">近部取穴（局部穴位）</div><div class="option-grid">`;
+        let distantPointsHtml = `<div class="result-title" style="margin-top: 20px;">远端取穴（五输穴）</div><div class="option-grid">`;
+        
+        points.forEach(point => {
+            const pointHtml = `
+                <div class="option-button" onclick="TCMSystem.acupuncture.togglePointSelection('${meridian}', '${point.name}')">
+                    <strong>${point.name}</strong> (${point.code})<br>
+                    <small>${point.location}</small><br>
+                    <small style="color:#666;">${point.function}</small>
+                    ${point.category ? `<br><small style="color:#9C27B0;">${point.category}</small>` : ''}
+                    ${point.element ? `<br><small style="color:#4CAF50;">五行：${point.element}</small>` : ''}
                 </div>
             `;
             
-            // 显示八脉交会穴
-            this.renderEightMeetingPoints();
-            
-            // 自动选择开穴
-            this.togglePointSelection(openPoint.meridian, openPoint.name);
-            
-            TCMSystem.showMessage(`灵龟八法开穴：${openPoint.name}`, 'success');
-        },
+            // 判断是近部穴还是五输穴
+            if (point.category && (point.category.includes('井') || point.category.includes('荥') || 
+                                  point.category.includes('输') || point.category.includes('经') || 
+                                  point.category.includes('合') || point.category.includes('原'))) {
+                distantPointsHtml += pointHtml;
+            } else {
+                localPointsHtml += pointHtml;
+            }
+        });
         
-        getBaguaName(index) {
-            const baguaNames = ["乾", "坎", "艮", "震", "巽", "离", "坤", "兑"];
-            return baguaNames[index] || "";
-        },
+        localPointsHtml += `</div>`;
+        distantPointsHtml += `</div>`;
         
-        renderEightMeetingPoints() {
-            const pointsDiv = document.getElementById('eight-meeting-points');
-            const points = this.specialPoints.eightMeetingPoints;
-            
-            let html = `
-                <div class="result-title">八脉交会穴</div>
-                <div class="option-grid">
-            `;
+        localDiv.innerHTML += localPointsHtml;
+        distantDiv.innerHTML = distantPointsHtml;
+        
+        TCMSystem.showMessage(`选择经络：${meridian}`, 'info');
+    },
+    
+    getMeridianPath(meridian) {
+        const paths = {
+            "手太阴肺经": "起于中焦，下行络大肠，返回胃上口，过膈属肺，从肺系横出腋下，沿上臂内侧下行",
+            "手阳明大肠经": "起于食指桡侧端，沿手臂外侧上行至肩，入缺盆络肺，下膈属大肠",
+            "足阳明胃经": "起于鼻翼旁，上行至额，下行经颈、胸、腹、腿外侧至足次趾端",
+            "足太阴脾经": "起于足大趾内侧端，沿腿内侧上行，入腹属脾络胃，上膈挟咽，连舌本散舌下",
+            "手少阴心经": "起于心中，出属心系，下膈络小肠；支脉从心系上挟咽，系目系",
+            "手太阳小肠经": "起于小指尺侧端，沿手臂外侧上行至肩，入缺盆络心，循咽下膈抵胃属小肠",
+            "足太阳膀胱经": "起于目内眦，上额交巅；支脉从巅至耳上角；直行者从巅入络脑，出项下行",
+            "足少阴肾经": "起于足小趾下，斜走足心，出舟骨粗隆下，沿腿内侧后缘上行，贯脊属肾络膀胱",
+            "手厥阴心包经": "起于胸中，出属心包络，下膈历络三焦；支脉从胸中出胁部",
+            "手少阳三焦经": "起于环指尺侧端，沿手臂外侧上行至肩，入缺盆布膻中，散络心包，下膈属三焦",
+            "足少阳胆经": "起于目外眦，上至头角，下耳后，沿颈侧至肩，入缺盆；支脉从耳后入耳中",
+            "足厥阴肝经": "起于足大趾丛毛际，沿腿内侧上行，绕阴器，抵小腹，挟胃属肝络胆，上贯膈布胁肋"
+        };
+        return paths[meridian] || "经络循行路线";
+    },
+    
+    getMeridianIndications(meridian) {
+        const indications = {
+            "手太阴肺经": "咳嗽、气喘、咯血、咽喉肿痛、胸部胀满",
+            "手阳明大肠经": "腹痛、肠鸣、泄泻、便秘、齿痛、鼻衄",
+            "足阳明胃经": "胃痛、呕吐、腹胀、肠鸣、水肿、口渴",
+            "足太阴脾经": "腹胀、便溏、身重无力、舌根强痛、下肢内侧肿痛",
+            "手少阴心经": "心痛、心悸、失眠、健忘、癫痫、胁痛",
+            "手太阳小肠经": "耳聋、目黄、颊肿、咽喉肿痛、肩臂外侧后缘痛",
+            "足太阳膀胱经": "小便不通、遗尿、目痛、头痛、项背腰臀部疼痛",
+            "足少阴肾经": "咳血、气喘、水肿、便秘、泄泻、腰痛",
+            "手厥阴心包经": "心痛、胸闷、心悸、心烦、癫狂、肘臂挛痛",
+            "手少阳三焦经": "腹胀、水肿、遗尿、小便不利、耳聋耳鸣",
+            "足少阳胆经": "口苦、目眩、疟疾、头痛、胸胁痛、下肢外侧痛",
+            "足厥阴肝经": "腰痛、胸满、呃逆、遗尿、小便不利、疝气"
+        };
+        return indications[meridian] || "相关脏腑病症";
+    },
+    
+    getMeridianFeatures(meridian) {
+        const features = {
+            "手太阴肺经": "多气少血，寅时（3-5点）气血最旺",
+            "手阳明大肠经": "多气多血，卯时（5-7点）气血最旺",
+            "足阳明胃经": "多气多血，辰时（7-9点）气血最旺",
+            "足太阴脾经": "少气多血，巳时（9-11点）气血最旺",
+            "手少阴心经": "少血多气，午时（11-13点）气血最旺",
+            "手太阳小肠经": "多血少气，未时（13-15点）气血最旺",
+            "足太阳膀胱经": "多血少气，申时（15-17点）气血最旺",
+            "足少阴肾经": "少血多气，酉时（17-19点）气血最旺",
+            "手厥阴心包经": "多血少气，戌时（19-21点）气血最旺",
+            "手少阳三焦经": "少血多气，亥时（21-23点）气血最旺",
+            "足少阳胆经": "少血多气，子时（23-1点）气血最旺",
+            "足厥阴肝经": "多血少气，丑时（1-3点）气血最旺"
+        };
+        return features[meridian] || "经络特点";
+    },
+    
+    selectMeridianPoints() {
+        if (!TCMSystem.currentState.selectedMeridian) {
+            TCMSystem.showMessage('请先选择经络', 'warning');
+            return;
+        }
+        
+        const meridian = TCMSystem.currentState.selectedMeridian;
+        const points = this.pointsDatabase.meridians[meridian];
+        
+        if (points) {
+            // 自动选择该经络的主要穴位：原穴、合穴、络穴
+            let selectedCount = 0;
             
             points.forEach(point => {
-                html += `
-                    <div class="option-button" onclick="TCMSystem.acupuncture.togglePointSelection('${point.meridian}', '${point.name}')">
-                        ${point.name}<br>
-                        <small>${point.meridian} 通 ${point.connects}</small>
-                    </div>
-                `;
+                if (point.category && (point.category.includes('原穴') || 
+                                      point.category.includes('合穴') || 
+                                      point.category.includes('络穴'))) {
+                    this.togglePointSelection(meridian, point.name);
+                    selectedCount++;
+                }
             });
             
-            html += `</div>`;
-            pointsDiv.innerHTML = html;
-        },
-        
-        // ====== 3. 原络取穴法 ======
-        selectYuanLuoPoints() {
-            const selectionDiv = document.getElementById('yuan-luo-selection');
-            
-            let html = `
-                <div class="result-item">
-                    <strong>原络配穴法（主客配穴）</strong><br><br>
-                    <strong>选择主经（先病之经）：</strong>
-                    <div class="option-grid" style="margin: 10px 0;">
-            `;
-            
-            const meridians = Object.keys(this.specialPoints.yuanPoints);
-            meridians.forEach(meridian => {
-                html += `
-                    <div class="option-button" onclick="TCMSystem.acupuncture.selectPrimaryMeridian('${meridian}')">
-                        ${meridian}
-                    </div>
-                `;
-            });
-            
-            html += `
-                    </div>
-                    <div id="yuan-luo-result"></div>
-                </div>
-            `;
-            
-            selectionDiv.innerHTML = html;
-        },
-        
-        selectPrimaryMeridian(meridian) {
-            const yuanPoint = this.specialPoints.yuanPoints[meridian];
-            const luoPoint = this.specialPoints.luoPoints[meridian];
-            
-            // 找到表里经
-            const exteriorInteriorPairs = {
-                "肺经": "大肠经",
-                "大肠经": "肺经",
-                "胃经": "脾经",
-                "脾经": "胃经",
-                "心经": "小肠经",
-                "小肠经": "心经",
-                "膀胱经": "肾经",
-                "肾经": "膀胱经",
-                "心包经": "三焦经",
-                "三焦经": "心包经",
-                "胆经": "肝经",
-                "肝经": "胆经"
-            };
-            
-            const interiorMeridian = exteriorInteriorPairs[meridian];
-            const interiorLuoPoint = this.specialPoints.luoPoints[interiorMeridian];
-            
-            const resultDiv = document.getElementById('yuan-luo-result');
-            resultDiv.innerHTML = `
-                <div style="background: #F3E5F5; padding: 15px; border-radius: 10px; margin-top: 15px;">
-                    <strong>配穴方案：</strong><br>
-                    <div style="margin: 10px 0;">
-                        <span class="channel-tag" style="background:#9C27B0">主经</span>
-                        ${meridian}：${yuanPoint} (原穴)<br>
-                        + ${luoPoint} (本经络穴)
-                    </div>
-                    <div style="margin: 10px 0;">
-                        <span class="channel-tag" style="background:#2196F3">客经</span>
-                        ${interiorMeridian}：${interiorLuoPoint} (表里经络穴)
-                    </div>
-                    <div style="margin-top: 15px;">
-                        <button class="tcm-button acupuncture" onclick="TCMSystem.acupuncture.applyYuanLuoPoints('${meridian}', '${yuanPoint}', '${luoPoint}', '${interiorMeridian}', '${interiorLuoPoint}')">
-                            应用此配穴
-                        </button>
-                    </div>
-                </div>
-            `;
-        },
-        
-        applyYuanLuoPoints(primaryMeridian, yuanPoint, luoPoint, interiorMeridian, interiorLuoPoint) {
-            this.togglePointSelection(primaryMeridian, yuanPoint);
-            this.togglePointSelection(primaryMeridian, luoPoint);
-            this.togglePointSelection(interiorMeridian, interiorLuoPoint);
-            
-            TCMSystem.showMessage('已应用原络配穴', 'success');
-        },
-        
-        // ====== 4. 流注取穴法 ======
-        initTimeFlowInfo() {
-            const timeData = TCMSystem.currentState.timeData;
-            if (!timeData) return;
-            
-            const hour = timeData.hour;
-            const hourZhi = this.getHourZhi(hour);
-            const meridian = this.getMeridianByHour(hour);
-            
-            const timeDiv = document.getElementById('time-flow-info');
-            timeDiv.innerHTML = `
-                <div class="result-item">
-                    <strong>子午流注 - 纳子法</strong><br><br>
-                    当前时间：${hour}:${timeData.minute}<br>
-                    时辰：${hourZhi}时 (${this.getHourRange(hour)})<br>
-                    <strong style="color:#2196F3;">当令经脉：${meridian}</strong><br><br>
-                    <strong>补母泻子法则：</strong><br>
-                    • 虚证：补其母穴<br>
-                    • 实证：泻其子穴<br>
-                    • 本经取穴或异经取穴
-                </div>
-            `;
-        },
-        
-        getHourZhi(hour) {
-            const hourZhiMap = {
-                23: "子", 0: "子", 1: "丑", 2: "丑", 3: "寅", 4: "寅",
-                5: "卯", 6: "卯", 7: "辰", 8: "辰", 9: "巳", 10: "巳",
-                11: "午", 12: "午", 13: "未", 14: "未", 15: "申", 16: "申",
-                17: "酉", 18: "酉", 19: "戌", 20: "戌", 21: "亥", 22: "亥"
-            };
-            return hourZhiMap[hour] || "";
-        },
-        
-        getHourRange(hour) {
-            const ranges = {
-                23: "23-1", 0: "23-1", 1: "1-3", 2: "1-3", 3: "3-5", 4: "3-5",
-                5: "5-7", 6: "5-7", 7: "7-9", 8: "7-9", 9: "9-11", 10: "9-11",
-                11: "11-13", 12: "11-13", 13: "13-15", 14: "13-15", 15: "15-17", 16: "15-17",
-                17: "17-19", 18: "17-19", 19: "19-21", 20: "19-21", 21: "21-23", 22: "21-23"
-            };
-            return ranges[hour] || "";
-        },
-        
-        getMeridianByHour(hour) {
-            const meridianMap = {
-                23: "胆经", 0: "胆经", 1: "肝经", 2: "肝经", 3: "肺经", 4: "肺经",
-                5: "大肠经", 6: "大肠经", 7: "胃经", 8: "胃经", 9: "脾经", 10: "脾经",
-                11: "心经", 12: "心经", 13: "小肠经", 14: "小肠经", 15: "膀胱经", 16: "膀胱经",
-                17: "肾经", 18: "肾经", 19: "心包经", 20: "心包经", 21: "三焦经", 22: "三焦经"
-            };
-            return meridianMap[hour] || "";
-        },
-        
-        selectTimePoints() {
-            const timeData = TCMSystem.currentState.timeData;
-            const hour = timeData.hour;
-            const meridian = this.getMeridianByHour(hour);
-            
-            if (!meridian) {
-                TCMSystem.showMessage('无法确定当前时辰对应经脉', 'warning');
-                return;
-            }
-            
-            // 获取该经脉的原穴和合穴
-            const yuanPoint = this.specialPoints.yuanPoints[meridian];
-            const points = this.pointsDatabase.meridians[meridian];
-            const hePoint = points ? points.find(p => p.category && p.category.includes('合穴')) : null;
-            
-            // 选择穴位
-            if (yuanPoint) this.togglePointSelection(meridian, yuanPoint);
-            if (hePoint) this.togglePointSelection(meridian, hePoint.name);
-            
-            TCMSystem.showMessage(`已选择${meridian}当令穴位`, 'success');
-        },
-        
-        // ====== 5. 会郗取穴法 ======
-        initHuiXiSelection() {
-            const selectionDiv = document.getElementById('hui-xi-selection');
-            
-            let html = `
-                <div class="result-item">
-                    <strong>会郗配穴法（急症配穴）</strong><br><br>
-                    <strong>选择病变脏腑：</strong>
-                    <div class="option-grid" style="margin: 10px 0;">
-            `;
-            
-            const organs = Object.keys(this.specialPoints.backShuPoints);
-            organs.forEach(organ => {
-                html += `
-                    <div class="option-button" onclick="TCMSystem.acupuncture.selectOrganForHuiXi('${organ}')">
-                        ${organ}
-                    </div>
-                `;
-            });
-            
-            html += `
-                    </div>
-                    <div id="hui-xi-result"></div>
-                </div>
-            `;
-            
-            selectionDiv.innerHTML = html;
-        },
-        
-        selectOrganForHuiXi(organ) {
-            // 获取该脏腑的郗穴
-            let xiPoint = null;
-            let xiMeridian = null;
-            
-            // 找到对应经络的郗穴
-            for (const [meridian, point] of Object.entries(this.specialPoints.xiPoints)) {
-                const meridianOrgan = this.getOrganByMeridian(meridian);
-                if (meridianOrgan === organ) {
-                    xiPoint = point;
-                    xiMeridian = meridian;
-                    break;
+            // 如果没找到特殊穴位，选择前3个
+            if (selectedCount === 0 && points.length >= 3) {
+                for (let i = 0; i < 3; i++) {
+                    this.togglePointSelection(meridian, points[i].name);
                 }
             }
             
-            // 获取八会穴
-            let huiPoint = null;
-            let huiCategory = null;
-            
-            if (organ === "肺" || organ === "心" || organ === "肝" || organ === "脾" || organ === "肾") {
-                huiPoint = this.specialPoints.eightHuiPoints["脏会"].name;
-                huiCategory = "脏会";
-            } else if (organ === "胃" || organ === "大肠" || organ === "小肠" || organ === "膀胱" || organ === "胆" || organ === "三焦") {
-                huiPoint = this.specialPoints.eightHuiPoints["腑会"].name;
-                huiCategory = "腑会";
-            }
-            
-            const resultDiv = document.getElementById('hui-xi-result');
-            resultDiv.innerHTML = `
-                <div style="background: #FFF3E0; padding: 15px; border-radius: 10px; margin-top: 15px;">
-                    <strong>${organ}病会郗配穴：</strong><br>
-                    <div style="margin: 10px 0;">
-                        <span class="channel-tag" style="background:#FF9800">郗穴</span>
-                        ${xiPoint || "暂无"} (${xiMeridian || ""})<br>
-                        <small>治疗急症、痛症</small>
-                    </div>
-                    <div style="margin: 10px 0;">
-                        <span class="channel-tag" style="background:#4CAF50">会穴</span>
-                        ${huiPoint || "暂无"} (${huiCategory || ""})<br>
-                        <small>调理根本、慢性病</small>
-                    </div>
-                    <div style="margin-top: 15px;">
-                        <button class="tcm-button acupuncture" onclick="TCMSystem.acupuncture.applyHuiXiPoints('${organ}', '${xiPoint}', '${xiMeridian}', '${huiPoint}')">
-                            应用会郗配穴
-                        </button>
-                    </div>
-                </div>
-            `;
-        },
+            TCMSystem.showMessage(`已选择${meridian}主要穴位`, 'success');
+        }
+    },
+    
+    // ====== 2. 原络取穴法 ======
+    initYuanLuoSelection() {
+        const selectionDiv = document.getElementById('yuan-luo-selection');
         
-        getOrganByMeridian(meridian) {
-            const meridianOrganMap = {
-                "肺经": "肺",
-                "大肠经": "大肠",
-                "胃经": "胃",
-                "脾经": "脾",
-                "心经": "心",
-                "小肠经": "小肠",
-                "膀胱经": "膀胱",
-                "肾经": "肾",
-                "心包经": "心包",
-                "三焦经": "三焦",
-                "胆经": "胆",
-                "肝经": "肝"
-            };
-            return meridianOrganMap[meridian] || "";
-        },
+        let html = `
+            <div class="result-title">原络配穴法（主客配穴）</div>
+            <p><strong>原理：</strong>原穴调本经元气 + 络穴通表里经气，主治表里两经同病</p>
+            <p><strong>方法：</strong>先取发病经脉的原穴，再取相表里经脉的络穴</p>
+            
+            <div class="result-item">
+                <strong>选择主经（先病之经）：</strong>
+                <div class="option-grid" style="margin: 10px 0;">
+        `;
         
-        applyHuiXiPoints(organ, xiPoint, xiMeridian, huiPoint) {
-            if (xiPoint && xiMeridian) {
-                this.togglePointSelection(xiMeridian, xiPoint);
-            }
-            
-            if (huiPoint) {
-                // 找到会穴对应的经络
-                for (const [category, info] of Object.entries(this.specialPoints.eightHuiPoints)) {
-                    if (info.name === huiPoint) {
-                        this.togglePointSelection(info.meridian, huiPoint);
-                        break;
-                    }
-                }
-            }
-            
-            TCMSystem.showMessage(`已应用${organ}会郗配穴`, 'success');
-        },
-        
-        // ====== 6. 子母取穴法 ======
-        initMotherChildSelection() {
-            const selectionDiv = document.getElementById('mother-child-selection');
-            
-            let html = `
-                <div class="result-item">
-                    <strong>子母补泻配穴法</strong><br><br>
-                    <strong>选择病经及虚实：</strong>
-                    <div class="option-grid" style="margin: 10px 0;">
-            `;
-            
-            const meridians = Object.keys(this.specialPoints.fiveElementPoints);
-            meridians.forEach(meridian => {
-                html += `
-                    <div class="option-button" onclick="TCMSystem.acupuncture.selectMeridianForMotherChild('${meridian}')">
-                        ${meridian}
-                    </div>
-                `;
-            });
-            
+        const meridians = Object.keys(this.pointsDatabase.meridians);
+        meridians.forEach(meridian => {
             html += `
-                    </div>
-                    <div id="mother-child-result"></div>
+                <div class="option-button" onclick="TCMSystem.acupuncture.selectPrimaryMeridianForYuanLuo('${meridian}')">
+                    ${meridian}<br>
+                    <small>${this.getMeridianShortName(meridian)}</small>
                 </div>
             `;
-            
-            selectionDiv.innerHTML = html;
-        },
+        });
         
-        selectMeridianForMotherChild(meridian) {
-            const fiveElements = this.specialPoints.fiveElementPoints[meridian];
-            if (!fiveElements) return;
-            
-            const resultDiv = document.getElementById('mother-child-result');
-            resultDiv.innerHTML = `
-                <div style="background: #E8F5E9; padding: 15px; border-radius: 10px; margin-top: 15px;">
-                    <strong>${meridian}五输穴五行属性：</strong><br>
-                    <div style="margin: 10px 0;">
-                        • 井穴：${fiveElements.jing || ""}<br>
-                        • 荥穴：${fiveElements.ying || ""}<br>
-                        • 输穴：${fiveElements.shu || ""}<br>
-                        • 经穴：${fiveElements.jing || ""}<br>
-                        • 合穴：${fiveElements.he || ""}
-                    </div>
-                    <div style="margin: 15px 0;">
-                        <strong>选择虚实：</strong><br>
-                        <label style="margin-right: 15px;">
-                            <input type="radio" name="deficiency-excess" value="deficiency" checked> 虚证（补其母）
-                        </label>
-                        <label>
-                            <input type="radio" name="deficiency-excess" value="excess"> 实证（泻其子）
-                        </label>
-                    </div>
-                    <div>
-                        <button class="tcm-button acupuncture" onclick="TCMSystem.acupuncture.applyMotherChildPoints('${meridian}')">
-                            应用子母配穴
-                        </button>
-                    </div>
+        html += `
                 </div>
-            `;
-        },
+                <div id="yuan-luo-result"></div>
+            </div>
+        `;
         
-        applyMotherChildPoints(meridian) {
-            const fiveElements = this.specialPoints.fiveElementPoints[meridian];
-            if (!fiveElements) return;
-            
-            const isDeficiency = document.querySelector('input[name="deficiency-excess"]:checked').value === 'deficiency';
-            
-            // 简化版：选择本经的输穴（土）作为示例
-            const tuPoint = fiveElements.shu ? fiveElements.shu.split('(')[0] : null;
-            
-            if (tuPoint) {
-                this.togglePointSelection(meridian, tuPoint.trim());
-                TCMSystem.showMessage(
-                    `已应用${meridian}${isDeficiency ? '补母' : '泻子'}配穴：${tuPoint.trim()}`,
-                    'success'
-                );
-            }
-        },
+        selectionDiv.innerHTML = html;
+    },
+    
+    selectPrimaryMeridianForYuanLuo(meridian) {
+        // 获取原穴和络穴
+        const yuanPoint = this.findYuanPoint(meridian);
+        const luoPoint = this.findLuoPoint(meridian);
         
-        // ====== 7. 五俞取穴法 ======
-        initFiveTransportSelection() {
-            const selectionDiv = document.getElementById('five-transport-selection');
-            
-            const rules = [
-                { condition: "病在脏", point: "井穴", example: "中风昏迷刺中冲" },
-                { condition: "病变于色", point: "荥穴", example: "心火面赤取少府" },
-                { condition: "病在时间者", point: "俞穴", example: "春季情志不舒取太冲" },
-                { condition: "病变于音者", point: "经穴", example: "肺病咳喘取经渠" },
-                { condition: "病起于饮食", point: "合穴", example: "伤食腹泻取足三里" },
-                { condition: "五脏不平衡", point: "原穴", example: "肝郁取太冲" }
-            ];
-            
-            let html = `
-                <div class="result-item">
-                    <strong>五输穴辨证配穴法</strong><br>
-                    <small>根据《难经·六十八难》"井主心下满，荥主身热..."</small><br><br>
-                    <strong>根据病候选择：</strong>
-                    <div class="option-grid" style="margin: 10px 0;">
-            `;
-            
-            rules.forEach(rule => {
-                html += `
-                    <div class="option-button" onclick="TCMSystem.acupuncture.selectFiveTransportRule('${rule.condition}')">
-                        ${rule.condition}<br>
-                        <small>取${rule.point}</small>
-                    </div>
-                `;
-            });
-            
-            html += `
-                    </div>
-                    <div id="five-transport-result"></div>
+        // 找到表里经
+        const exteriorInteriorPairs = this.pointsDatabase.exteriorInteriorPairs;
+        const interiorMeridian = exteriorInteriorPairs[meridian];
+        const interiorLuoPoint = interiorMeridian ? this.findLuoPoint(interiorMeridian) : null;
+        
+        const resultDiv = document.getElementById('yuan-luo-result');
+        resultDiv.innerHTML = `
+            <div style="background: #F3E5F5; padding: 15px; border-radius: 10px; margin-top: 15px;">
+                <strong>原络配穴方案：</strong><br>
+                <div style="margin: 10px 0; padding: 10px; background: white; border-radius: 8px;">
+                    <span class="channel-tag" style="background:#9C27B0">主经（${meridian}）</span><br>
+                    <strong>原穴：</strong>${yuanPoint ? yuanPoint.name : '无'} 
+                    ${yuanPoint ? `<small>(${yuanPoint.function})</small>` : ''}<br>
+                    <strong>络穴：</strong>${luoPoint ? luoPoint.name : '无'}
+                    ${luoPoint ? `<small>(${luoPoint.function})</small>` : ''}
                 </div>
-            `;
-            
-            selectionDiv.innerHTML = html;
-        },
-        
-        selectFiveTransportRule(condition) {
-            let recommendedPoint = "";
-            let meridian = "";
-            
-            switch(condition) {
-                case "病在脏":
-                    recommendedPoint = "中冲";
-                    meridian = "心包经";
-                    break;
-                case "病变于色":
-                    recommendedPoint = "少府";
-                    meridian = "心经";
-                    break;
-                case "病在时间者":
-                    recommendedPoint = "太冲";
-                    meridian = "肝经";
-                    break;
-                case "病变于音者":
-                    recommendedPoint = "经渠";
-                    meridian = "肺经";
-                    break;
-                case "病起于饮食":
-                    recommendedPoint = "足三里";
-                    meridian = "胃经";
-                    break;
-                case "五脏不平衡":
-                    recommendedPoint = "太冲";
-                    meridian = "肝经";
-                    break;
-            }
-            
-            const resultDiv = document.getElementById('five-transport-result');
-            resultDiv.innerHTML = `
-                <div style="background: #E3F2FD; padding: 15px; border-radius: 10px; margin-top: 15px;">
-                    <strong>根据"${condition}"：</strong><br>
-                    推荐穴位：${recommendedPoint} (${meridian})<br><br>
-                    <button class="tcm-button acupuncture" onclick="TCMSystem.acupuncture.togglePointSelection('${meridian}', '${recommendedPoint}')">
-                        选择此穴
+                
+                <div style="margin: 10px 0; padding: 10px; background: white; border-radius: 8px;">
+                    <span class="channel-tag" style="background:#2196F3">客经（${interiorMeridian || '无'}）</span><br>
+                    <strong>络穴：</strong>${interiorLuoPoint ? interiorLuoPoint.name : '无'}
+                    ${interiorLuoPoint ? `<small>(${interiorLuoPoint.function})</small>` : ''}
+                </div>
+                
+                <div style="margin-top: 15px;">
+                    <strong>配穴原则：</strong><br>
+                    1. ${yuanPoint ? yuanPoint.name : '原穴'}（主经原穴）调本经元气<br>
+                    2. ${luoPoint ? luoPoint.name : '络穴'}（主经络穴）通本经经气<br>
+                    3. ${interiorLuoPoint ? interiorLuoPoint.name : '络穴'}（表里经络穴）通表里经气
+                </div>
+                
+                <div style="margin-top: 15px; text-align: center;">
+                    <button class="tcm-button acupuncture" onclick="TCMSystem.acupuncture.applyYuanLuoPoints('${meridian}')">
+                        ⚖️ 应用原络配穴
                     </button>
                 </div>
-            `;
-        },
+            </div>
+        `;
+    },
+    
+    findYuanPoint(meridian) {
+        const points = this.pointsDatabase.meridians[meridian];
+        if (!points) return null;
         
-        // ====== 8. 俞募取穴法 ======
-        initShuMuSelection() {
-            const selectionDiv = document.getElementById('shu-mu-selection');
-            
-            let html = `
-                <div class="result-item">
-                    <strong>俞募配穴法（脏腑腹背配穴）</strong><br><br>
-                    <strong>选择病变脏腑：</strong>
-                    <div class="option-grid" style="margin: 10px 0;">
-            `;
-            
-            const organs = Object.keys(this.specialPoints.backShuPoints);
-            organs.forEach(organ => {
-                html += `
-                    <div class="option-button" onclick="TCMSystem.acupuncture.selectOrganForShuMu('${organ}')">
-                        ${organ}
-                    </div>
-                `;
-            });
-            
-            html += `
-                    </div>
-                    <div id="shu-mu-result"></div>
-                </div>
-            `;
-            
-            selectionDiv.innerHTML = html;
-        },
+        return points.find(point => point.category && point.category.includes('原穴'));
+    },
+    
+    findLuoPoint(meridian) {
+        const points = this.pointsDatabase.meridians[meridian];
+        if (!points) return null;
         
-        selectOrganForShuMu(organ) {
-            const shuPoint = this.specialPoints.backShuPoints[organ];
-            const muPoint = this.specialPoints.muPoints[organ];
-            
-            if (!shuPoint || !muPoint) return;
-            
-            const resultDiv = document.getElementById('shu-mu-result');
-            resultDiv.innerHTML = `
-                <div style="background: #FFF3E0; padding: 15px; border-radius: 10px; margin-top: 15px;">
-                    <strong>${organ}俞募配穴：</strong><br>
-                    <div style="margin: 10px 0;">
-                        <span class="channel-tag" style="background:#FF9800">背俞穴</span>
-                        ${shuPoint.name} (${shuPoint.meridian})<br>
-                        <small>位置：${shuPoint.location}，偏治慢性病、虚证</small>
-                    </div>
-                    <div style="margin: 10px 0;">
-                        <span class="channel-tag" style="background:#4CAF50">腹募穴</span>
-                        ${muPoint.name} (${muPoint.meridian})<br>
-                        <small>位置：${muPoint.location}，偏治急性病、实证</small>
-                    </div>
-                    <div style="margin-top: 15px;">
-                        <button class="tcm-button acupuncture" onclick="TCMSystem.acupuncture.applyShuMuPoints('${organ}')">
-                            应用俞募配穴
-                        </button>
-                    </div>
-                </div>
-            `;
-        },
+        return points.find(point => point.category && point.category.includes('络穴'));
+    },
+    
+    applyYuanLuoPoints(primaryMeridian) {
+        const yuanPoint = this.findYuanPoint(primaryMeridian);
+        const luoPoint = this.findLuoPoint(primaryMeridian);
         
-        applyShuMuPoints(organ) {
-            const shuPoint = this.specialPoints.backShuPoints[organ];
-            const muPoint = this.specialPoints.muPoints[organ];
-            
-            if (shuPoint) {
-                this.togglePointSelection(shuPoint.meridian, shuPoint.name);
-            }
-            
-            if (muPoint) {
-                this.togglePointSelection(muPoint.meridian, muPoint.name);
-            }
-            
-            TCMSystem.showMessage(`已应用${organ}俞募配穴`, 'success');
-        },
+        // 找到表里经
+        const exteriorInteriorPairs = this.pointsDatabase.exteriorInteriorPairs;
+        const interiorMeridian = exteriorInteriorPairs[primaryMeridian];
+        const interiorLuoPoint = interiorMeridian ? this.findLuoPoint(interiorMeridian) : null;
         
-        // ====== 通用穴位管理 ======
-        togglePointSelection(meridian, pointName) {
-            const point = { meridian, name: pointName };
-            const existingIndex = TCMSystem.currentState.selectedPoints.findIndex(
-                p => p.meridian === meridian && p.name === pointName
-            );
-            
-            if (existingIndex > -1) {
-                TCMSystem.currentState.selectedPoints.splice(existingIndex, 1);
-                TCMSystem.showMessage(`取消选择：${pointName}`, 'info');
-            } else {
-                TCMSystem.currentState.selectedPoints.push(point);
-                TCMSystem.showMessage(`选择穴位：${pointName} (${meridian})`, 'success');
-                
-                // 更新进度
-                TCMSystem.currentState.userProgress.acupuncture.cases++;
-                TCMSystem.currentState.userProgress.acupuncture.correct++;
-                TCMSystem.currentState.userProgress.acupuncture.accuracy = 
-                    Math.round((TCMSystem.currentState.userProgress.acupuncture.correct / 
-                    TCMSystem.currentState.userProgress.acupuncture.cases) * 100);
-                
-                // 记录穴位掌握
-                if (!TCMSystem.currentState.userProgress.pointsMastered.includes(pointName)) {
-                    TCMSystem.currentState.userProgress.pointsMastered.push(pointName);
-                }
-                
-                TCMSystem.saveProgress();
-                TCMSystem.updateProgressDisplay();
-            }
-            
-            // 更新处方预览
-            this.updatePrescriptionPreview();
-        },
-        
-        // ====== 处方系统 ======
-        updatePrescriptionPreview() {
-            const points = TCMSystem.currentState.selectedPoints;
-            if (points.length === 0) return;
-            
-            const prescriptionDiv = document.getElementById('acu-prescription-content');
-            let html = `
-                <div class="result-item">
-                    <strong>已选穴位 (${points.length}个)</strong><br>
-                    <div style="max-height: 200px; overflow-y: auto; margin: 10px 0;">
-            `;
-            
-            // 按经络分组
-            const pointsByMeridian = {};
-            points.forEach(point => {
-                if (!pointsByMeridian[point.meridian]) {
-                    pointsByMeridian[point.meridian] = [];
-                }
-                pointsByMeridian[point.meridian].push(point.name);
-            });
-            
-            for (const [meridian, pointNames] of Object.entries(pointsByMeridian)) {
-                html += `
-                    <div style="margin: 8px 0; padding: 8px; background: #F5F5F5; border-radius: 5px;">
-                        <strong>${meridian}：</strong>${pointNames.join('、')}
-                    </div>
-                `;
-            }
-            
-            html += `
-                    </div>
-                    <div style="margin-top: 15px;">
-                        <strong>配穴法则：</strong><br>
-                        • 常规针刺：平补平泻<br>
-                        • 留针时间：20-30分钟<br>
-                        • 疗程建议：每日1次，7次为一疗程
-                    </div>
-                </div>
-            `;
-            
-            prescriptionDiv.innerHTML = html;
-        },
-        
-        generatePrescription() {
-            const points = TCMSystem.currentState.selectedPoints;
-            if (points.length === 0) {
-                TCMSystem.showMessage('请先选择穴位', 'warning');
-                return;
-            }
-            
-            const prescriptionDiv = document.getElementById('acu-prescription-content');
-            let html = `
-                <div class="result-item">
-                    <strong>📜 针灸处方</strong><br>
-                    <small>生成时间：${new Date().toLocaleString()}</small>
-                    <hr style="margin: 10px 0; border: none; border-top: 1px dashed #ccc;">
-                    
-                    <strong>一、诊断信息</strong><br>
-                    • 辨证依据：${TCMSystem.currentState.selectedMeridian ? TCMSystem.currentState.selectedMeridian + '病变' : '未指定'}<br>
-                    • 配穴法则：循经取穴、八会取穴、原络取穴等综合运用<br><br>
-                    
-                    <strong>二、穴位处方 (${points.length}穴)</strong><br>
-            `;
-            
-            // 按经络分组显示
-            const pointsByMeridian = {};
-            points.forEach(point => {
-                if (!pointsByMeridian[point.meridian]) {
-                    pointsByMeridian[point.meridian] = [];
-                }
-                pointsByMeridian[point.meridian].push(point.name);
-            });
-            
-            for (const [meridian, pointNames] of Object.entries(pointsByMeridian)) {
-                html += `
-                    <div style="margin: 10px 0; padding: 10px; background: #F9F9F9; border-radius: 5px;">
-                        <span class="channel-tag ${this.getMeridianColorClass(meridian)}">
-                            ${meridian}
-                        </span>
-                        ${pointNames.join('、')}
-                    </div>
-                `;
-            }
-            
-            html += `
-                    <br><strong>三、操作方法</strong><br>
-                    • 针刺手法：平补平泻<br>
-                    • 留针时间：20-30分钟<br>
-                    • 针刺顺序：先上后下，先阳后阴<br>
-                    • 疗程安排：每日1次，7次为一疗程，间隔2-3天<br><br>
-                    
-                    <strong>四、注意事项</strong><br>
-                    • 避开血管、神经、重要脏器<br>
-                    • 患者饥饿、疲劳、精神紧张时不针刺<br>
-                    • 孕妇慎用，特别是合谷、三阴交等穴<br>
-                    • 出血性疾病患者慎用<br><br>
-                    
-                    <strong>五、预期效果</strong><br>
-                    • 近期：缓解主要症状<br>
-                    • 远期：调理脏腑功能，改善体质
-                </div>
-            `;
-            
-            prescriptionDiv.innerHTML = html;
-            TCMSystem.showMessage('处方生成完成', 'success');
-        },
-        
-        getMeridianColorClass(meridian) {
-            const colorMap = {
-                "肺经": "taiyang",
-                "大肠经": "yangming",
-                "胃经": "yangming",
-                "脾经": "taiyin",
-                "心经": "shaoyin",
-                "小肠经": "taiyang",
-                "膀胱经": "taiyang",
-                "肾经": "shaoyin",
-                "心包经": "jueyin",
-                "三焦经": "shaoyang",
-                "胆经": "shaoyang",
-                "肝经": "jueyin",
-                "督脉": "",
-                "任脉": ""
-            };
-            return colorMap[meridian] || "";
-        },
-        
-        savePrescription() {
-            const points = TCMSystem.currentState.selectedPoints;
-            if (points.length === 0) {
-                TCMSystem.showMessage('没有可保存的处方', 'warning');
-                return;
-            }
-            
-            const prescription = {
-                date: new Date().toISOString(),
-                points: points,
-                meridian: TCMSystem.currentState.selectedMeridian,
-                method: "综合配穴法"
-            };
-            
-            // 保存到localStorage
-            const savedPrescriptions = JSON.parse(localStorage.getItem('acu-prescriptions') || '[]');
-            savedPrescriptions.push(prescription);
-            localStorage.setItem('acu-prescriptions', JSON.stringify(savedPrescriptions));
-            
-            TCMSystem.showMessage('处方已保存', 'success');
+        // 选择穴位
+        if (yuanPoint) {
+            this.togglePointSelection(primaryMeridian, yuanPoint.name);
         }
-    };
-</script>    
+        
+        if (luoPoint) {
+            this.togglePointSelection(primaryMeridian, luoPoint.name);
+        }
+        
+        if (interiorLuoPoint) {
+            this.togglePointSelection(interiorMeridian, interiorLuoPoint.name);
+        }
+        
+        TCMSystem.showMessage('已应用原络配穴', 'success');
+    },
+    
+    // ====== 3. 子母取穴法 ======
+    initMotherChildSelection() {
+        const selectionDiv = document.getElementById('mother-child-selection');
+        
+        let html = `
+            <div class="result-title">子母补泻配穴法</div>
+            <p><strong>原理：</strong>"虚则补其母，实则泻其子" - 基于五行相生关系补虚泻实</p>
+            <p><strong>方法：</strong>根据病症虚实，选择本经或他经的母穴（补）或子穴（泻）</p>
+            
+            <div class="result-item">
+                <div style="margin-bottom: 15px;">
+                    <strong>五行相生关系：</strong><br>
+                    <div style="display: flex; justify-content: center; gap: 10px; margin: 10px 0;">
+                        <span class="channel-tag" style="background:#8BC34A">木（生）</span>
+                        <span>→</span>
+                        <span class="channel-tag" style="background:#F44336">火（生）</span>
+                        <span>→</span>
+                        <span class="channel-tag" style="background:#FF9800">土（生）</span>
+                        <span>→</span>
+                        <span class="channel-tag" style="background:#9C27B0">金（生）</span>
+                        <span>→</span>
+                        <span class="channel-tag" style="background:#2196F3">水（生）</span>
+                        <span>→</span>
+                        <span class="channel-tag" style="background:#8BC34A">木</span>
+                    </div>
+                </div>
+                
+                <strong>选择病经：</strong>
+                <div class="option-grid" style="margin: 10px 0;">
+        `;
+        
+        const meridians = Object.keys(this.pointsDatabase.meridians);
+        meridians.forEach(meridian => {
+            html += `
+                <div class="option-button" onclick="TCMSystem.acupuncture.selectMeridianForMotherChild('${meridian}')">
+                    ${meridian}<br>
+                    <small>${this.getMeridianShortName(meridian)}</small>
+                </div>
+            `;
+        });
+        
+        html += `
+                </div>
+                <div id="mother-child-result"></div>
+            </div>
+        `;
+        
+        selectionDiv.innerHTML = html;
+    },
+    
+    selectMeridianForMotherChild(meridian) {
+        // 获取该经络的五输穴
+        const fiveTransportPoints = this.getFiveTransportPoints(meridian);
+        
+        const resultDiv = document.getElementById('mother-child-result');
+        resultDiv.innerHTML = `
+            <div style="background: #E8F5E9; padding: 15px; border-radius: 10px; margin-top: 15px;">
+                <strong>${meridian} 五输穴五行属性：</strong><br>
+                <div style="margin: 10px 0; padding: 10px; background: white; border-radius: 8px;">
+                    ${fiveTransportPoints.map(point => `
+                        <div style="margin: 5px 0; padding: 5px; border-bottom: 1px dashed #ddd;">
+                            <strong>${point.name}</strong> (${point.code}) - 
+                            <span class="channel-tag" style="background:${this.getElementColor(point.element)}; padding: 2px 8px; font-size: 12px;">
+                                ${point.category} - ${point.element || '无'}
+                            </span><br>
+                            <small>${point.function}</small>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div style="margin: 15px 0;">
+                    <strong>选择病症虚实：</strong><br>
+                    <div style="display: flex; gap: 15px; margin-top: 10px;">
+                        <label style="flex: 1; text-align: center;">
+                            <input type="radio" name="deficiency-excess" value="deficiency" checked>
+                            <div style="padding: 10px; background: #FFF3E0; border-radius: 8px; cursor: pointer;">
+                                <strong style="color:#FF9800;">虚证</strong><br>
+                                <small>补其母穴</small>
+                            </div>
+                        </label>
+                        <label style="flex: 1; text-align: center;">
+                            <input type="radio" name="deficiency-excess" value="excess">
+                            <div style="padding: 10px; background: #FFEBEE; border-radius: 8px; cursor: pointer;">
+                                <strong style="color:#F44336;">实证</strong><br>
+                                <small>泻其子穴</small>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 15px; text-align: center;">
+                    <button class="tcm-button acupuncture" onclick="TCMSystem.acupuncture.applyMotherChildPoints('${meridian}')">
+                        🌱 应用子母配穴
+                    </button>
+                </div>
+            </div>
+        `;
+    },
+    
+    getFiveTransportPoints(meridian) {
+        const points = this.pointsDatabase.meridians[meridian];
+        if (!points) return [];
+        
+        // 获取五输穴（井、荥、输、经、合）
+        return points.filter(point => 
+            point.category && (point.category.includes('井穴') || 
+                             point.category.includes('荥穴') || 
+                             point.category.includes('输穴') || 
+                             point.category.includes('经穴') || 
+                             point.category.includes('合穴'))
+        ).sort((a, b) => {
+            // 按五输穴顺序排序：井→荥→输→经→合
+            const order = { '井穴': 1, '荥穴': 2, '输穴': 3, '经穴': 4, '合穴': 5 };
+            return (order[a.category.split('/')[0]] || 6) - (order[b.category.split('/')[0]] || 6);
+        });
+    },
+    
+    getElementColor(element) {
+        const colors = {
+            '木': '#8BC34A',
+            '火': '#F44336',
+            '土': '#FF9800',
+            '金': '#9C27B0',
+            '水': '#2196F3'
+        };
+        return colors[element] || '#607D8B';
+    },
+    
+    applyMotherChildPoints(meridian) {
+        const isDeficiency = document.querySelector('input[name="deficiency-excess"]:checked').value === 'deficiency';
+        const fiveTransportPoints = this.getFiveTransportPoints(meridian);
+        
+        if (fiveTransportPoints.length === 0) {
+            TCMSystem.showMessage('该经络无五输穴信息', 'warning');
+            return;
+        }
+        
+        // 获取该经络的五行属性（通常以井穴的五行属性为代表）
+        const meridianElement = fiveTransportPoints.find(p => p.category.includes('井穴'))?.element;
+        if (!meridianElement) {
+            TCMSystem.showMessage('无法确定经络五行属性', 'warning');
+            return;
+        }
+        
+        // 根据虚实选择母穴或子穴
+        let targetElement;
+        if (isDeficiency) {
+            // 虚则补其母：找到生我的元素
+            targetElement = this.findGeneratingElement(meridianElement);
+        } else {
+            // 实则泻其子：找到我生的元素
+            targetElement = this.pointsDatabase.elementCycle.generate[meridianElement];
+        }
+        
+        if (!targetElement) {
+            TCMSystem.showMessage('无法计算母穴或子穴', 'warning');
+            return;
+        }
+        
+        // 在本经中寻找对应五行的穴位
+        const targetPoint = fiveTransportPoints.find(p => p.element === targetElement);
+        
+        if (targetPoint) {
+            this.togglePointSelection(meridian, targetPoint.name);
+            TCMSystem.showMessage(
+                `已选择${isDeficiency ? '母穴' : '子穴'}：${targetPoint.name} (${targetElement})`,
+                'success'
+            );
+        } else {
+            // 如果本经没有，可以在他经寻找
+            TCMSystem.showMessage(`本经无${targetElement}行穴位，可考虑他经取穴`, 'info');
+        }
+    },
+    
+    findGeneratingElement(element) {
+        // 找到生我的元素（五行相生中的"母"）
+        const generate = this.pointsDatabase.elementCycle.generate;
+        for (const [key, value] of Object.entries(generate)) {
+            if (value === element) {
+                return key;
+            }
+        }
+        return null;
+    },
+    
+    // ====== 通用穴位管理 ======
+    togglePointSelection(meridian, pointName) {
+        const point = { meridian, name: pointName };
+        const existingIndex = TCMSystem.currentState.selectedPoints.findIndex(
+            p => p.meridian === meridian && p.name === pointName
+        );
+        
+        if (existingIndex > -1) {
+            TCMSystem.currentState.selectedPoints.splice(existingIndex, 1);
+            TCMSystem.showMessage(`取消选择：${pointName}`, 'info');
+        } else {
+            TCMSystem.currentState.selectedPoints.push(point);
+            TCMSystem.showMessage(`选择穴位：${pointName} (${meridian})`, 'success');
+            
+            // 更新进度
+            TCMSystem.currentState.userProgress.acupuncture.cases++;
+            TCMSystem.currentState.userProgress.acupuncture.correct++;
+            TCMSystem.currentState.userProgress.acupuncture.accuracy = 
+                Math.round((TCMSystem.currentState.userProgress.acupuncture.correct / 
+                TCMSystem.currentState.userProgress.acupuncture.cases) * 100);
+            
+            // 记录穴位掌握
+            if (!TCMSystem.currentState.userProgress.pointsMastered.includes(pointName)) {
+                TCMSystem.currentState.userProgress.pointsMastered.push(pointName);
+            }
+            
+            TCMSystem.saveProgress();
+            TCMSystem.updateProgressDisplay();
+        }
+    }
+};
+</script>
 
 <script>
 // ====== 综合治疗系统 ======
@@ -2763,22 +2388,21 @@ TCMSystem.integration = {
     },
     
     loadIntegratedCase() {
-        // 创建一个综合治疗案例（结合伤寒和针灸）
+        // 创建一个综合治疗案例
         const integratedCase = {
-            id: 1,
-            name: "肝火犯胃证综合治疗",
-            description: "患者胁痛、口苦、胃脘胀痛、呕酸、急躁易怒、脉弦数",
-            shanghanDiagnosis: "肝火犯胃证",
-            shanghanFormula: "左金丸",
-            formulaDetail: "黄连六两，吴茱萸一两",
-            acupunctureDiagnosis: "肝胃不和",
+            name: "肝火犯肺证综合治疗",
+            description: "患者咳嗽、胸胁胀痛、烦躁易怒、口苦咽干、舌红苔黄、脉弦数",
+            shanghanDiagnosis: "肝火犯肺证",
+            shanghanFormula: "黛蛤散合泻白散",
+            formulaDetail: "青黛、海蛤壳、桑白皮、地骨皮、甘草",
+            acupunctureDiagnosis: "肝肺郁热",
             acupuncturePoints: [
-                { meridian: "肝经", points: ["太冲", "行间"] },
-                { meridian: "胃经", points: ["足三里", "内庭"] },
-                { meridian: "胆经", points: ["阳陵泉"] },
-                { meridian: "任脉", points: ["中脘"] }
+                { meridian: "足厥阴肝经", points: ["太冲", "行间"] },
+                { meridian: "手太阴肺经", points: ["尺泽", "列缺"] },
+                { meridian: "手阳明大肠经", points: ["合谷"] },
+                { meridian: "足少阳胆经", points: ["阳陵泉"] }
             ],
-            treatmentPrinciple: "清肝泻火，和胃降逆"
+            treatmentPrinciple: "清肝泻火，宣肺止咳"
         };
         
         const caseDiv = document.getElementById('integrated-case-info');
@@ -2802,8 +2426,12 @@ TCMSystem.integration = {
                 <strong>辨证：</strong>${integratedCase.shanghanDiagnosis}<br>
                 <strong>推荐方剂：</strong>${integratedCase.shanghanFormula}<br>
                 <strong>方剂组成：</strong>${integratedCase.formulaDetail}<br><br>
-                <strong>功效：</strong>清泻肝火，降逆止呕<br>
-                <strong>煎服法：</strong>水煎服，每日1剂，分2次温服<br><br>
+                <strong>方解：</strong><br>
+                • 青黛、海蛤壳：清肝泻火<br>
+                • 桑白皮、地骨皮：清肺泻热<br>
+                • 甘草：调和诸药<br><br>
+                <strong>煎服法：</strong>水煎服，每日1剂，分2次温服<br>
+                <strong>疗程：</strong>7日为一疗程<br><br>
                 <button class="tcm-button" onclick="TCMSystem.integration.selectFormula()" style="padding: 8px 15px; font-size: 14px;">
                     选择此经方
                 </button>
@@ -2820,21 +2448,28 @@ TCMSystem.integration = {
         `;
         
         integratedCase.acupuncturePoints.forEach(item => {
+            const meridianColor = TCMSystem.acupuncture.getMeridianColor(item.meridian);
             acuHtml += `
-                <div style="margin: 8px 0; padding: 8px; background: white; border-radius: 5px;">
-                    <span class="channel-tag ${TCMSystem.acupuncture.getMeridianColorClass(item.meridian)}">
-                        ${item.meridian}
-                    </span>
-                    ${item.points.join('、')}
+                <div style="margin: 8px 0; padding: 10px; background: white; border-radius: 5px; border-left: 5px solid ${meridianColor}">
+                    <strong style="color:${meridianColor}">${TCMSystem.acupuncture.getMeridianShortName(item.meridian)}：</strong>
+                    ${item.points.join('、')}<br>
+                    <small>${TCMSystem.acupuncture.getMeridianIndications(item.meridian)}</small>
                 </div>
             `;
         });
         
         acuHtml += `
                 <br><strong>配穴法则：</strong><br>
-                • 循经取穴：肝经、胃经<br>
-                • 原络配穴：太冲（肝原）+ 足三里（胃合）<br>
-                • 会郗配穴：中脘（腑会）<br><br>
+                • 循经取穴：肝经、肺经<br>
+                • 原络配穴：太冲（肝原）+ 列缺（肺络）<br>
+                • 子母配穴：太冲（泻肝火）<br>
+                • 表里配穴：合谷（大肠原）清肺热<br><br>
+                
+                <strong>针刺方法：</strong><br>
+                • 太冲、行间：泻法<br>
+                • 尺泽、合谷：平补平泻<br>
+                • 留针30分钟<br><br>
+                
                 <button class="tcm-button acupuncture" onclick="TCMSystem.integration.selectAcupuncturePoints()" style="padding: 8px 15px; font-size: 14px;">
                     选择这些穴位
                 </button>
@@ -2845,18 +2480,18 @@ TCMSystem.integration = {
     },
     
     selectFormula() {
-        TCMSystem.currentState.selectedFormula = "左金丸";
-        TCMSystem.showMessage('已选择经方：左金丸', 'success');
+        TCMSystem.currentState.selectedFormula = "黛蛤散合泻白散";
+        TCMSystem.showMessage('已选择经方：黛蛤散合泻白散', 'success');
     },
     
     selectAcupuncturePoints() {
         const points = [
-            { meridian: "肝经", name: "太冲" },
-            { meridian: "肝经", name: "行间" },
-            { meridian: "胃经", name: "足三里" },
-            { meridian: "胃经", name: "内庭" },
-            { meridian: "胆经", name: "阳陵泉" },
-            { meridian: "任脉", name: "中脘" }
+            { meridian: "足厥阴肝经", name: "太冲" },
+            { meridian: "足厥阴肝经", name: "行间" },
+            { meridian: "手太阴肺经", name: "尺泽" },
+            { meridian: "手太阴肺经", name: "列缺" },
+            { meridian: "手阳明大肠经", name: "合谷" },
+            { meridian: "足少阳胆经", name: "阳陵泉" }
         ];
         
         points.forEach(point => {
@@ -2878,52 +2513,47 @@ TCMSystem.learning = {
         
         const learningModules = [
             {
-                title: "📖 《伤寒论》学习",
+                title: "📖 《伤寒论》六经辨证精要",
                 items: [
-                    "太阳病篇：桂枝汤证、麻黄汤证、葛根汤证",
-                    "阳明病篇：白虎汤证、承气汤证",
-                    "少阳病篇：小柴胡汤证",
-                    "太阴病篇：理中汤证",
-                    "少阴病篇：四逆汤证、黄连阿胶汤证",
-                    "厥阴病篇：乌梅丸证",
-                    "合病并病：表里双解法"
+                    "太阳病：恶寒发热，脉浮。治法：辛温解表。主方：麻黄汤、桂枝汤",
+                    "阳明病：但热不寒，大渴大汗。治法：清热攻下。主方：白虎汤、承气汤",
+                    "少阳病：往来寒热，胸胁苦满。治法：和解少阳。主方：小柴胡汤",
+                    "太阴病：腹满而吐，食不下。治法：温中散寒。主方：理中汤",
+                    "少阴病：脉微细，但欲寐。治法：回阳救逆。主方：四逆汤",
+                    "厥阴病：寒热错杂，厥热胜复。治法：寒热并用。主方：乌梅丸"
                 ]
             },
             {
-                title: "🪡 《针灸大成》学习",
+                title: "🪡 《针灸大成》配穴法则",
                 items: [
-                    "循经取穴法：经脉所过，主治所及",
-                    "八会取穴法：灵龟八法、飞腾八法",
-                    "原络取穴法：主客配穴，治疗表里经同病",
-                    "流注取穴法：子午流注，按时取穴",
-                    "会郗取穴法：急慢同治，标本兼顾",
-                    "子母取穴法：虚则补其母，实则泻其子",
-                    "五俞取穴法：井荥输经合，各有主治",
-                    "俞募取穴法：脏腑腹背，前后呼应"
+                    "循经取穴：经脉所过，主治所及。如头痛取合谷、列缺",
+                    "原络配穴：原穴调本经元气，络穴通表里经气。主治表里经同病",
+                    "子母配穴：虚则补其母，实则泻其子。基于五行生克关系",
+                    "俞募配穴：背俞穴与腹募穴相配，治疗脏腑病",
+                    "八会取穴：脏会章门，腑会中脘，气会膻中，血会膈俞",
+                    "八脉交会：公孙冲脉胃心胸，内关阴维下总同"
                 ]
             },
             {
-                title: "🎯 中医辨证要点",
+                title: "🎯 针灸操作要点",
                 items: [
-                    "八纲辨证：阴阳、表里、寒热、虚实",
-                    "六经辨证：三阴三阳传变规律",
-                    "脏腑辨证：五脏六腑功能失调",
-                    "气血津液辨证：气血运行，津液代谢",
-                    "卫气营血辨证：温病辨证纲领",
-                    "三焦辨证：上中下三焦定位"
+                    "进针手法：指切进针法、夹持进针法、舒张进针法、提捏进针法",
+                    "行针手法：提插法、捻转法、循法、弹法、刮法、摇法、飞法、震颤法",
+                    "补泻手法：提插补泻、捻转补泻、疾徐补泻、迎随补泻、呼吸补泻、开阖补泻",
+                    "留针时间：一般20-30分钟，急性病可短，慢性病可长",
+                    "针刺深度：根据部位、体质、病情而定，胸背腰腹部宜浅刺",
+                    "注意事项：避开血管、神经、重要脏器，孕妇慎用合谷、三阴交"
                 ]
             },
             {
-                title: "🌿 经典方剂记忆",
+                title: "🌿 常用经方配伍",
                 items: [
-                    "解表剂：麻黄汤、桂枝汤、银翘散",
-                    "清热剂：白虎汤、黄连解毒汤",
-                    "泻下剂：大承气汤、麻子仁丸",
-                    "和解剂：小柴胡汤、逍遥散",
-                    "温里剂：理中丸、四逆汤",
-                    "补益剂：四君子汤、六味地黄丸",
-                    "理气剂：柴胡疏肝散、半夏厚朴汤",
-                    "理血剂：血府逐瘀汤、补阳还五汤"
+                    "桂枝汤：桂枝、芍药、甘草、生姜、大枣。主治：太阳中风证",
+                    "麻黄汤：麻黄、桂枝、杏仁、甘草。主治：太阳伤寒证",
+                    "小柴胡汤：柴胡、黄芩、人参、半夏、甘草、生姜、大枣。主治：少阳证",
+                    "白虎汤：石膏、知母、甘草、粳米。主治：阳明经热证",
+                    "理中汤：人参、干姜、白术、甘草。主治：太阴虚寒证",
+                    "四逆汤：附子、干姜、甘草。主治：少阴寒化证"
                 ]
             }
         ];
@@ -2974,8 +2604,11 @@ TCMSystem.progress = {
         // 计算六经掌握度
         const channelMastery = this.calculateChannelMastery();
         
-        // 计算针灸经络掌握度
+        // 计算经络掌握度
         const meridianMastery = this.calculateMeridianMastery();
+        
+        // 获取已掌握穴位的前10个
+        const topPoints = progress.pointsMastered.slice(0, 10);
         
         let html = `
             <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 30px;">
@@ -2983,17 +2616,24 @@ TCMSystem.progress = {
                     <div class="tcm-card">
                         <div class="tcm-card-header">📊 总体学习统计</div>
                         <div style="padding: 15px 0;">
-                            <div style="margin: 10px 0;">
-                                <strong>总练习次数：</strong>${totalCases} 次
+                            <div style="margin: 10px 0; display: flex; justify-content: space-between;">
+                                <span>总练习次数：</span>
+                                <strong>${totalCases} 次</strong>
                             </div>
-                            <div style="margin: 10px 0;">
-                                <strong>总体准确率：</strong>${overallAccuracy}%
+                            <div style="margin: 10px 0; display: flex; justify-content: space-between;">
+                                <span>总体准确率：</span>
+                                <strong style="color:#4CAF50">${overallAccuracy}%</strong>
                             </div>
-                            <div style="margin: 10px 0;">
-                                <strong>掌握经方：</strong>${progress.formulasMastered.length} 首
+                            <div style="margin: 10px 0; display: flex; justify-content: space-between;">
+                                <span>掌握经方：</span>
+                                <strong>${progress.formulasMastered.length} 首</strong>
                             </div>
-                            <div style="margin: 10px 0;">
-                                <strong>掌握穴位：</strong>${progress.pointsMastered.length} 个
+                            <div style="margin: 10px 0; display: flex; justify-content: space-between;">
+                                <span>掌握穴位：</span>
+                                <strong>${progress.pointsMastered.length} 个</strong>
+                            </div>
+                            <div class="progress-bar" style="margin: 15px 0;">
+                                <div class="progress-fill" style="width: ${overallAccuracy}%"></div>
                             </div>
                         </div>
                     </div>
@@ -3003,16 +2643,36 @@ TCMSystem.progress = {
                     <div class="tcm-card">
                         <div class="tcm-card-header">📖 《伤寒论》进度</div>
                         <div style="padding: 15px 0;">
-                            <div style="margin: 10px 0;">
-                                <strong>练习次数：</strong>${progress.shanghan.cases} 次
+                            <div style="margin: 10px 0; display: flex; justify-content: space-between;">
+                                <span>医案练习：</span>
+                                <strong>${progress.shanghan.cases} 次</strong>
                             </div>
-                            <div style="margin: 10px 0;">
-                                <strong>辨证准确率：</strong>${progress.shanghan.accuracy}%
+                            <div style="margin: 10px 0; display: flex; justify-content: space-between;">
+                                <span>辨证准确率：</span>
+                                <strong style="color:#4CAF50">${progress.shanghan.accuracy}%</strong>
                             </div>
                             <div class="progress-bar" style="margin: 10px 0;">
                                 <div class="progress-fill" style="width: ${progress.shanghan.accuracy}%"></div>
                             </div>
-                            ${this.renderMasteredFormulas()}
+                            <div style="margin-top: 15px;">
+                                <strong>已掌握经方：</strong><br>
+                                <div style="margin-top: 8px;">
+        `;
+        
+        if (progress.formulasMastered.length > 0) {
+            progress.formulasMastered.slice(0, 5).forEach(formula => {
+                html += `<span style="display: inline-block; background: #E8F5E9; padding: 3px 8px; margin: 3px; border-radius: 4px; font-size: 12px;">${formula}</span>`;
+            });
+            if (progress.formulasMastered.length > 5) {
+                html += `<span style="display: inline-block; background: #FFF3E0; padding: 3px 8px; margin: 3px; border-radius: 4px; font-size: 12px;">+${progress.formulasMastered.length - 5}个</span>`;
+            }
+        } else {
+            html += '<div style="color: #999; font-style: italic;">尚未掌握任何经方</div>';
+        }
+        
+        html += `
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -3021,30 +2681,57 @@ TCMSystem.progress = {
                     <div class="tcm-card">
                         <div class="tcm-card-header">🪡 《针灸大成》进度</div>
                         <div style="padding: 15px 0;">
-                            <div style="margin: 10px 0;">
-                                <strong>练习次数：</strong>${progress.acupuncture.cases} 次
+                            <div style="margin: 10px 0; display: flex; justify-content: space-between;">
+                                <span>配穴练习：</span>
+                                <strong>${progress.acupuncture.cases} 次</strong>
                             </div>
-                            <div style="margin: 10px 0;">
-                                <strong>配穴准确率：</strong>${progress.acupuncture.accuracy}%
+                            <div style="margin: 10px 0; display: flex; justify-content: space-between;">
+                                <span>配穴准确率：</span>
+                                <strong style="color:#4CAF50">${progress.acupuncture.accuracy}%</strong>
                             </div>
                             <div class="progress-bar" style="margin: 10px 0;">
                                 <div class="progress-fill" style="width: ${progress.acupuncture.accuracy}%"></div>
                             </div>
-                            ${this.renderMasteredPoints()}
+                            <div style="margin-top: 15px;">
+                                <strong>已掌握穴位：</strong><br>
+                                <div style="margin-top: 8px;">
+        `;
+        
+        if (topPoints.length > 0) {
+            topPoints.forEach(point => {
+                html += `<span style="display: inline-block; background: #F3E5F5; padding: 3px 8px; margin: 3px; border-radius: 4px; font-size: 12px;">${point}</span>`;
+            });
+            if (progress.pointsMastered.length > 10) {
+                html += `<span style="display: inline-block; background: #E3F2FD; padding: 3px 8px; margin: 3px; border-radius: 4px; font-size: 12px;">+${progress.pointsMastered.length - 10}个</span>`;
+            }
+        } else {
+            html += '<div style="color: #999; font-style: italic;">尚未掌握任何穴位</div>';
+        }
+        
+        html += `
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
             
             <div class="tcm-card">
-                <div class="tcm-card-header">🎯 六经掌握度</div>
+                <div class="tcm-card-header">🎯 六经掌握度分析</div>
                 <div style="padding: 15px 0;">
                     ${this.renderChannelMasteryBars(channelMastery)}
                 </div>
             </div>
             
             <div class="tcm-card">
-                <div class="tcm-card-header">🏆 已解锁成就</div>
+                <div class="tcm-card-header">📈 十二经络熟悉度</div>
+                <div style="padding: 15px 0;">
+                    ${this.renderMeridianMasteryBars(meridianMastery)}
+                </div>
+            </div>
+            
+            <div class="tcm-card">
+                <div class="tcm-card-header">🏆 学习成就</div>
                 <div style="padding: 15px 0;">
                     ${this.renderAchievements()}
                 </div>
@@ -3055,71 +2742,51 @@ TCMSystem.progress = {
     },
     
     calculateChannelMastery() {
-        // 根据伤寒医案练习情况计算六经掌握度
         const progress = TCMSystem.currentState.userProgress;
         
-        // 简化版：随机生成一些数据
-        return {
-            "太阳": Math.floor(Math.random() * 30) + 70,
-            "阳明": Math.floor(Math.random() * 40) + 60,
-            "少阳": Math.floor(Math.random() * 50) + 50,
-            "太阴": Math.floor(Math.random() * 60) + 40,
-            "少阴": Math.floor(Math.random() * 70) + 30,
-            "厥阴": Math.floor(Math.random() * 80) + 20
+        // 根据医案练习情况估算六经掌握度
+        const mastery = {
+            "太阳": Math.min(100, Math.floor(Math.random() * 30) + progress.shanghan.accuracy * 0.7),
+            "阳明": Math.min(100, Math.floor(Math.random() * 30) + progress.shanghan.accuracy * 0.6),
+            "少阳": Math.min(100, Math.floor(Math.random() * 30) + progress.shanghan.accuracy * 0.5),
+            "太阴": Math.min(100, Math.floor(Math.random() * 30) + progress.shanghan.accuracy * 0.4),
+            "少阴": Math.min(100, Math.floor(Math.random() * 30) + progress.shanghan.accuracy * 0.3),
+            "厥阴": Math.min(100, Math.floor(Math.random() * 30) + progress.shanghan.accuracy * 0.2)
         };
-    },
-    
-    calculateMeridianMastery() {
-        // 根据针灸练习情况计算经络掌握度
-        const progress = TCMSystem.currentState.userProgress;
-        
-        const meridians = ["肺经", "大肠经", "胃经", "脾经", "心经", "小肠经", 
-                          "膀胱经", "肾经", "心包经", "三焦经", "胆经", "肝经"];
-        
-        const mastery = {};
-        meridians.forEach(meridian => {
-            mastery[meridian] = Math.floor(Math.random() * 50) + 50;
-        });
         
         return mastery;
     },
     
-    renderMasteredFormulas() {
-        const formulas = TCMSystem.currentState.userProgress.formulasMastered;
-        if (formulas.length === 0) {
-            return '<div style="color: #999; font-style: italic;">尚未掌握任何经方</div>';
-        }
+    calculateMeridianMastery() {
+        const progress = TCMSystem.currentState.userProgress;
         
-        let html = '<div style="margin-top: 15px;"><strong>已掌握经方：</strong><br>';
-        formulas.slice(0, 5).forEach(formula => {
-            html += `<span style="display: inline-block; background: #E8F5E9; padding: 3px 8px; margin: 3px; border-radius: 4px; font-size: 12px;">${formula}</span>`;
+        const meridians = [
+            "手太阴肺经", "手阳明大肠经", "足阳明胃经", "足太阴脾经",
+            "手少阴心经", "手太阳小肠经", "足太阳膀胱经", "足少阴肾经",
+            "手厥阴心包经", "手少阳三焦经", "足少阳胆经", "足厥阴肝经"
+        ];
+        
+        const mastery = {};
+        meridians.forEach(meridian => {
+            // 根据已掌握穴位数量估算熟悉度
+            const shortName = TCMSystem.acupuncture.getMeridianShortName(meridian);
+            const meridianPoints = TCMSystem.acupuncture.pointsDatabase.meridians[meridian] || [];
+            const totalPoints = meridianPoints.length;
+            
+            // 计算该经络已掌握的穴位数量
+            const masteredPoints = progress.pointsMastered.filter(point => {
+                // 检查穴位是否属于该经络
+                const pointInMeridian = meridianPoints.find(p => p.name === point);
+                return pointInMeridian !== undefined;
+            }).length;
+            
+            const masteryRate = totalPoints > 0 ? Math.round((masteredPoints / totalPoints) * 100) : 0;
+            const weightedMastery = Math.min(100, masteryRate + progress.acupuncture.accuracy * 0.3);
+            
+            mastery[meridian] = weightedMastery;
         });
         
-        if (formulas.length > 5) {
-            html += `<span style="display: inline-block; background: #FFF3E0; padding: 3px 8px; margin: 3px; border-radius: 4px; font-size: 12px;">+${formulas.length - 5}个</span>`;
-        }
-        
-        html += '</div>';
-        return html;
-    },
-    
-    renderMasteredPoints() {
-        const points = TCMSystem.currentState.userProgress.pointsMastered;
-        if (points.length === 0) {
-            return '<div style="color: #999; font-style: italic;">尚未掌握任何穴位</div>';
-        }
-        
-        let html = '<div style="margin-top: 15px;"><strong>已掌握穴位：</strong><br>';
-        points.slice(0, 5).forEach(point => {
-            html += `<span style="display: inline-block; background: #F3E5F5; padding: 3px 8px; margin: 3px; border-radius: 4px; font-size: 12px;">${point}</span>`;
-        });
-        
-        if (points.length > 5) {
-            html += `<span style="display: inline-block; background: #E3F2FD; padding: 3px 8px; margin: 3px; border-radius: 4px; font-size: 12px;">+${points.length - 5}个</span>`;
-        }
-        
-        html += '</div>';
-        return html;
+        return mastery;
     },
     
     renderChannelMasteryBars(channelMastery) {
@@ -3140,10 +2807,34 @@ TCMSystem.progress = {
                 <div style="margin: 15px 0;">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
                         <span class="channel-tag ${colorClass}">${channel}病</span>
-                        <span>${mastery}%</span>
+                        <span style="font-weight: bold; color:${colorMap[colorClass] || '#4CAF50'}">${mastery}%</span>
                     </div>
                     <div class="progress-bar">
                         <div class="progress-fill" style="width: ${mastery}%; background: ${colorMap[colorClass] || '#4CAF50'}"></div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        html += '</div>';
+        return html;
+    },
+    
+    renderMeridianMasteryBars(meridianMastery) {
+        let html = '<div style="margin: 10px 0;">';
+        
+        for (const [meridian, mastery] of Object.entries(meridianMastery)) {
+            const shortName = TCMSystem.acupuncture.getMeridianShortName(meridian);
+            const meridianColor = TCMSystem.acupuncture.getMeridianColor(meridian);
+            
+            html += `
+                <div style="margin: 12px 0;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span style="font-weight: bold; color:${meridianColor}">${shortName}</span>
+                        <span style="font-weight: bold; color:${meridianColor}">${mastery}%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${mastery}%; background: ${meridianColor}"></div>
                     </div>
                 </div>
             `;
@@ -3159,31 +2850,93 @@ TCMSystem.progress = {
         
         // 检查成就条件
         if (progress.shanghan.cases >= 1) {
-            achievements.push({ name: "伤寒入门", desc: "完成第一次伤寒辨证", icon: "📖" });
+            achievements.push({ 
+                name: "伤寒入门", 
+                desc: "完成第一次伤寒辨证", 
+                icon: "📖",
+                level: "初级"
+            });
         }
         
         if (progress.acupuncture.cases >= 1) {
-            achievements.push({ name: "针灸初试", desc: "完成第一次针灸配穴", icon: "🪡" });
+            achievements.push({ 
+                name: "针灸初试", 
+                desc: "完成第一次针灸配穴", 
+                icon: "🪡",
+                level: "初级"
+            });
         }
         
-        if (progress.shanghan.accuracy >= 70) {
-            achievements.push({ name: "辨证高手", desc: "伤寒辨证准确率70%以上", icon: "🎯" });
+        if (progress.shanghan.accuracy >= 50) {
+            achievements.push({ 
+                name: "辨证入门", 
+                desc: "伤寒辨证准确率50%以上", 
+                icon: "🎯",
+                level: "中级"
+            });
         }
         
-        if (progress.acupuncture.accuracy >= 70) {
-            achievements.push({ name: "配穴能手", desc: "针灸配穴准确率70%以上", icon: "✨" });
+        if (progress.acupuncture.accuracy >= 50) {
+            achievements.push({ 
+                name: "配穴入门", 
+                desc: "针灸配穴准确率50%以上", 
+                icon: "✨",
+                level: "中级"
+            });
         }
         
-        if (progress.formulasMastered.length >= 5) {
-            achievements.push({ name: "经方传人", desc: "掌握5首以上经方", icon: "🌿" });
+        if (progress.formulasMastered.length >= 3) {
+            achievements.push({ 
+                name: "经方学子", 
+                desc: "掌握3首以上经方", 
+                icon: "🌿",
+                level: "中级"
+            });
         }
         
         if (progress.pointsMastered.length >= 10) {
-            achievements.push({ name: "穴位达人", desc: "掌握10个以上穴位", icon: "📍" });
+            achievements.push({ 
+                name: "穴位熟手", 
+                desc: "掌握10个以上穴位", 
+                icon: "📍",
+                level: "中级"
+            });
+        }
+        
+        if (progress.shanghan.accuracy >= 70 && progress.acupuncture.accuracy >= 70) {
+            achievements.push({ 
+                name: "双修有成", 
+                desc: "辨证和配穴准确率均70%以上", 
+                icon: "⚡",
+                level: "高级"
+            });
         }
         
         if (progress.shanghan.cases >= 10 && progress.acupuncture.cases >= 10) {
-            achievements.push({ name: "中医传承", desc: "完成20次以上练习", icon: "🏆" });
+            achievements.push({ 
+                name: "勤学苦练", 
+                desc: "完成20次以上练习", 
+                icon: "💪",
+                level: "高级"
+            });
+        }
+        
+        if (progress.pointsMastered.length >= 30) {
+            achievements.push({ 
+                name: "穴位达人", 
+                desc: "掌握30个以上穴位", 
+                icon: "🏅",
+                level: "高级"
+            });
+        }
+        
+        if (progress.formulasMastered.length >= 8) {
+            achievements.push({ 
+                name: "经方传人", 
+                desc: "掌握8首以上经方", 
+                icon: "👑",
+                level: "大师"
+            });
         }
         
         if (achievements.length === 0) {
@@ -3192,11 +2945,23 @@ TCMSystem.progress = {
         
         let html = '<div style="display: flex; flex-wrap: wrap; gap: 15px;">';
         achievements.forEach(achievement => {
+            const levelColors = {
+                "初级": "#4CAF50",
+                "中级": "#2196F3", 
+                "高级": "#FF9800",
+                "大师": "#9C27B0"
+            };
+            
             html += `
-                <div style="flex: 1; min-width: 150px; background: #FFF8E1; padding: 15px; border-radius: 10px; border: 2px solid #FFECB3; text-align: center;">
+                <div style="flex: 1; min-width: 180px; background: white; padding: 15px; border-radius: 10px; border: 2px solid ${levelColors[achievement.level]}; text-align: center; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
                     <div style="font-size: 30px; margin-bottom: 10px;">${achievement.icon}</div>
-                    <strong>${achievement.name}</strong><br>
+                    <strong style="color:${levelColors[achievement.level]}">${achievement.name}</strong><br>
                     <small style="color: #666;">${achievement.desc}</small>
+                    <div style="margin-top: 8px;">
+                        <span style="display: inline-block; background:${levelColors[achievement.level]}; color:white; padding: 2px 8px; border-radius: 10px; font-size: 11px;">
+                            ${achievement.level}
+                        </span>
+                    </div>
                 </div>
             `;
         });
@@ -3204,6 +2969,27 @@ TCMSystem.progress = {
         
         return html;
     }
+};
+</script>    
+
+<script>
+// ====== 针灸辅助函数 ======
+TCMSystem.acupuncture.getMeridianColor = function(meridian) {
+    const colors = {
+        "手太阴肺经": "#FF9800",
+        "手阳明大肠经": "#FF5722",
+        "足阳明胃经": "#795548",
+        "足太阴脾经": "#8BC34A",
+        "手少阴心经": "#F44336",
+        "手太阳小肠经": "#FF5252",
+        "足太阳膀胱经": "#2196F3",
+        "足少阴肾经": "#3F51B5",
+        "手厥阴心包经": "#E91E63",
+        "手少阳三焦经": "#9C27B0",
+        "足少阳胆经": "#CDDC39",
+        "足厥阴肝经": "#4CAF50"
+    };
+    return colors[meridian] || "#607D8B";
 };
 
 // ====== 全局函数 ======
@@ -3225,171 +3011,47 @@ function showHerbalTab() {
     TCMSystem.switchMainTab('shanghan');
 }
 
-// ====== 初始化所有子系统 ======
-TCMSystem.initAllSubsystems = function() {
-    this.integration.init();
-    this.learning.init();
-    this.progress.init();
-};
-
 // ====== 启动完整系统 ======
 window.onload = function() {
     TCMSystem.init();
-    TCMSystem.initAllSubsystems();
     
     // 设置今日挑战
     const today = new Date().toDateString();
     const challengeDiv = document.getElementById('today-challenge');
     const challenges = [
         "完成一次太阳病辨证",
-        "掌握3个胃经穴位",
-        "学习灵龟八法原理",
+        "掌握肺经的5个穴位",
         "练习原络配穴法",
-        "完成一次综合治疗案例"
+        "理解五行相生关系",
+        "完成一次综合治疗案例",
+        "学习子母补泻原理",
+        "辨证一次少阳证",
+        "掌握胃经的主要穴位"
     ];
     
     const randomChallenge = challenges[Math.floor(Math.random() * challenges.length)];
     challengeDiv.innerHTML = `
-        <div style="background: #FFF3E0; padding: 10px; border-radius: 8px; margin-top: 10px; border: 2px dashed #FFB74D;">
-            <strong>今日挑战：</strong>${randomChallenge}
+        <div style="background: #FFF3E0; padding: 12px; border-radius: 8px; margin-top: 10px; border: 2px dashed #FFB74D;">
+            <strong style="color:#FF9800;">🎯 今日挑战</strong><br>
+            ${randomChallenge}
+            <div style="margin-top: 8px; text-align: center;">
+                <small style="color:#795548;">完成挑战可获得额外积分</small>
+            </div>
         </div>
     `;
+    
+    // 添加一些初始化提示
+    setTimeout(() => {
+        TCMSystem.showMessage('系统加载完成！点击左侧经络标签可快速切换', 'success');
+    }, 1000);
 };
-
-// ====== 添加一些样式增强 ======
-const style = document.createElement('style');
-style.textContent = `
-    /* 打印优化 */
-    @media print {
-        .meridian-flow,
-        .yin-yang-container,
-        .tcm-message,
-        .tcm-button,
-        .main-tabs,
-        .sub-tabs {
-            display: none !important;
-        }
-        
-        .game-container {
-            box-shadow: none !important;
-            border: 1px solid #ccc !important;
-            margin: 0 !important;
-            width: 100% !important;
-        }
-        
-        .tcm-card {
-            break-inside: avoid !important;
-            page-break-inside: avoid !important;
-            border: 1px solid #ddd !important;
-        }
-        
-        .diagnosis-result {
-            border: 2px solid #333 !important;
-        }
-    }
-    
-    /* 滚动条美化 */
-    ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-    }
-    
-    ::-webkit-scrollbar-track {
-        background: #F5F5F5;
-        border-radius: 4px;
-    }
-    
-    ::-webkit-scrollbar-thumb {
-        background: linear-gradient(135deg, #FF5722, #FF9800);
-        border-radius: 4px;
-    }
-    
-    ::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(135deg, #FF9800, #FF5722);
-    }
-    
-    /* 选中文字样式 */
-    ::selection {
-        background: rgba(255, 152, 0, 0.3);
-        color: #5D4037;
-    }
-    
-    /* 加载动画 */
-    .loading {
-        display: inline-block;
-        width: 20px;
-        height: 20px;
-        border: 3px solid #FFCCBC;
-        border-top-color: #FF5722;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-    }
-    
-    @keyframes spin {
-        to { transform: rotate(360deg); }
-    }
-    
-    /* 工具提示 */
-    [data-tooltip] {
-        position: relative;
-        cursor: help;
-    }
-    
-    [data-tooltip]:before {
-        content: attr(data-tooltip);
-        position: absolute;
-        bottom: 100%;
-        left: 50%;
-        transform: translateX(-50%);
-        background: #5D4037;
-        color: white;
-        padding: 5px 10px;
-        border-radius: 4px;
-        font-size: 12px;
-        white-space: nowrap;
-        opacity: 0;
-        visibility: hidden;
-        transition: all 0.3s;
-        z-index: 1000;
-    }
-    
-    [data-tooltip]:hover:before {
-        opacity: 1;
-        visibility: visible;
-        bottom: calc(100% + 5px);
-    }
-    
-    /* 响应式表格 */
-    .responsive-table {
-        width: 100%;
-        overflow-x: auto;
-    }
-    
-    .responsive-table table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-    
-    .responsive-table th,
-    .responsive-table td {
-        padding: 10px;
-        border: 1px solid #ddd;
-        text-align: left;
-    }
-    
-    .responsive-table th {
-        background: #F5F5F5;
-        font-weight: bold;
-    }
-`;
-document.head.appendChild(style);
 </script>
 
-<!-- 添加一些交互特效 -->
+<!-- 添加交互特效 -->
 <script>
 // 添加穴位点击动画
 document.addEventListener('click', function(e) {
-    if (e.target.closest('.point-card') || e.target.closest('.option-button[onclick*="togglePointSelection"]')) {
+    if (e.target.closest('.option-button')) {
         const ripple = document.createElement('span');
         const rect = e.target.getBoundingClientRect();
         const size = Math.max(rect.width, rect.height);
@@ -3423,22 +3085,25 @@ document.addEventListener('keydown', function(e) {
     if (e.ctrlKey && e.key === '1') {
         e.preventDefault();
         TCMSystem.switchMainTab('home');
+        TCMSystem.showMessage('切换到首页', 'info');
     }
     // Ctrl + 2: 伤寒
     else if (e.ctrlKey && e.key === '2') {
         e.preventDefault();
         TCMSystem.switchMainTab('shanghan');
+        TCMSystem.showMessage('切换到伤寒辨证', 'info');
     }
     // Ctrl + 3: 针灸
     else if (e.ctrlKey && e.key === '3') {
         e.preventDefault();
         TCMSystem.switchMainTab('acupuncture');
+        TCMSystem.showMessage('切换到针灸配穴', 'info');
     }
     // Ctrl + S: 保存进度
     else if (e.ctrlKey && e.key === 's') {
         e.preventDefault();
         TCMSystem.saveProgress();
-        TCMSystem.showMessage('进度已保存', 'success');
+        TCMSystem.showMessage('学习进度已保存', 'success');
     }
     // F1: 帮助
     else if (e.key === 'F1') {
@@ -3451,41 +3116,14 @@ document.addEventListener('keydown', function(e) {
 window.addEventListener('beforeunload', function(e) {
     const progress = TCMSystem.currentState.userProgress;
     if (progress.shanghan.cases > 0 || progress.acupuncture.cases > 0) {
+        const message = '您有未保存的学习进度，确定要离开吗？';
         e.preventDefault();
-        e.returnValue = '您有未保存的学习进度，确定要离开吗？';
+        e.returnValue = message;
+        return message;
     }
 });
 
-// 添加离线支持
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-        navigator.serviceWorker.register('/sw.js').catch(err => {
-            console.log('ServiceWorker 注册失败：', err);
-        });
-    });
-}
-
-// 添加分享功能
-if (navigator.share) {
-    const shareBtn = document.createElement('button');
-    shareBtn.className = 'tcm-button secondary';
-    shareBtn.innerHTML = '📤 分享系统';
-    shareBtn.style.position = 'fixed';
-    shareBtn.style.bottom = '20px';
-    shareBtn.style.right = '20px';
-    shareBtn.style.zIndex = '1000';
-    shareBtn.onclick = function() {
-        navigator.share({
-            title: '中医传承系统',
-            text: '体验《伤寒论》六经辨证与《针灸大成》八大配穴法',
-            url: window.location.href
-        });
-    };
-    document.body.appendChild(shareBtn);
-}
-</script>
-
-<!-- 添加动画定义 -->
+// 添加动画定义
 <style>
 @keyframes ripple {
     to {
@@ -3496,12 +3134,12 @@ if (navigator.share) {
 
 @keyframes float {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+    50% { transform: translateY(-5px); }
 }
 
 @keyframes glow {
     0%, 100% { box-shadow: 0 0 5px rgba(255, 87, 34, 0.5); }
-    50% { box-shadow: 0 0 20px rgba(255, 87, 34, 0.8); }
+    50% { box-shadow: 0 0 15px rgba(255, 87, 34, 0.8); }
 }
 
 .floating {
@@ -3511,6 +3149,23 @@ if (navigator.share) {
 .glow {
     animation: glow 2s ease-in-out infinite;
 }
-</style>    
+
+/* 经络标签悬停效果 */
+.channel-tag:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+/* 卡片悬停效果 */
+.tcm-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* 按钮点击效果 */
+.tcm-button:active {
+    transform: scale(0.98);
+}
+</style>
 </body>
-</html>
+</html>    
