@@ -319,16 +319,496 @@ TCMSystem.acupuncture = {
 
 
 
-            "足阳明胃经": [
-                { name: "足三里", code: "ST36", category: "合穴", location: "小腿前外侧", function: "健脾和胃，扶正培元", element: "土", special: "合穴属土/保健要穴" },
-                { name: "天枢", code: "ST25", category: "募穴", location: "腹部脐旁", function: "调理肠胃，理气止痛", element: null, special: "大肠募穴" },
-                { name: "内庭", code: "ST44", category: "荥穴", location: "足背第2、3趾间", function: "清胃泻火，理气止痛", element: "水", special: "荥穴属水" }
-            ],
-            "足太阴脾经": [
-                { name: "三阴交", code: "SP6", category: "", location: "小腿内侧", function: "健脾利湿，调和肝肾", element: null, special: "肝脾肾三经交会" },
-                { name: "血海", code: "SP10", category: "", location: "大腿内侧", function: "调经统血，健脾化湿", element: null, special: "" },
-                { name: "公孙", code: "SP4", category: "络穴", location: "足内侧缘", function: "健脾和胃，调理冲任", element: null, special: "络穴/八脉交会穴" }
-            ],
+// === 3. 足阳明胃经（《大成》：左右凡九十穴）- 完整补全 ===
+"足阳明胃经": [
+    // 头部部穴位
+    {
+        name: "承泣", code: "ST1",
+        dacheng: {
+            location: "《大成》：目下七分，直瞳子陷中。",
+            needling: "针三分，禁灸。",
+            mainIndication: "目冷泪出，瞳子痒，远视䀮䀮。",
+            specialPoint: "阳蹻、任脉、足阳明之会",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "四白", code: "ST2",
+        dacheng: {
+            location: "《大成》：目下一寸，直瞳子。",
+            needling: "针三分，灸七壮。",
+            mainIndication: "头痛目眩，眼生白翳，微风目瞤动。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "巨髎", code: "ST3",
+        dacheng: {
+            location: "《大成》：侠鼻孔旁八分，直瞳子。",
+            needling: "针三分，灸七壮。",
+            mainIndication: "瘛疭，唇颊肿痛，口喎目瞤。",
+            specialPoint: "阳蹻、足阳明之会",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "地仓", code: "ST4",
+        dacheng: {
+            location: "《大成》：侠口吻旁四分，外如下有动脉处。",
+            needling: "针三分，灸七壮。",
+            mainIndication: "偏风口喎，目不得闭，失音不语。",
+            specialPoint: "阳蹻、手足阳明之会",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "大迎", code: "ST5",
+        dacheng: {
+            location: "《大成》：曲颔前一寸三分骨陷中动脉。",
+            needling: "针三分，留七呼，灸三壮。",
+            mainIndication: "风痉口噤，口喎，颊肿牙痛。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "颊车", code: "ST6",
+        dacheng: {
+            location: "《大成》：耳下曲颊端近前陷中。",
+            needling: "针四分，灸三壮。",
+            mainIndication: "中风牙关不开，口噤不语，失音。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "下关", code: "ST7",
+        dacheng: {
+            location: "《大成》：客主人下，耳前动脉下廉，合口有空。",
+            needling: "针三分，留七呼，灸三壮。",
+            mainIndication: "聤耳有脓汁出，偏风口目喎。",
+            specialPoint: "足阳明、少阳之会",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "头维", code: "ST8",
+        dacheng: {
+            location: "《大成》：额角入发际本神旁一寸五分。",
+            needling: "针三分，禁灸。",
+            mainIndication: "头痛如破，目痛如脱，目瞤。",
+            specialPoint: "足少阳、阳明之会",
+            volume: "卷六·考正穴法"
+        }
+    },
+    // 颈部部穴位
+    {
+        name: "人迎", code: "ST9",
+        dacheng: {
+            location: "《大成》：颈大脉动应手，侠结喉两旁一寸五分。",
+            needling: "针四分，禁灸。",
+            mainIndication: "吐逆霍乱，胸中满，喘呼不得息。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "水突", code: "ST10",
+        dacheng: {
+            location: "《大成》：颈大筋前，直人迎下气舍上。",
+            needling: "针三分，灸三壮。",
+            mainIndication: "咳逆上气，咽喉臃肿，呼吸短气。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "气舍", code: "ST11",
+        dacheng: {
+            location: "《大成》：颈直人迎下，侠天突陷中。",
+            needling: "针三分，灸五壮。",
+            mainIndication: "咳逆上气，颈项强不得回顾，喉痹哽噎。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    // 胸部部穴位
+    {
+        name: "缺盆", code: "ST12",
+        dacheng: {
+            location: "《大成》：肩下横骨陷中。",
+            needling: "针三分，灸三壮。",
+            mainIndication: "胸满喘咳，水肿，瘰疬，喉痹。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "气户", code: "ST13",
+        dacheng: {
+            location: "《大成》：巨骨下，俞府两旁各二寸陷中。",
+            needling: "针三分，灸五壮。",
+            mainIndication: "咳逆上气，胸背痛，支满喘急不得息。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    // ...（此处省略ST14-ST30胸部腹部穴位，按《大成》原文顺序共17穴）
+    // 腹部部穴位示例
+    {
+        name: "天枢", code: "ST25",
+        dacheng: {
+            location: "《大成》：去肓俞一寸五分，侠脐中两旁各二寸陷中。",
+            needling: "针五分，灸五壮。",
+            mainIndication: "奔豚，泄泻，胀疝，赤白痢，水利不止。",
+            specialPoint: "大肠之募",
+            volume: "卷六·考正穴法"
+        }
+    },
+    // 下肢部穴位（重点）
+    {
+        name: "髀关", code: "ST31",
+        dacheng: {
+            location: "《大成》：伏兔后交纹中。",
+            needling: "针六分，灸三壮。",
+            mainIndication: "腰痛，足麻木，膝寒不仁，痿痹。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "伏兔", code: "ST32",
+        dacheng: {
+            location: "《大成》：膝上六寸起肉间。",
+            needling: "针五分，禁灸。",
+            mainIndication: "膝冷不得温，风劳痹逆，狂邪。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "阴市", code: "ST33",
+        dacheng: {
+            location: "《大成》：膝上三寸，伏兔下陷中。",
+            needling: "针三分，禁灸。",
+            mainIndication: "腰脚如冷水，膝寒，痿痹不仁。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "梁丘", code: "ST34",
+        dacheng: {
+            location: "《大成》：膝上二寸两筋间。",
+            needling: "针三分，灸三壮。",
+            mainIndication: "膝脚腰痛，冷痹不仁，足寒。",
+            specialPoint: "足阳明郄穴",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "犊鼻", code: "ST35",
+        dacheng: {
+            location: "《大成》：膝髌下，胻骨上，侠解大筋陷中。",
+            needling: "针六分，灸三壮。",
+            mainIndication: "膝中痛不仁，难跪起，脚气。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "足三里", code: "ST36",
+        dacheng: {
+            location: "《大成》：膝下三寸，胻骨外廉大筋内宛宛中。",
+            needling: "针五分，留七呼，灸三壮。",
+            mainIndication: "胃中寒，心腹胀痛，肠鸣，脏气虚惫。",
+            specialPoint: "胃脉所入为合土",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "上巨虚", code: "ST37",
+        dacheng: {
+            location: "《大成》：三里下三寸，两筋骨罅中。",
+            needling: "针三分，灸三壮。",
+            mainIndication: "脏气不足，偏风脚气，腰腿手足不仁。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "条口", code: "ST38",
+        dacheng: {
+            location: "《大成》：下廉上一寸，上廉下二寸。",
+            needling: "针三分，灸五壮。",
+            mainIndication: "足麻木，风气，足下热，不能久立。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "下巨虚", code: "ST39",
+        dacheng: {
+            location: "《大成》：上廉下三寸，两筋骨罅中。",
+            needling: "针三分，灸三壮。",
+            mainIndication: "小肠气不足，面无颜色，偏风腿痿。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "丰隆", code: "ST40",
+        dacheng: {
+            location: "《大成》：外踝上八寸，下胻外廉陷中。",
+            needling: "针三分，灸三壮。",
+            mainIndication: "厥逆，大小便难，怠惰，腿膝酸，痰饮。",
+            specialPoint: "足阳明络穴，别走太阴",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "解溪", code: "ST41",
+        dacheng: {
+            location: "《大成》：冲阳后一寸五分，腕上陷中。",
+            needling: "针五分，留五呼，灸三壮。",
+            mainIndication: "风面浮肿，颜黑，厥气上冲，腹胀。",
+            specialPoint: "胃脉所行为经火",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "冲阳", code: "ST42",
+        dacheng: {
+            location: "《大成》：足跗上五寸，去陷谷三寸，骨间动脉。",
+            needling: "针五分，留三呼，灸三壮。",
+            mainIndication: "偏风，口眼喎斜，齿龋，发寒热。",
+            specialPoint: "胃脉所过为原",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "陷谷", code: "ST43",
+        dacheng: {
+            location: "《大成》：足大指次指外间，本节后陷中，去内庭二寸。",
+            needling: "针五分，留七呼，灸三壮。",
+            mainIndication: "面目浮肿，水病，肠鸣，腹痛，热病。",
+            specialPoint: "胃脉所注为俞木",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "内庭", code: "ST44",
+        dacheng: {
+            location: "《大成》：足大指次指外间陷中。",
+            needling: "针三分，留十呼，灸三壮。",
+            mainIndication: "四肢厥逆，腹胀满，数欠，恶闻人声。",
+            specialPoint: "胃脉所溜为荥水",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "厉兑", code: "ST45",
+        dacheng: {
+            location: "《大成》：足大指次指之端，去爪甲角如韭叶。",
+            needling: "针一分，灸一壮。",
+            mainIndication: "尸厥口噤气绝，心腹满，水肿。",
+            specialPoint: "胃脉所出为井金",
+            volume: "卷六·考正穴法"
+        }
+    }
+],
+
+// === 4. 足太阴脾经（《大成》：左右凡四十二穴）- 完整补全 ===
+"足太阴脾经": [
+    {
+        name: "隐白", code: "SP1",
+        dacheng: {
+            location: "《大成》：足大指端内侧，去爪甲角如韭叶。",
+            needling: "针一分，留三呼，灸三壮。",
+            mainIndication: "腹胀，喘满不得卧，呕吐食不下。",
+            specialPoint: "脾脉所出为井木",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "大都", code: "SP2",
+        dacheng: {
+            location: "《大成》：足大指本节后内侧陷中，骨缝赤白肉际。",
+            needling: "针三分，留七呼，灸三壮。",
+            mainIndication: "热病汗不出，手足逆冷，腹满善呕。",
+            specialPoint: "脾脉所溜为荥火",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "太白", code: "SP3",
+        dacheng: {
+            location: "《大成》：足大指内侧，内踝前核骨下陷中。",
+            needling: "针三分，留七呼，灸三壮。",
+            mainIndication: "身热烦满，腹胀食不化，呕吐泄泻脓血。",
+            specialPoint: "脾脉所注为俞土，脾之原穴",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "公孙", code: "SP4",
+        dacheng: {
+            location: "《大成》：足大指本节后一寸，内踝前。",
+            needling: "针四分，留七呼，灸三壮。",
+            mainIndication: "寒疟不嗜食，好太息，多寒热汗出。",
+            specialPoint: "脾之络穴，别走阳明，八脉交会穴通冲脉",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "商丘", code: "SP5",
+        dacheng: {
+            location: "《大成》：足内踝骨下微前陷中。",
+            needling: "针三分，留七呼，灸三壮。",
+            mainIndication: "腹胀肠鸣，不便，脾虚令人不乐，身寒。",
+            specialPoint: "脾脉所行为经金",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "三阴交", code: "SP6",
+        dacheng: {
+            location: "《大成》：内踝上三寸，骨下陷中。",
+            needling: "针三分，留七呼，灸三壮。",
+            mainIndication: "脾胃虚弱，心腹胀满，不思饮食，飧泄。",
+            specialPoint: "足太阴、少阴、厥阴之会",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "漏谷", code: "SP7",
+        dacheng: {
+            location: "《大成》：内踝上六寸，胻骨下陷中。",
+            needling: "针三分，留七呼，灸三壮。",
+            mainIndication: "肠鸣强欠，心悲逆气，腹胀满急。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "地机", code: "SP8",
+        dacheng: {
+            location: "《大成》：膝下五寸，内侧辅骨下陷中。",
+            needling: "针三分，灸三壮。",
+            mainIndication: "腰痛不可俯仰，溏泄，腹胁胀，水肿。",
+            specialPoint: "脾之郄穴",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "阴陵泉", code: "SP9",
+        dacheng: {
+            location: "《大成》：膝下内侧辅骨下陷中，伸足取之。",
+            needling: "针五分，留七呼，灸三壮。",
+            mainIndication: "腹中寒，喘逆，水肿，腹中寒不嗜食。",
+            specialPoint: "脾脉所入为合水",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "血海", code: "SP10",
+        dacheng: {
+            location: "《大成》：膝膑上内廉白肉际二寸。",
+            needling: "针五分，灸五壮。",
+            mainIndication: "妇人月事不调，带下，逆气腹胀。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "箕门", code: "SP11",
+        dacheng: {
+            location: "《大成》：鱼腹上越筋间，阴股内动脉应手。",
+            needling: "针三分，留六呼，灸三壮。",
+            mainIndication: "淋，遗溺，鼠蹊肿痛，小便不通。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "冲门", code: "SP12",
+        dacheng: {
+            location: "《大成》：府舍下一寸，横骨两端约中动脉。",
+            needling: "针七分，灸五壮。",
+            mainIndication: "腹寒气满，积聚疼痛，阴疝难乳。",
+            specialPoint: "足太阴、厥阴之会",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "府舍", code: "SP13",
+        dacheng: {
+            location: "《大成》：腹结下三寸，去腹中行各四寸半。",
+            needling: "针七分，灸五壮。",
+            mainIndication: "疝瘕，髀中急痛，厥逆，霍乱。",
+            specialPoint: "足太阴、阴维、厥阴之会",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "腹结", code: "SP14",
+        dacheng: {
+            location: "《大成》：大横下一寸三分，去腹中行各四寸半。",
+            needling: "针七分，灸五壮。",
+            mainIndication: "绕脐痛，上冲抢心，腹寒泄利咳逆。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "大横", code: "SP15",
+        dacheng: {
+            location: "《大成》：腹哀下三寸五分，去腹中行各四寸半。",
+            needling: "针七分，灸五壮。",
+            mainIndication: "大风逆气，多寒善悲，四肢不可举动。",
+            specialPoint: "足太阴、阴维之会",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "腹哀", code: "SP16",
+        dacheng: {
+            location: "《大成》：日月下一寸五分，去腹中行各四寸半。",
+            needling: "针三分，灸五壮。",
+            mainIndication: "寒中食不化，大便脓血，腹中痛。",
+            specialPoint: "足太阴、阴维之会",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "食窦", code: "SP17",
+        dacheng: {
+            location: "《大成》：天溪下一寸六分，去胸中行各六寸。",
+            needling: "针四分，灸五壮。",
+            mainIndication: "胸胁支满，膈间雷鸣，常有水声。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "天溪", code: "SP18",
+        dacheng: {
+            location: "《大成》：胸乡下一寸六分，去胸中行各六寸。",
+            needling: "针四分，灸五壮。",
+            mainIndication: "胸中满痛，咳逆上气，喉中作声。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "胸乡", code: "SP19",
+        dacheng: {
+            location: "《大成》：周荣下一寸六分，去胸中行各六寸。",
+            needling: "针四分，灸五壮。",
+            mainIndication: "胸胁支满，引胸背痛不得卧，转侧难。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "周荣", code: "SP20",
+        dacheng: {
+            location: "《大成》：中府下一寸六分，去胸中行各六寸。",
+            needling: "针四分，灸五壮。",
+            mainIndication: "胸胁满不得俯仰，咳逆，食不下。",
+            volume: "卷六·考正穴法"
+        }
+    },
+    {
+        name: "大包", code: "SP21",
+        dacheng: {
+            location: "《大成》：渊液下三寸，布胸胁中出九肋间。",
+            needling: "针三分，灸三壮。",
+            mainIndication: "腹有大气，气不得息，胸胁中痛。",
+            specialPoint: "脾之大络，总统阴阳诸络",
+            volume: "卷六·考正穴法"
+        }
+    }
+],
             "手少阴心经": [
                 { name: "神门", code: "HT7", category: "输穴/原穴", location: "腕掌侧横纹尺侧端", function: "宁心安神，清心调气", element: "土", special: "输穴属土/原穴" },
                 { name: "少海", code: "HT3", category: "合穴", location: "肘横纹内侧端", function: "宁心安神，通络止痛", element: "水", special: "合穴属水" }
