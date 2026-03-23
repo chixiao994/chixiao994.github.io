@@ -220,10 +220,16 @@
         return "风";
     }
     // 时辰划分 (真太阳时)
-    const zodiacHours = ["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
+    const traditionalZodiac = ["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
+    // 重新排序使午时在上、子时在下：顺序为午、未、申、酉、戌、亥、子、丑、寅、卯、辰、巳
+    const zodiacDisplay = ["午","未","申","酉","戌","亥","子","丑","寅","卯","辰","巳"];
     function getZodiacIndex(trueSolarHour) {
         let h = (trueSolarHour + 1) % 24;
         return Math.floor(h / 2) % 12;
+    }
+    // 映射传统索引到显示索引（传统索引6午->显示0，传统索引0子->显示6）
+    function mapToDisplayIndex(traditionalIdx) {
+        return (traditionalIdx + 6) % 12;
     }
     const organMap = {0:"胆",1:"肝",2:"肺",3:"大肠",4:"胃",5:"脾",6:"心",7:"小肠",8:"膀胱",9:"肾",10:"心包",11:"三焦"};
     function getHealthTip(seasonQi, zodiacOrgan) {
@@ -239,12 +245,13 @@
 
     // 画表盘
     let canvas, ctx;
-    function drawClock(zodiacIndex, trueSolarHour) {
+    function drawClock(displayIdx, trueSolarHour) {
         if (!canvas) return;
         const size = canvas.width;
         ctx.clearRect(0, 0, size, size);
         ctx.save();
         ctx.translate(size/2, size/2);
+        // 旋转使 0° 指向正上方（12点方向）
         ctx.rotate(-Math.PI/2);
 
         // 外圈
@@ -254,7 +261,7 @@
         ctx.lineWidth = 2;
         ctx.stroke();
 
-        // 刻度和文字
+        // 刻度和文字：每个时辰占30°，从午时（索引0）开始，角度0°对应午时
         for (let i = 0; i < 12; i++) {
             let angle = i * 30 * Math.PI/180;
             let inner = size/2 - 20;
@@ -270,18 +277,21 @@
             ctx.lineWidth = 1.5;
             ctx.stroke();
 
+            // 文字位置：半径向内一点
             let textAngle = angle;
-            let r = size/2 - 30;
+            let r = size/2 - 28;
             let xText = r * Math.cos(textAngle);
             let yText = r * Math.sin(textAngle);
             ctx.font = `bold ${size/18}px "Segoe UI"`;
             ctx.fillStyle = "#5a4a3a";
-            ctx.fillText(zodiacHours[i], xText-6, yText+6);
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(zodiacDisplay[i], xText, yText);
         }
 
-        // 当前时辰高亮扇形
-        let startAngle = zodiacIndex * 30 * Math.PI/180;
-        let endAngle = (zodiacIndex+1) * 30 * Math.PI/180;
+        // 当前时辰高亮扇形（用显示索引）
+        let startAngle = displayIdx * 30 * Math.PI/180;
+        let endAngle = (displayIdx + 1) * 30 * Math.PI/180;
         ctx.beginPath();
         ctx.arc(0, 0, size/2-10, startAngle, endAngle);
         ctx.lineWidth = 4;
@@ -289,7 +299,7 @@
         ctx.stroke();
 
         // 指针（指向当前时辰中央）
-        let pointerAngle = (zodiacIndex * 30 + 15) * Math.PI/180;
+        let pointerAngle = (displayIdx * 30 + 15) * Math.PI/180;
         ctx.beginPath();
         ctx.moveTo(0, 0);
         let px = (size/2 - 35) * Math.cos(pointerAngle);
@@ -327,13 +337,14 @@
         let term = getSolarTermName(sunLon);
         document.getElementById('term').innerHTML = term;
         let seasonQi = getMainQi(sunLon);
-        let zodiacIdx = getZodiacIndex(trueSolar);
-        let organ = organMap[zodiacIdx];
+        let traditionalIdx = getZodiacIndex(trueSolar);
+        let displayIdx = mapToDisplayIndex(traditionalIdx);
+        let organ = organMap[traditionalIdx];
         document.getElementById('dangling').innerHTML = organ;
         let tip = getHealthTip(seasonQi, organ);
         document.getElementById('dailyTip').innerHTML = `✨ ${tip}`;
 
-        drawClock(zodiacIdx, trueSolar);
+        drawClock(displayIdx, trueSolar);
     }
 
     function setCoordinates(lat, lon, source) {
@@ -380,7 +391,7 @@
         document.getElementById('gpsBtn').onclick = requestGPS;
         document.getElementById('manualBtn').onclick = manualCalculate;
 
-        // 默认使用北京天安门坐标
+        // 默认使用北京天安门坐标，用户可手动修改后点击按钮
         setCoordinates(39.9042, 116.4074, '默认坐标（北京）');
         setInterval(updateDisplay, 1000);
     };
