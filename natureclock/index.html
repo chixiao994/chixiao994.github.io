@@ -71,6 +71,13 @@
             cursor: pointer;
             font-size: 0.75rem;
         }
+        .sync-time {
+            background: #6c8b6a;
+            margin-top: 4px;
+            width: auto;
+            font-size: 0.7rem;
+            padding: 4px 10px;
+        }
         .clock-panel {
             padding: 20px;
             text-align: center;
@@ -141,6 +148,7 @@
         <input type="text" id="lonInput" placeholder="经度" value="">
         <button id="manualBtn">手动计算</button>
         <button id="gpsBtn">使用我的位置</button>
+        <button id="syncTimeBtn" class="sync-time">🕒 同步网络时间</button>
     </div>
     <div class="clock-panel">
         <canvas id="clockCanvas" width="280" height="280"></canvas>
@@ -153,12 +161,13 @@
         <div class="info-row"><span class="label">⚖️ 当令脏腑</span><span class="value" id="dangling">----</span></div>
         <div class="tip" id="dailyTip">✨ 等待定位或手动输入…</div>
         <div class="source-note" id="sourceInfo"></div>
+        <div class="source-note" id="timeSyncInfo"></div>
     </div>
 </div>
 
 <script>
     // --------------------------------------------------------------
-    // 精确天文计算（基于儒略日）
+    // 天文计算（基于儒略日）
     // --------------------------------------------------------------
     function toJulianDay(date) {
         let year = date.getUTCFullYear();
@@ -315,7 +324,42 @@
         return tip;
     }
 
-    // 画表盘（文字顺时针旋转90度，字头朝外）
+    // ---------- 时间同步 ----------
+    let timeOffsetMs = 0;          // 本地时间与网络UTC时间的偏移（本地时间 = 网络UTC + 偏移）
+    let lastSyncTime = null;
+
+    async function syncNetworkTime() {
+        const syncBtn = document.getElementById('syncTimeBtn');
+        const originalText = syncBtn.innerText;
+        syncBtn.innerText = '⏳ 同步中...';
+        try {
+            const response = await fetch('https://worldtimeapi.org/api/timezone/Etc/UTC');
+            if (!response.ok) throw new Error('网络请求失败');
+            const data = await response.json();
+            const utcStr = data.utc_datetime;
+            const networkUTC = new Date(utcStr).getTime(); // 毫秒时间戳
+            const localNow = Date.now();
+            timeOffsetMs = localNow - networkUTC;  // 本地比网络快多少毫秒
+            lastSyncTime = new Date();
+            document.getElementById('timeSyncInfo').innerHTML = `✅ 已同步网络时间 (${new Date().toLocaleString()})`;
+            // 立即触发一次刷新
+            if (currentLat !== null && currentLon !== null) updateDisplay();
+        } catch (err) {
+            console.error(err);
+            document.getElementById('timeSyncInfo').innerHTML = `⚠️ 同步失败，使用本地时间`;
+            timeOffsetMs = 0;
+        } finally {
+            syncBtn.innerText = originalText;
+        }
+    }
+
+    // 获取校正后的当前UTC日期对象
+    function getAccurateUTCNow() {
+        const now = Date.now() - timeOffsetMs;  // 校正后的网络时间毫秒数
+        return new Date(now);
+    }
+
+    // ---------- 画表盘 ----------
     let canvas, ctx;
     function drawClock(displayIdx) {
         if (!canvas) return;
@@ -348,14 +392,11 @@
             ctx.lineWidth = 1.5;
             ctx.stroke();
 
-            // 文字位置（半径向内一些）
             let r = size/2 - 28;
             let xText = r * Math.cos(angle);
             let yText = r * Math.sin(angle);
-
             ctx.save();
             ctx.translate(xText, yText);
-            // 顺时针旋转90度，使文字沿半径方向，字头朝外
             ctx.rotate(angle + Math.PI/2);
             ctx.font = `bold ${size/18}px "Segoe UI"`;
             ctx.fillStyle = "#5a4a3a";
@@ -391,22 +432,24 @@
         ctx.restore();
     }
 
+    // 全局变量
     let currentLat = null, currentLon = null;
 
     function updateDisplay() {
         if (currentLat === null || currentLon === null) return;
 
-        const now = new Date();
-        const utcNow = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
-        const JD = toJulianDay(utcNow);
+        const accurateUTC = getAccurateUTCNow();  // 经过网络同步校正的UTC时间
+        const JD = toJulianDay(accurateUTC);
 
-        let trueSolar = getTrueSolarTime(currentLat, currentLon, utcNow);
+        let trueSolar = getTrueSolarTime(currentLat, currentLon, accurateUTC);
         let hours = Math.floor(trueSolar);
         let minutes = Math.floor((trueSolar - hours)*60);
         let seconds = Math.floor(((trueSolar - hours)*60 - minutes)*60);
         document.getElementById('trueTime').innerHTML = `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
 
-        let [sunrise, sunset] = getSunriseSunset(currentLat, currentLon, now);
+        // 日出日落需要本地日期（基于本地时间，但使用网络时间校正后的日期）
+        const localDateForSun = new Date(accurateUTC.getTime() - new Date().getTimezoneOffset() * 60000); // 转为本地日期对象
+        let [sunrise, sunset] = getSunriseSunset(currentLat, currentLon, localDateForSun);
         let sunriseH = Math.floor(sunrise), sunriseM = Math.floor((sunrise%1)*60);
         let sunsetH = Math.floor(sunset), sunsetM = Math.floor((sunset%1)*60);
         document.getElementById('sunrise').innerHTML = `${sunriseH.toString().padStart(2,'0')}:${sunriseM.toString().padStart(2,'0')}`;
@@ -460,6 +503,7 @@
         setCoordinates(lat, lon, '手动输入');
     }
 
+    // 初始化
     window.onload = () => {
         canvas = document.getElementById('clockCanvas');
         ctx = canvas.getContext('2d');
@@ -468,10 +512,14 @@
 
         document.getElementById('gpsBtn').onclick = requestGPS;
         document.getElementById('manualBtn').onclick = manualCalculate;
+        document.getElementById('syncTimeBtn').onclick = syncNetworkTime;
 
         // 默认泸州
         setCoordinates(29.1321, 105.5205, '默认坐标（泸州）');
         setInterval(updateDisplay, 1000);
+
+        // 页面启动时尝试一次网络时间同步
+        syncNetworkTime();
     };
 </script>
 </body>
