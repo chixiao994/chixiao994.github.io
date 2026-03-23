@@ -96,6 +96,7 @@
             background: #f9f5ec;
             border-top: 1px solid #e6dfd1;
         }
+        
         .info-row {
             display: flex;
             justify-content: space-between;
@@ -154,6 +155,7 @@
         <canvas id="clockCanvas" width="280" height="280"></canvas>
     </div>
     <div class="info-panel">
+        <div class="info-row"><span class="label">📅 日期</span><span class="value" id="localDate">----</span></div>
         <div class="info-row"><span class="label">🌞 真太阳时</span><span class="value" id="trueTime">--:--:--</span></div>
         <div class="info-row"><span class="label">🌅 日出</span><span class="value" id="sunrise">--:--</span></div>
         <div class="info-row"><span class="label">🌇 日落</span><span class="value" id="sunset">--:--</span></div>
@@ -448,6 +450,10 @@
         let minutes = Math.floor((trueSolar - hours)*60);
         let seconds = Math.floor(((trueSolar - hours)*60 - minutes)*60);
         document.getElementById('trueTime').innerHTML = `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+        let localDate = new Date(accurateUTC.getTime() - new Date().getTimezoneOffset() * 60000);
+        let dateStr = `${localDate.getFullYear()}-${(localDate.getMonth()+1).toString().padStart(2,'0')}-${localDate.getDate().toString().padStart(2,'0')}`;
+        document.getElementById('localDate').innerHTML = dateStr;
+        
 
         // 日出日落需要本地日期（基于本地时间，但使用网络时间校正后的日期）
         const localDateForSun = new Date(accurateUTC.getTime() - new Date().getTimezoneOffset() * 60000); // 转为本地日期对象
