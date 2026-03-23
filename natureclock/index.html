@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>自然钟 · 人生轨迹</title>
+    <title>自然钟 · 灵龟八法 · 南半球节气修正</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
         body {
@@ -163,8 +163,8 @@
 <body>
 <div class="card">
     <div class="header">
-        <h1>自然钟 · 人生轨迹</h1>
-        <p>真太阳时 | 地貌气候 | 南北半球节气修正 | 灵龟开穴</p>
+        <h1>🌿 自然钟 · 灵龟八法 · 南半球修正</h1>
+        <p>真太阳时 | 地貌气候 | 南北半球节气自动识别 | 灵龟开穴</p>
     </div>
     <div class="location-bar">
         <span>📍 当前位置</span>
@@ -253,18 +253,16 @@
         return lambda;
     }
 
-    // 节气列表（北半球从春分开始）
+    // 节气列表（北半球）
     const solarTermsNorth = ["春分","清明","谷雨","立夏","小满","芒种","夏至","小暑","大暑","立秋","处暑","白露","秋分","寒露","霜降","立冬","小雪","大雪","冬至","小寒","大寒","立春","雨水","惊蛰"];
-    // 南半球节气（与北半球相差半年，秋分→春分）
+    // 南半球节气（与北半球相差180°黄经，即索引偏移12位）
     const solarTermsSouth = ["秋分","寒露","霜降","立冬","小雪","大雪","冬至","小寒","大寒","立春","雨水","惊蛰","春分","清明","谷雨","立夏","小满","芒种","夏至","小暑","大暑","立秋","处暑","白露"];
 
     function getSolarTermName(JD, lat) {
         let lambda = sunApparentLongitude(JD);
-        let isSouth = lat < 0;
         let idx = Math.floor((lambda + 7.5) % 360 / 15);
-        if (isSouth) {
-            // 南半球节气索引偏移12（半年）
-            idx = (idx + 12) % 24;
+        if (lat < 0) {
+            // 南半球：北半球春分(黄经0°)对应南半球秋分，直接使用南半球节气表
             return solarTermsSouth[idx];
         }
         return solarTermsNorth[idx];
@@ -279,7 +277,7 @@
         return "风";
     }
     
-    // 南半球主气规则（与北半球相反：北半球暑时南半球寒，北半球寒时南半球暑）
+    // 南半球主气规则（与北半球相反）
     function getBaseQiFromSunLonSouth(sunLon) {
         if ((sunLon >= 315) || (sunLon < 45)) return "暑";
         if (sunLon >= 45 && sunLon < 135) return "寒";
@@ -292,22 +290,21 @@
         return lat >= 0 ? getBaseQiFromSunLonNorth(sunLon) : getBaseQiFromSunLonSouth(sunLon);
     }
 
-    // 地貌类型修正（根据纬度、经度、海拔模拟）
+    // 地貌类型
     function getTerrainType(lat, lon) {
         let absLat = Math.abs(lat);
-        // 盆地（四川盆地范围）
+        // 四川盆地
         if (lat > 28 && lat < 32 && lon > 102 && lon < 108) return "盆地";
         // 青藏高原
         if (lat > 25 && lat < 40 && lon > 75 && lon < 105 && absLat > 25) return "高原";
-        // 沿海（距海较近）
+        // 沿海
         if (lon > 115 && lat > 18 && lat < 45) return "沿海";
-        // 南半球澳大利亚沿海
         if (lat < -10 && lat > -40 && lon > 110 && lon < 155) return "沿海";
         // 内陆平原
         return "内陆";
     }
 
-    // 气候修正规则（科学化）
+    // 气候修正规则
     function adjustQiWithTerrainAndLat(baseQi, terrain, lat) {
         let absLat = Math.abs(lat);
         let result = baseQi;
@@ -363,7 +360,7 @@
         return { baseQi, terrain, actualQi, organ };
     }
 
-    // 日出日落、真太阳时函数（同前，略，保持完整）
+    // 日出日落计算
     function getSunriseSunset(lat, lon, date) {
         let JD = toJulianDay(new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())));
         let T = (JD - 2451545.0)/36525.0;
@@ -491,6 +488,8 @@
         let h = Math.floor(trueSolar), m = Math.floor((trueSolar-h)*60), s = Math.floor(((trueSolar-h)*60 - m)*60);
         document.getElementById('trueTime').innerHTML = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
         document.getElementById('sunLongitude').innerHTML = sunLon.toFixed(1) + '°';
+        
+        // 节气显示：根据纬度自动选择北半球或南半球节气表
         let term = getSolarTermName(JD, currentLat);
         document.getElementById('term').innerHTML = term;
         
