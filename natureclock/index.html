@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>自然钟 · 灵龟八法 · 南半球节气修正</title>
+    <title>自然钟 · 灵龟八法 · 人生轨迹</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
         body {
@@ -163,8 +163,8 @@
 <body>
 <div class="card">
     <div class="header">
-        <h1>🌿 自然钟 · 灵龟八法 · 南半球修正</h1>
-        <p>真太阳时 | 地貌气候 | 南北半球节气自动识别 | 灵龟开穴</p>
+        <h1>🌿 自然钟 · 灵龟八法 · 人生轨迹</h1>
+        <p>真太阳时 | 地貌气候 | 南北半球节气 | 灵龟开穴</p>
     </div>
     <div class="location-bar">
         <span>📍 当前位置</span>
@@ -253,22 +253,16 @@
         return lambda;
     }
 
-    // 节气列表（北半球）
     const solarTermsNorth = ["春分","清明","谷雨","立夏","小满","芒种","夏至","小暑","大暑","立秋","处暑","白露","秋分","寒露","霜降","立冬","小雪","大雪","冬至","小寒","大寒","立春","雨水","惊蛰"];
-    // 南半球节气（与北半球相差180°黄经，即索引偏移12位）
     const solarTermsSouth = ["秋分","寒露","霜降","立冬","小雪","大雪","冬至","小寒","大寒","立春","雨水","惊蛰","春分","清明","谷雨","立夏","小满","芒种","夏至","小暑","大暑","立秋","处暑","白露"];
 
     function getSolarTermName(JD, lat) {
         let lambda = sunApparentLongitude(JD);
         let idx = Math.floor((lambda + 7.5) % 360 / 15);
-        if (lat < 0) {
-            // 南半球：北半球春分(黄经0°)对应南半球秋分，直接使用南半球节气表
-            return solarTermsSouth[idx];
-        }
+        if (lat < 0) return solarTermsSouth[idx];
         return solarTermsNorth[idx];
     }
 
-    // 北半球主气规则
     function getBaseQiFromSunLonNorth(sunLon) {
         if ((sunLon >= 315) || (sunLon < 45)) return "寒";
         if (sunLon >= 45 && sunLon < 135) return "暑";
@@ -277,7 +271,6 @@
         return "风";
     }
     
-    // 南半球主气规则（与北半球相反）
     function getBaseQiFromSunLonSouth(sunLon) {
         if ((sunLon >= 315) || (sunLon < 45)) return "暑";
         if (sunLon >= 45 && sunLon < 135) return "寒";
@@ -290,33 +283,23 @@
         return lat >= 0 ? getBaseQiFromSunLonNorth(sunLon) : getBaseQiFromSunLonSouth(sunLon);
     }
 
-    // 地貌类型
     function getTerrainType(lat, lon) {
         let absLat = Math.abs(lat);
-        // 四川盆地
         if (lat > 28 && lat < 32 && lon > 102 && lon < 108) return "盆地";
-        // 青藏高原
         if (lat > 25 && lat < 40 && lon > 75 && lon < 105 && absLat > 25) return "高原";
-        // 沿海
         if (lon > 115 && lat > 18 && lat < 45) return "沿海";
         if (lat < -10 && lat > -40 && lon > 110 && lon < 155) return "沿海";
-        // 内陆平原
         return "内陆";
     }
 
-    // 气候修正规则
     function adjustQiWithTerrainAndLat(baseQi, terrain, lat) {
         let absLat = Math.abs(lat);
         let result = baseQi;
-        
-        // 纬度带修正
         if (absLat > 60) result = "寒";
         else if (absLat < 23.5) {
             if (result === "寒") result = "凉";
             else if (result === "燥") result = "热燥";
         }
-        
-        // 地貌修正
         if (terrain === "盆地") {
             if (result === "寒") result = "寒湿";
             else if (result === "暑") result = "暑湿";
@@ -338,12 +321,9 @@
             else if (result === "风") result = "风湿";
             else result = "湿";
         }
-        
-        // 深圳等低纬沿海春分时节应为温暖湿润
         if (Math.abs(lat - 22.5) < 3 && lon > 113 && lon < 115 && terrain === "沿海") {
             result = "暑湿";
         }
-        
         return result;
     }
 
@@ -360,7 +340,6 @@
         return { baseQi, terrain, actualQi, organ };
     }
 
-    // 日出日落计算
     function getSunriseSunset(lat, lon, date) {
         let JD = toJulianDay(new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())));
         let T = (JD - 2451545.0)/36525.0;
@@ -404,7 +383,6 @@
     const organMap = {0:"胆",1:"肝",2:"肺",3:"大肠",4:"胃",5:"脾",6:"心",7:"小肠",8:"膀胱",9:"肾",10:"心包",11:"三焦"};
     function getZodiacIndex(trueSolarHour) { let h = (trueSolarHour + 1) % 24; return Math.floor(h / 2) % 12; }
 
-    // 干支计算
     const gan = ["甲","乙","丙","丁","戊","己","庚","辛","壬","癸"];
     const zhi = ["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
     function getDayGanZhi(date) {
@@ -426,7 +404,6 @@
         return `${dayGanZhi}日 ${hourGanZhi}时`;
     }
 
-    // 灵龟八法
     function getLingGuiAcupoint(dayGanZhi, hourGanZhi) {
         const baseNumbers = { "甲":10, "乙":9, "丙":8, "丁":7, "戊":6, "己":5, "庚":4, "辛":3, "壬":2, "癸":1 };
         const zhiNumbers = { "子":7, "丑":6, "寅":5, "卯":4, "辰":3, "巳":2, "午":1, "未":9, "申":8, "酉":7, "戌":6, "亥":5 };
@@ -444,7 +421,6 @@
         return acupoints[idx];
     }
 
-    // 禀赋计算
     function computeConstitutionAt(jd, lat, lon, date) {
         let sunLon = sunApparentLongitude(jd);
         let { actualQi, organ: climateOrgan } = getActualQiAndOrgan(lat, lon, sunLon);
@@ -488,8 +464,6 @@
         let h = Math.floor(trueSolar), m = Math.floor((trueSolar-h)*60), s = Math.floor(((trueSolar-h)*60 - m)*60);
         document.getElementById('trueTime').innerHTML = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
         document.getElementById('sunLongitude').innerHTML = sunLon.toFixed(1) + '°';
-        
-        // 节气显示：根据纬度自动选择北半球或南半球节气表
         let term = getSolarTermName(JD, currentLat);
         document.getElementById('term').innerHTML = term;
         
@@ -556,7 +530,6 @@
         setCoordinates(lat, lon, '手动输入');
     }
 
-    // 事件管理
     function renderEvents() {
         let container = document.getElementById('eventList');
         container.innerHTML = events.map((ev, idx) => `
@@ -601,7 +574,10 @@
     }
     
     function analyzeTrajectory() {
-        if (events.length === 0) { document.getElementById('trajectoryReport').innerHTML = '暂无事件，请先添加大事件。'; return; }
+        if (events.length === 0) { 
+            document.getElementById('trajectoryReport').innerHTML = '暂无事件，请先添加大事件。'; 
+            return; 
+        }
         let sorted = [...events].sort((a,b)=> (a.dateStr||'') < (b.dateStr||'') ? -1 : 1);
         let report = `【人生轨迹 · 时空演化】\n\n`;
         for (let ev of sorted) {
@@ -651,17 +627,20 @@
         canvas = document.getElementById('clockCanvas');
         ctx = canvas.getContext('2d');
         canvas.width = 280; canvas.height = 280;
+        
         document.getElementById('gpsBtn').onclick = requestGPS;
         document.getElementById('manualBtn').onclick = manualCalculate;
         document.getElementById('addEventBtn').onclick = addEvent;
         document.getElementById('analyzeBirthBtn').onclick = analyzeBirth;
         document.getElementById('analyzeTrajectoryBtn').onclick = analyzeTrajectory;
         document.getElementById('downloadTrajectoryBtn').onclick = downloadTrajectory;
+        
         setCoordinates(39.9042, 116.4074, '默认坐标（北京）');
         setInterval(updateDisplay, 1000);
+        
         events.push({ name:"出生", dateStr:"1990-03-21", lat:"39.9042", lon:"116.4074" });
-        events.push({ name:"读书", dateStr:"2008-09-01", lat:"31.2304", lon:"121.4737" });
-        events.push({ name:"工作", dateStr:"2014-07-01", lat:"22.5431", lon:"114.0579" });
+        events.push({ name:"大学就读", dateStr:"2008-09-01", lat:"31.2304", lon:"121.4737" });
+        events.push({ name:"工作定居", dateStr:"2014-07-01", lat:"22.5431", lon:"114.0579" });
         renderEvents();
     };
 </script>
