@@ -158,10 +158,9 @@
 
 <script>
     // --------------------------------------------------------------
-    // 精确天文计算（基于儒略日，参考“天文算法”）
+    // 精确天文计算（基于儒略日）
     // --------------------------------------------------------------
     function toJulianDay(date) {
-        // 将UTC日期转为儒略日
         let year = date.getUTCFullYear();
         let month = date.getUTCMonth() + 1;
         let day = date.getUTCDate() + date.getUTCHours()/24 + date.getUTCMinutes()/1440 + date.getUTCSeconds()/86400;
@@ -235,27 +234,25 @@
         let y = Math.tan(eps / 2) ** 2;
         let equation = y * Math.sin(2 * L0) - 2 * e * Math.sin(M) + 4 * e * y * Math.sin(M) * Math.cos(2 * L0)
                      - 0.5 * y * y * Math.sin(4 * L0) - 1.25 * e * e * Math.sin(2 * M);
-        return equation * 4 * 180 / Math.PI; // 返回分钟
+        return equation * 4 * 180 / Math.PI;
     }
 
     function getSunriseSunset(lat, lon, date) {
-        // date为本地日期对象，返回[日出时分, 日落时分] 本地时间（小时）
         let utcDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
         let JD = toJulianDay(utcDate);
         let dec = sunDeclination(JD) * Math.PI / 180;
         let phi = lat * Math.PI / 180;
         let cosHa = (Math.sin(-0.833 * Math.PI / 180) - Math.sin(phi) * Math.sin(dec)) / (Math.cos(phi) * Math.cos(dec));
-        if (cosHa <= -1) return [0, 24]; // 极夜
-        if (cosHa >= 1) return [0, 24]; // 极昼
-        let Ha = Math.acos(cosHa) * 180 / Math.PI; // 时角（度）
-        let eot = equationOfTime(JD); // 分钟
+        if (cosHa <= -1) return [0, 24];
+        if (cosHa >= 1) return [0, 24];
+        let Ha = Math.acos(cosHa) * 180 / Math.PI;
+        let eot = equationOfTime(JD);
         let lonCorr = lon / 15;
         let noonUTC = 12 - lonCorr - eot / 60;
         let sunriseUTC = noonUTC - Ha / 15;
         let sunsetUTC = noonUTC + Ha / 15;
         sunriseUTC = (sunriseUTC % 24 + 24) % 24;
         sunsetUTC = (sunsetUTC % 24 + 24) % 24;
-        // 转为本地时间（本地时间 = UTC + 时区偏移小时）
         let tzOffset = -new Date().getTimezoneOffset() / 60;
         let sunriseLocal = sunriseUTC + tzOffset;
         let sunsetLocal = sunsetUTC + tzOffset;
@@ -266,7 +263,7 @@
 
     function getTrueSolarTime(lat, lon, utcDate) {
         let JD = toJulianDay(utcDate);
-        let eot = equationOfTime(JD); // 分钟
+        let eot = equationOfTime(JD);
         let lonCorr = lon / 15;
         let noonUTC = 12 - lonCorr - eot / 60;
         let currentUTC = utcDate.getUTCHours() + utcDate.getUTCMinutes()/60 + utcDate.getUTCSeconds()/3600;
@@ -292,7 +289,7 @@
         return "风";
     }
 
-    // 时辰划分
+    // 时辰相关
     const traditionalZodiac = ["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
     const zodiacDisplay = ["午","未","申","酉","戌","亥","子","丑","寅","卯","辰","巳"];
 
@@ -318,7 +315,7 @@
         return tip;
     }
 
-    // 画表盘
+    // 画表盘（文字顺时针旋转90度，字头朝外）
     let canvas, ctx;
     function drawClock(displayIdx) {
         if (!canvas) return;
@@ -326,7 +323,7 @@
         ctx.clearRect(0, 0, size, size);
         ctx.save();
         ctx.translate(size/2, size/2);
-        ctx.rotate(-Math.PI/2);
+        ctx.rotate(-Math.PI/2); // 使0°指向正上方
 
         // 外圈
         ctx.beginPath();
@@ -351,14 +348,21 @@
             ctx.lineWidth = 1.5;
             ctx.stroke();
 
+            // 文字位置（半径向内一些）
             let r = size/2 - 28;
             let xText = r * Math.cos(angle);
             let yText = r * Math.sin(angle);
+
+            ctx.save();
+            ctx.translate(xText, yText);
+            // 顺时针旋转90度，使文字沿半径方向，字头朝外
+            ctx.rotate(angle + Math.PI/2);
             ctx.font = `bold ${size/18}px "Segoe UI"`;
             ctx.fillStyle = "#5a4a3a";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
-            ctx.fillText(zodiacDisplay[i], xText, yText);
+            ctx.fillText(zodiacDisplay[i], 0, 0);
+            ctx.restore();
         }
 
         // 高亮当前时辰扇形
@@ -387,9 +391,7 @@
         ctx.restore();
     }
 
-    // 全局变量
     let currentLat = null, currentLon = null;
-    let lastUpdate = 0;
 
     function updateDisplay() {
         if (currentLat === null || currentLon === null) return;
@@ -398,25 +400,21 @@
         const utcNow = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
         const JD = toJulianDay(utcNow);
 
-        // 真太阳时
         let trueSolar = getTrueSolarTime(currentLat, currentLon, utcNow);
         let hours = Math.floor(trueSolar);
         let minutes = Math.floor((trueSolar - hours)*60);
         let seconds = Math.floor(((trueSolar - hours)*60 - minutes)*60);
         document.getElementById('trueTime').innerHTML = `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
 
-        // 日出日落（本地时间）
         let [sunrise, sunset] = getSunriseSunset(currentLat, currentLon, now);
         let sunriseH = Math.floor(sunrise), sunriseM = Math.floor((sunrise%1)*60);
         let sunsetH = Math.floor(sunset), sunsetM = Math.floor((sunset%1)*60);
         document.getElementById('sunrise').innerHTML = `${sunriseH.toString().padStart(2,'0')}:${sunriseM.toString().padStart(2,'0')}`;
         document.getElementById('sunset').innerHTML = `${sunsetH.toString().padStart(2,'0')}:${sunsetM.toString().padStart(2,'0')}`;
 
-        // 节气
         let term = getSolarTermName(JD);
         document.getElementById('term').innerHTML = term;
 
-        // 主气
         let seasonQi = getMainQi(JD);
         let traditionalIdx = getZodiacIndex(trueSolar);
         let displayIdx = mapToDisplayIndex(traditionalIdx);
@@ -425,7 +423,6 @@
         let tip = getHealthTip(seasonQi, organ);
         document.getElementById('dailyTip').innerHTML = `✨ ${tip}`;
 
-        // 绘制表盘
         drawClock(displayIdx);
     }
 
@@ -463,7 +460,6 @@
         setCoordinates(lat, lon, '手动输入');
     }
 
-    // 初始化
     window.onload = () => {
         canvas = document.getElementById('clockCanvas');
         ctx = canvas.getContext('2d');
@@ -473,7 +469,7 @@
         document.getElementById('gpsBtn').onclick = requestGPS;
         document.getElementById('manualBtn').onclick = manualCalculate;
 
-        // 默认坐标（泸州）
+        // 默认泸州
         setCoordinates(29.1321, 105.5205, '默认坐标（泸州）');
         setInterval(updateDisplay, 1000);
     };
