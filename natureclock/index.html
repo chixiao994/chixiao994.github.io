@@ -150,6 +150,7 @@
         <div class="info-row"><span class="label">🌞 真太阳时</span><span class="value" id="trueTime">--:--:--</span></div>
         <div class="info-row"><span class="label">🌅 日出</span><span class="value" id="sunrise">--:--</span></div>
         <div class="info-row"><span class="label">🌇 日落</span><span class="value" id="sunset">--:--</span></div>
+        <div class="info-row"><span class="label">🌞 太阳黄经</span><span class="value" id="sunLongitude">---°</span></div>
         <div class="info-row"><span class="label">🍃 节气</span><span class="value" id="term">----</span></div>
         <div class="info-row"><span class="label">⚖️ 当令脏腑</span><span class="value" id="dangling">----</span></div>
         <div class="tip" id="dailyTip">✨ 等待定位或手动输入…</div>
@@ -277,8 +278,14 @@
 
     function getSolarTermName(JD) {
         let lambda = sunApparentLongitude(JD);
-        const terms = ["立春","雨水","惊蛰","春分","清明","谷雨","立夏","小满","芒种","夏至","小暑","大暑",
-                       "立秋","处暑","白露","秋分","寒露","霜降","立冬","小雪","大雪","冬至","小寒","大寒"];
+        // 节气列表（从春分开始）
+        const solarTerms = [
+            "春分", "清明", "谷雨", "立夏", "小满", "芒种",
+            "夏至", "小暑", "大暑", "立秋", "处暑", "白露",
+            "秋分", "寒露", "霜降", "立冬", "小雪", "大雪",
+            "冬至", "小寒", "大寒", "立春", "雨水", "惊蛰"
+        ];
+
         let idx = Math.floor((lambda + 7.5) % 360 / 15);
         return terms[idx % 24];
     }
@@ -423,6 +430,10 @@
 
         let term = getSolarTermName(JD);
         document.getElementById('term').innerHTML = term;
+
+        let sunLon = sunApparentLongitude(JD);
+        document.getElementById('sunLongitude').innerHTML = sunLon.toFixed(1) + '°';
+
 
         let seasonQi = getMainQi(JD);
         let traditionalIdx = getZodiacIndex(trueSolar);
