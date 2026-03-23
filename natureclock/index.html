@@ -392,12 +392,14 @@
             ctx.lineWidth = 1.5;
             ctx.stroke();
 
-            let r = size/2 - 28;
+            // 文字位置（半径再向内一些）
+            let r = size/2 - 32;
             let xText = r * Math.cos(angle);
             let yText = r * Math.sin(angle);
+
             ctx.save();
             ctx.translate(xText, yText);
-            ctx.rotate(angle + Math.PI/2);
+            // 不旋转，直接水平绘制
             ctx.font = `bold ${size/18}px "Segoe UI"`;
             ctx.fillStyle = "#5a4a3a";
             ctx.textAlign = "center";
@@ -431,6 +433,7 @@
         ctx.fill();
         ctx.restore();
     }
+
 
     // 全局变量
     let currentLat = null, currentLon = null;
