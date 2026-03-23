@@ -276,18 +276,19 @@
         return trueSolar;
     }
 
+    // 节气列表（从春分开始）
+    const solarTerms = [
+        "春分", "清明", "谷雨", "立夏", "小满", "芒种",
+        "夏至", "小暑", "大暑", "立秋", "处暑", "白露",
+        "秋分", "寒露", "霜降", "立冬", "小雪", "大雪",
+        "冬至", "小寒", "大寒", "立春", "雨水", "惊蛰"
+    ];
+
     function getSolarTermName(JD) {
         let lambda = sunApparentLongitude(JD);
-        // 节气列表（从春分开始）
-        const solarTerms = [
-            "春分", "清明", "谷雨", "立夏", "小满", "芒种",
-            "夏至", "小暑", "大暑", "立秋", "处暑", "白露",
-            "秋分", "寒露", "霜降", "立冬", "小雪", "大雪",
-            "冬至", "小寒", "大寒", "立春", "雨水", "惊蛰"
-        ];
-
+        // 春分点为0°，每个节气15°，加7.5°进行四舍五入
         let idx = Math.floor((lambda + 7.5) % 360 / 15);
-        return terms[idx % 24];
+        return solarTerms[idx % 24];
     }
 
     function getMainQi(JD) {
@@ -405,9 +406,8 @@
     function updateDisplay() {
         if (currentLat === null || currentLon === null) return;
 
-        // 直接使用系统本地时间（内部存储为UTC，但获取的UTC方法返回正确值）
         const now = new Date();
-        const JD = toJulianDay(now);  // 注意：toJulianDay 期望 UTC 时间，而 now 是本地时间对象，但其 getUTCFullYear 等方法返回的是 UTC 值，所以正确
+        const JD = toJulianDay(now);
 
         // 显示本地日期
         let localDate = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
@@ -420,7 +420,7 @@
         let seconds = Math.floor(((trueSolar - hours)*60 - minutes)*60);
         document.getElementById('trueTime').innerHTML = `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
 
-        // 日出日落需要本地日期对象（仅日期部分）
+        // 日出日落
         let localDateForSun = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         let [sunrise, sunset] = getSunriseSunset(currentLat, currentLon, localDateForSun);
         let sunriseH = Math.floor(sunrise), sunriseM = Math.floor((sunrise%1)*60);
@@ -428,12 +428,11 @@
         document.getElementById('sunrise').innerHTML = `${sunriseH.toString().padStart(2,'0')}:${sunriseM.toString().padStart(2,'0')}`;
         document.getElementById('sunset').innerHTML = `${sunsetH.toString().padStart(2,'0')}:${sunsetM.toString().padStart(2,'0')}`;
 
-        let term = getSolarTermName(JD);
-        document.getElementById('term').innerHTML = term;
-
+        // 节气与黄经
         let sunLon = sunApparentLongitude(JD);
+        let term = getSolarTermName(JD);
         document.getElementById('sunLongitude').innerHTML = sunLon.toFixed(1) + '°';
-
+        document.getElementById('term').innerHTML = term;
 
         let seasonQi = getMainQi(JD);
         let traditionalIdx = getZodiacIndex(trueSolar);
