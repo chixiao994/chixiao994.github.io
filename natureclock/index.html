@@ -392,15 +392,13 @@
             ctx.lineWidth = 1.5;
             ctx.stroke();
 
-            // 文字位置
             let r = size/2 - 32;
             let xText = r * Math.cos(angle);
             let yText = r * Math.sin(angle);
 
             ctx.save();
             ctx.translate(xText, yText);
-            // 顺时针旋转90度，使文字沿半径方向，字头朝外
-            ctx.rotate(angle + Math.PI/2);
+            ctx.rotate(Math.PI/2);  // 自身顺时针旋转90度
             ctx.font = `bold ${size/18}px "Segoe UI"`;
             ctx.fillStyle = "#5a4a3a";
             ctx.textAlign = "center";
@@ -408,7 +406,6 @@
             ctx.fillText(zodiacDisplay[i], 0, 0);
             ctx.restore();
         }
-
         // 高亮当前时辰扇形
         let startAngle = displayIdx * 30 * Math.PI/180;
         let endAngle = (displayIdx + 1) * 30 * Math.PI/180;
@@ -434,6 +431,7 @@
         ctx.fill();
         ctx.restore();
     }
+
 
 
     // 全局变量
