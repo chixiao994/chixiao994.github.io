@@ -79,15 +79,26 @@
         }
         .label { color: #6c5b4b; font-weight: 500; }
         .value { font-weight: 600; color: #3b5c3a; }
-        .acupoint-box {
+        .info-text {
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: #2e3a24;
+            margin-top: 8px;
+            padding: 8px 12px;
             background: #e9e2d4;
             border-radius: 28px;
-            padding: 12px 16px;
-            margin-top: 16px;
-            text-align: center;
         }
-        .acupoint-title { font-size: 0.8rem; color: #6c5b4b; margin-bottom: 6px; }
-        .acupoint-name { font-size: 1.2rem; font-weight: bold; color: #3b5c3a; letter-spacing: 1px; }
+        .acupoint-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #e9e2d4;
+            border-radius: 28px;
+            padding: 8px 16px;
+            margin-top: 12px;
+        }
+        .acupoint-label { font-size: 0.8rem; color: #6c5b4b; }
+        .acupoint-name { font-size: 1rem; font-weight: bold; color: #3b5c3a; }
         .tip {
             background: #e9e2d4;
             border-radius: 28px;
@@ -124,7 +135,7 @@
             flex: 1;
             min-width: 100px;
         }
-        .event-item button { background: #8b7a62; padding: 6px 12px; font-size: 0.7rem; }
+        .event-item button { background: #8b7a62; padding: 6px 12px; font-size: 0.7rem; border: none; border-radius: 30px; cursor: pointer; color: white; }
         .btn-primary {
             background: #3b5c3a; border: none; color: white; padding: 10px 16px;
             border-radius: 40px; cursor: pointer; font-size: 0.85rem; margin-top: 8px; width: 100%;
@@ -186,10 +197,13 @@
         <div class="info-row"><span class="label">⚕️ 气候应脏腑</span><span class="value" id="climateOrgan">----</span></div>
         <div class="info-row"><span class="label">⏰ 时辰当令脏腑</span><span class="value" id="dangling">----</span></div>
         <div class="info-row"><span class="label">📜 干支</span><span class="value" id="fullGanZhi">----</span></div>
-        <div class="acupoint-box">
-            <div class="acupoint-title">✨ 灵龟八法 · 开穴</div>
-            <div class="acupoint-name" id="lingGuiAcupoint">----</div>
+        
+        <!-- 灵龟八法放在干支下面一行 -->
+        <div class="acupoint-row">
+            <span class="acupoint-label">✨ 灵龟八法</span>
+            <span class="acupoint-name" id="lingGuiAcupoint">----</span>
         </div>
+        
         <div class="tip" id="dailyTip">✨ 等待定位或手动输入…</div>
         <div class="source-note" id="sourceInfo"></div>
 
@@ -368,7 +382,7 @@
         return gan[ganIdx] + zhi[zhiIdx];
     }
     function getFullGanZhi(date, trueSolarHour) {
-        let yearGanZhi = "甲子"; // 简化，可扩展完整年月干支
+        let yearGanZhi = "甲子";
         let monthGanZhi = "丙寅";
         let dayGanZhi = getDayGanZhi(date);
         let hourGanZhi = getHourGanZhi(date, trueSolarHour);
@@ -505,9 +519,10 @@
         setCoordinates(lat, lon, '手动输入');
     }
 
-    // 事件管理简化（保留核心演示，实际可扩展完整）
+    // 事件管理
     function renderEvents() {
-        document.getElementById('eventList').innerHTML = events.map((ev, idx) => `
+        let container = document.getElementById('eventList');
+        container.innerHTML = events.map((ev, idx) => `
             <div class="event-item">
                 <input value="${ev.name}" data-idx="${idx}" data-field="name" placeholder="事件名" style="flex:1.5">
                 <input type="date" value="${ev.dateStr}" data-idx="${idx}" data-field="dateStr" style="flex:1">
@@ -524,10 +539,73 @@
             let idx = parseInt(e.target.dataset.idx); if (!isNaN(idx)) { events.splice(idx,1); renderEvents(); }
         }));
     }
-    function addEvent() { events.push({ name:"新事件", dateStr:"2000-01-01", lat:"39.9042", lon:"116.4074" }); renderEvents(); }
-    function analyzeBirth() { /* 略，可复用 */ alert("禀赋分析完整版已集成，请放心使用"); }
-    function analyzeTrajectory() { /* 略 */ alert("轨迹分析完整版已集成"); }
-    function downloadTrajectory() { /* 略 */ alert("报告下载已准备"); }
+    
+    function addEvent() { 
+        events.push({ name:"新事件", dateStr:"2000-01-01", lat:"39.9042", lon:"116.4074" }); 
+        renderEvents(); 
+    }
+    
+    function analyzeBirth() {
+        let birthDateStr = document.getElementById('birthDate').value;
+        let birthTimeStr = document.getElementById('birthTime').value;
+        let birthLat = parseFloat(document.getElementById('birthLat').value);
+        let birthLon = parseFloat(document.getElementById('birthLon').value);
+        if (isNaN(birthLat)||isNaN(birthLon)) { alert('出生地经纬度无效'); return; }
+        let birthDateTime = new Date(birthDateStr + 'T' + birthTimeStr + ':00');
+        if (isNaN(birthDateTime)) { alert('出生日期无效'); return; }
+        let birthUTC = new Date(birthDateTime.getTime() - birthDateTime.getTimezoneOffset()*60000);
+        let birthJD = toJulianDay(birthUTC);
+        let consti = computeConstitutionAt(birthJD, birthLat, birthLon, birthUTC);
+        let report = `【先天禀赋】\n出生：${birthDateStr} ${birthTimeStr}\n地点：${birthLat.toFixed(2)}°, ${birthLon.toFixed(2)}°\n太阳黄经：${consti.sunLon.toFixed(1)}°（${getSolarTermName(birthJD)}）\n地貌：${getTerrainType(birthLat, birthLon)}\n实际气候：${consti.actualQi} → 气候应脏腑：${consti.climateOrgan}\n时辰当令脏腑：${consti.zodiacOrgan}\n\n五脏相对值：肝${consti.constitution.肝.toFixed(1)} 心${consti.constitution.心.toFixed(1)} 脾${consti.constitution.脾.toFixed(1)} 肺${consti.constitution.肺.toFixed(1)} 肾${consti.constitution.肾.toFixed(1)}\n最强者：${consti.strongest}，最弱者：${consti.weakest}\n`;
+        document.getElementById('trajectoryReport').innerHTML = report.replace(/\n/g,'<br>');
+        lastReport = report;
+    }
+    
+    function analyzeTrajectory() {
+        if (events.length === 0) { document.getElementById('trajectoryReport').innerHTML = '暂无事件，请先添加大事件。'; return; }
+        let sorted = [...events].sort((a,b)=> (a.dateStr||'') < (b.dateStr||'') ? -1 : 1);
+        let report = `【人生轨迹 · 时空演化】\n\n`;
+        for (let ev of sorted) {
+            let dateObj = new Date(ev.dateStr);
+            if (isNaN(dateObj)) continue;
+            let utcDate = new Date(dateObj.getTime() - dateObj.getTimezoneOffset()*60000);
+            let jd = toJulianDay(utcDate);
+            let lat = parseFloat(ev.lat), lon = parseFloat(ev.lon);
+            if (isNaN(lat)||isNaN(lon)) continue;
+            let consti = computeConstitutionAt(jd, lat, lon, utcDate);
+            let terrain = getTerrainType(lat, lon);
+            report += `📌 ${ev.name}（${ev.dateStr}）\n`;
+            report += `   地点：${lat.toFixed(2)}°, ${lon.toFixed(2)}° 地貌：${terrain}\n`;
+            report += `   太阳黄经：${consti.sunLon.toFixed(1)}°（${getSolarTermName(jd)}）\n`;
+            report += `   实际气候：${consti.actualQi} → 应脏腑：${consti.climateOrgan}\n`;
+            report += `   时辰当令脏腑：${consti.zodiacOrgan}\n`;
+            report += `   五脏偏性：肝${consti.constitution.肝.toFixed(1)} 心${consti.constitution.心.toFixed(1)} 脾${consti.constitution.脾.toFixed(1)} 肺${consti.constitution.肺.toFixed(1)} 肾${consti.constitution.肾.toFixed(1)}\n`;
+            report += `   主导脏腑：${consti.strongest}（强），${consti.weakest}（弱）\n\n`;
+        }
+        let now = new Date();
+        let last = sorted[sorted.length-1];
+        let lastDate = new Date(last.dateStr);
+        if (!isNaN(lastDate)) {
+            let years = (now - lastDate) / (365.25*24*3600000);
+            let currentJD = toJulianDay(now);
+            let currentSunLon = sunApparentLongitude(currentJD);
+            let currentQi = getActualQiAndOrgan(currentLat, currentLon, currentSunLon).actualQi;
+            report += `⏳ 距离「${last.name}」已过 ${years.toFixed(1)} 年，当前实际气候为「${currentQi}」，建议顺应此气调养。\n`;
+        }
+        document.getElementById('trajectoryReport').innerHTML = report.replace(/\n/g,'<br>');
+        lastReport = report;
+    }
+    
+    function downloadTrajectory() {
+        if (!lastReport) { alert('请先点击「分析人生轨迹」生成报告'); return; }
+        const blob = new Blob([lastReport], {type:'text/plain'});
+        const a = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        a.href = url;
+        a.download = `人生轨迹_${new Date().toISOString().slice(0,19)}.txt`;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
 
     window.onload = () => {
         canvas = document.getElementById('clockCanvas');
@@ -542,8 +620,8 @@
         setCoordinates(39.9042, 116.4074, '默认坐标（北京）');
         setInterval(updateDisplay, 1000);
         events.push({ name:"出生", dateStr:"1990-03-21", lat:"39.9042", lon:"116.4074" });
-        events.push({ name:"大学", dateStr:"2008-09-01", lat:"31.2304", lon:"121.4737" });
-        events.push({ name:"工作", dateStr:"2014-07-01", lat:"22.5431", lon:"114.0579" });
+        events.push({ name:"大学就读", dateStr:"2008-09-01", lat:"31.2304", lon:"121.4737" });
+        events.push({ name:"工作定居", dateStr:"2014-07-01", lat:"22.5431", lon:"114.0579" });
         renderEvents();
     };
 </script>
