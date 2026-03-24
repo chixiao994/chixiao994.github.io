@@ -158,13 +158,14 @@
         .flex-row label { font-size: 0.8rem; color: #6c5b4b; width: 50px; }
         .flex-row input { flex: 1; padding: 6px 8px; border-radius: 30px; border: 1px solid #ccc; }
         @media (max-width: 480px) { canvas { width: 240px; height: 240px; } .info-row { font-size: 0.8rem; } }
+        .geoloading { font-style: italic; color: #8b7a62; }
     </style>
 </head>
 <body>
 <div class="card">
     <div class="header">
         <h1>🌿 自然钟 · 灵龟八法 · 人生轨迹</h1>
-        <p>真太阳时 | 地貌气候 | 南北半球节气修正 | 灵龟开穴</p>
+        <p>真太阳时 | 实时地理 | 节气 | 灵龟开穴</p>
     </div>
     <div class="location-bar">
         <span>📍 当前位置</span>
@@ -184,8 +185,8 @@
         <div class="info-row"><span class="label">🌞 太阳黄经</span><span class="value" id="sunLongitude">---°</span></div>
         <div class="info-row"><span class="label">🍃 节气</span><span class="value" id="term">----</span></div>
         <div class="info-row"><span class="label">🌍 半球</span><span class="value" id="hemisphere">----</span></div>
-        <div class="info-row"><span class="label">🏞️ 地貌类型</span><span class="value" id="terrainType">----</span></div>
-        <div class="info-row"><span class="label">🌿 实际气候</span><span class="value" id="actualQi">----</span></div>
+        <div class="info-row"><span class="label">🗺️ 地理</span><span class="value" id="geoInfo">----</span></div>
+        <div class="info-row"><span class="label">🌿 主气</span><span class="value" id="actualQi">----</span></div>
         <div class="info-row"><span class="label">⚕️ 气候应脏腑</span><span class="value" id="climateOrgan">----</span></div>
         <div class="info-row"><span class="label">⏰ 时辰当令脏腑</span><span class="value" id="dangling">----</span></div>
         <div class="info-row"><span class="label">📜 干支</span><span class="value" id="fullGanZhi">----</span></div>
@@ -223,49 +224,86 @@
 </div>
 
 <script>
-    // ========== 天文计算 ==========
-    function toJulianDay(date) {
-        let year = date.getUTCFullYear();
-        let month = date.getUTCMonth() + 1;
-        let day = date.getUTCDate() + date.getUTCHours()/24 + date.getUTCMinutes()/1440 + date.getUTCSeconds()/86400;
-        if (month <= 2) { year--; month += 12; }
-        let A = Math.floor(year / 100);
-        let B = 2 - A + Math.floor(A / 4);
-        let JD = Math.floor(365.25 * (year + 4716)) + Math.floor(30.6001 * (month + 1)) + day + B - 1524.5;
+    // ========== 天文计算（基于NOAA公式）==========
+    function getJulianDay(date) {
+        let y = date.getUTCFullYear();
+        let m = date.getUTCMonth() + 1;
+        let d = date.getUTCDate() + date.getUTCHours()/24 + date.getUTCMinutes()/1440 + date.getUTCSeconds()/86400;
+        if (m <= 2) { y--; m += 12; }
+        let A = Math.floor(y/100);
+        let B = 2 - A + Math.floor(A/4);
+        let JD = Math.floor(365.25*(y+4716)) + Math.floor(30.6001*(m+1)) + d + B - 1524.5;
         return JD;
     }
 
-    function sunApparentLongitude(JD) {
+    function getSunLongitude(JD) {
         let T = (JD - 2451545.0) / 36525.0;
         let L0 = 280.46646 + 36000.76983 * T + 0.0003032 * T * T;
-        L0 = L0 % 360; if (L0 < 0) L0 += 360;
         let M = 357.52911 + 35999.05029 * T - 0.0001537 * T * T;
-        M = M % 360; if (M < 0) M += 360;
-        let Mrad = M * Math.PI / 180;
-        let C = (1.914602 - 0.004817 * T - 0.000014 * T * T) * Math.sin(Mrad);
-        C += (0.019993 - 0.000101 * T) * Math.sin(2 * Mrad);
-        C += 0.000289 * Math.sin(3 * Mrad);
-        let theta = L0 + C;
-        theta = theta % 360; if (theta < 0) theta += 360;
-        let omega = 125.04452 - 1934.136261 * T;
-        let lambda = theta - 0.00569 - 0.00478 * Math.sin(omega * Math.PI / 180);
-        lambda = lambda % 360; if (lambda < 0) lambda += 360;
-        return lambda;
+        let C = (1.914602 - 0.004817 * T - 0.000014 * T * T) * Math.sin(M * Math.PI/180);
+        C += (0.019993 - 0.000101 * T) * Math.sin(2 * M * Math.PI/180);
+        C += 0.000289 * Math.sin(3 * M * Math.PI/180);
+        let sunLong = (L0 + C) % 360;
+        if (sunLong < 0) sunLong += 360;
+        return sunLong;
     }
 
-    // 节气列表
+    function getSunriseSunset(lat, lon, date) {
+        let noonUTC = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 12, 0, 0));
+        let JD = getJulianDay(noonUTC);
+        let T = (JD - 2451545.0) / 36525.0;
+        let M = (357.52911 + 35999.05029 * T - 0.0001537 * T * T) * Math.PI/180;
+        let e = 0.016708634 - 0.000042037 * T - 0.0000001267 * T * T;
+        let C = (1.914602 - 0.004817 * T - 0.000014 * T * T) * Math.sin(M);
+        C += (0.019993 - 0.000101 * T) * Math.sin(2 * M);
+        C += 0.000289 * Math.sin(3 * M);
+        let L0 = (280.46646 + 36000.76983 * T + 0.0003032 * T * T) * Math.PI/180;
+        let theta = L0 + C;
+        let omega = 125.04452 - 1934.136261 * T;
+        let lambda = theta - 0.00569 - 0.00478 * Math.sin(omega);
+        let epsilon = (23.439291 - 0.0130042 * T) * Math.PI/180;
+        let dec = Math.asin(Math.sin(lambda) * Math.sin(epsilon));
+        let phi = lat * Math.PI/180;
+        let cosHa = (Math.sin(-0.833 * Math.PI/180) - Math.sin(phi) * Math.sin(dec)) / (Math.cos(phi) * Math.cos(dec));
+        if (cosHa <= -1) return [0, 24];
+        if (cosHa >= 1) return [0, 24];
+        let Ha = Math.acos(cosHa);
+        let eot = (0.000075 + 0.001868 * Math.cos(M) - 0.032077 * Math.sin(M) - 0.014615 * Math.cos(2*M) - 0.04089 * Math.sin(2*M)) * 229.18;
+        let lonCorr = lon / 15;
+        let noonLocalSolar = 12 - lonCorr - eot/60;
+        let sunrise = noonLocalSolar - Ha * 12 / Math.PI;
+        let sunset = noonLocalSolar + Ha * 12 / Math.PI;
+        sunrise = (sunrise % 24 + 24) % 24;
+        sunset = (sunset % 24 + 24) % 24;
+        return [sunrise, sunset];
+    }
+
+    function getTrueSolarTime(lat, lon, utcDate) {
+        let JD = getJulianDay(utcDate);
+        let T = (JD - 2451545.0) / 36525.0;
+        let M = (357.52911 + 35999.05029 * T - 0.0001537 * T * T) * Math.PI/180;
+        let eot = (0.000075 + 0.001868 * Math.cos(M) - 0.032077 * Math.sin(M) - 0.014615 * Math.cos(2*M) - 0.04089 * Math.sin(2*M)) * 229.18;
+        let lonCorr = lon / 15;
+        let noonUTC = 12 - lonCorr - eot/60;
+        let currentUTC = utcDate.getUTCHours() + utcDate.getUTCMinutes()/60 + utcDate.getUTCSeconds()/3600;
+        let trueSolar = 12 + (currentUTC - noonUTC);
+        trueSolar = (trueSolar % 24 + 24) % 24;
+        return trueSolar;
+    }
+
+    // 节气
     const solarTermsNorth = ["春分","清明","谷雨","立夏","小满","芒种","夏至","小暑","大暑","立秋","处暑","白露","秋分","寒露","霜降","立冬","小雪","大雪","冬至","小寒","大寒","立春","雨水","惊蛰"];
     const solarTermsSouth = ["秋分","寒露","霜降","立冬","小雪","大雪","冬至","小寒","大寒","立春","雨水","惊蛰","春分","清明","谷雨","立夏","小满","芒种","夏至","小暑","大暑","立秋","处暑","白露"];
 
     function getSolarTermName(JD, lat) {
-        let lambda = sunApparentLongitude(JD);
-        let idx = Math.floor((lambda + 7.5) % 360 / 15);
+        let sunLon = getSunLongitude(JD);
+        let idx = Math.floor((sunLon + 7.5) % 360 / 15);
         if (lat < 0) return solarTermsSouth[idx];
         return solarTermsNorth[idx];
     }
 
-    // 主气规则（北半球和南半球相反）
-    function getBaseQi(lat, sunLon) {
+    // 主气（北半球和南半球相反）
+    function getMainQi(lat, sunLon) {
         let isNorth = lat >= 0;
         if (isNorth) {
             if ((sunLon >= 315) || (sunLon < 45)) return "寒";
@@ -282,105 +320,17 @@
         }
     }
 
-    // 地貌识别
-    function getTerrainType(lat, lon) {
-        let absLat = Math.abs(lat);
-        if (lat > 28 && lat < 32 && lon > 102 && lon < 108) return "盆地";
-        if (lat > 25 && lat < 40 && lon > 75 && lon < 105 && absLat > 25) return "高原";
-        if (lon > 115 && lat > 18 && lat < 45) return "沿海";
-        if (lat < -10 && lat > -40 && lon > 110 && lon < 155) return "沿海";
-        return "内陆";
-    }
-
-    // 气候修正
-    function adjustQiWithTerrainAndLat(baseQi, terrain, lat) {
-        let absLat = Math.abs(lat);
-        let result = baseQi;
-        if (absLat > 60) result = "寒";
-        else if (absLat < 23.5) {
-            if (result === "寒") result = "凉";
-            else if (result === "燥") result = "热燥";
-        }
-        if (terrain === "盆地") {
-            if (result === "寒") result = "寒湿";
-            else if (result === "暑") result = "暑湿";
-            else if (result === "燥") result = "湿";
-            else result = "湿";
-        } else if (terrain === "高原") {
-            if (result === "暑") result = "凉";
-            else if (result === "湿") result = "寒湿";
-            else if (result === "燥") result = "寒燥";
-            else result = "寒";
-        } else if (terrain === "沿海") {
-            if (result === "寒") result = "寒湿";
-            else if (result === "暑") result = "暑湿";
-            else if (result === "燥") result = "湿润";
-            else result = "湿";
-        }
-        if (Math.abs(lat - 22.5) < 3 && lon > 113 && lon < 115 && terrain === "沿海") result = "暑湿";
-        return result;
-    }
-
     const qiToOrgan = {
-        "寒": "肾", "暑": "心", "燥": "肺", "湿": "脾", "风": "肝",
-        "寒湿": "肾脾", "暑湿": "心脾", "寒燥": "肺肾", "凉": "肺", "湿润": "脾", "热燥": "心肺"
+        "寒": "肾", "暑": "心", "燥": "肺", "湿": "脾", "风": "肝"
     };
 
-    function getActualQiAndOrgan(lat, lon, sunLon) {
-        let baseQi = getBaseQi(lat, sunLon);
-        let terrain = getTerrainType(lat, lon);
-        let actualQi = adjustQiWithTerrainAndLat(baseQi, terrain, lat);
-        let organ = qiToOrgan[actualQi] || qiToOrgan[baseQi] || "脾";
-        return { terrain, actualQi, organ };
+    function getActualQiAndOrgan(lat, sunLon) {
+        let qi = getMainQi(lat, sunLon);
+        let organ = qiToOrgan[qi] || "脾";
+        return { qi, organ };
     }
 
-    // 修正后的日出日落计算（直接返回本地真太阳时）
-    function getSunriseSunset(lat, lon, date) {
-        // 计算该日正午的儒略日
-        let noonUTC = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 12, 0, 0));
-        let JD = toJulianDay(noonUTC);
-        let T = (JD - 2451545.0) / 36525.0;
-        let M = (357.52911 + 35999.05029 * T - 0.0001537 * T * T) * Math.PI / 180;
-        let e = 0.016708634 - 0.000042037 * T - 0.0000001267 * T * T;
-        let C = (1.914602 - 0.004817 * T - 0.000014 * T * T) * Math.sin(M);
-        C += (0.019993 - 0.000101 * T) * Math.sin(2 * M);
-        C += 0.000289 * Math.sin(3 * M);
-        let L0 = (280.46646 + 36000.76983 * T + 0.0003032 * T * T) * Math.PI / 180;
-        let theta = L0 + C;
-        let omega = 125.04452 - 1934.136261 * T;
-        let lambda = theta - 0.00569 - 0.00478 * Math.sin(omega);
-        let epsilon = (23.439291 - 0.0130042 * T) * Math.PI / 180;
-        let dec = Math.asin(Math.sin(lambda) * Math.sin(epsilon));
-        let phi = lat * Math.PI / 180;
-        let cosHa = (Math.sin(-0.833 * Math.PI / 180) - Math.sin(phi) * Math.sin(dec)) / (Math.cos(phi) * Math.cos(dec));
-        if (cosHa <= -1) return [0, 24]; // 极夜
-        if (cosHa >= 1) return [0, 24]; // 极昼
-        let Ha = Math.acos(cosHa); // 时角（弧度）
-        // 均时差（分钟）
-        let eot = (0.000075 + 0.001868 * Math.cos(M) - 0.032077 * Math.sin(M) - 0.014615 * Math.cos(2 * M) - 0.04089 * Math.sin(2 * M)) * 229.18;
-        let lonCorr = lon / 15;
-        let noonLocalSolar = 12 - lonCorr - eot / 60; // 正午的本地太阳时（小时）
-        let sunrise = noonLocalSolar - Ha * 12 / Math.PI;
-        let sunset = noonLocalSolar + Ha * 12 / Math.PI;
-        // 调整到0-24范围
-        sunrise = (sunrise % 24 + 24) % 24;
-        sunset = (sunset % 24 + 24) % 24;
-        return [sunrise, sunset];
-    }
-
-    function getTrueSolarTime(lat, lon, utcDate) {
-        let JD = toJulianDay(utcDate);
-        let T = (JD - 2451545.0) / 36525.0;
-        let M = (357.52911 + 35999.05029 * T - 0.0001537 * T * T) * Math.PI / 180;
-        let eot = (0.000075 + 0.001868 * Math.cos(M) - 0.032077 * Math.sin(M) - 0.014615 * Math.cos(2 * M) - 0.04089 * Math.sin(2 * M)) * 229.18;
-        let lonCorr = lon / 15;
-        let noonUTC = 12 - lonCorr - eot / 60;
-        let currentUTC = utcDate.getUTCHours() + utcDate.getUTCMinutes() / 60 + utcDate.getUTCSeconds() / 3600;
-        let trueSolar = 12 + (currentUTC - noonUTC);
-        trueSolar = (trueSolar % 24 + 24) % 24;
-        return trueSolar;
-    }
-
+    // 时辰脏腑
     const organMap = {0:"胆",1:"肝",2:"肺",3:"大肠",4:"胃",5:"脾",6:"心",7:"小肠",8:"膀胱",9:"肾",10:"心包",11:"三焦"};
     function getZodiacIndex(trueSolarHour) { let h = (trueSolarHour + 1) % 24; return Math.floor(h / 2) % 12; }
 
@@ -406,6 +356,7 @@
         return `${dayGanZhi}日 ${hourGanZhi}时`;
     }
 
+    // 灵龟八法
     function getLingGuiAcupoint(dayGanZhi, hourGanZhi) {
         const baseNumbers = { "甲":10, "乙":9, "丙":8, "丁":7, "戊":6, "己":5, "庚":4, "辛":3, "壬":2, "癸":1 };
         const zhiNumbers = { "子":7, "丑":6, "寅":5, "卯":4, "辰":3, "巳":2, "午":1, "未":9, "申":8, "酉":7, "戌":6, "亥":5 };
@@ -425,8 +376,8 @@
 
     // 禀赋计算
     function computeConstitutionAt(jd, lat, lon, date) {
-        let sunLon = sunApparentLongitude(jd);
-        let { actualQi, organ: climateOrgan } = getActualQiAndOrgan(lat, lon, sunLon);
+        let sunLon = getSunLongitude(jd);
+        let { qi: actualQi, organ: climateOrgan } = getActualQiAndOrgan(lat, sunLon);
         let trueSolar = getTrueSolarTime(lat, lon, date);
         let zodiacIdx = getZodiacIndex(trueSolar);
         let zodiacOrgan = organMap[zodiacIdx];
@@ -442,18 +393,51 @@
         return { constitution, strongest: sorted[0][0], weakest: sorted[3][0], actualQi, climateOrgan, zodiacOrgan, sunLon };
     }
 
+    // 全局变量
     let currentLat = null, currentLon = null;
     let canvas, ctx;
     let events = [];
     let lastReport = "";
 
-    function updateDisplay() {
+    // 反向地理编码 (OpenStreetMap Nominatim)
+    async function reverseGeocode(lat, lon) {
+        const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&addressdetails=1`;
+        try {
+            const response = await fetch(url, {
+                headers: { 'User-Agent': 'NatureClock/1.0 (contact@example.com)' }
+            });
+            const data = await response.json();
+            if (data && data.address) {
+                const addr = data.address;
+                let continent = addr.continent || '';
+                let country = addr.country || '';
+                let state = addr.state || '';
+                let city = addr.city || addr.town || addr.village || '';
+                let ocean = '';
+                // 判断是否为海洋（如果返回的 place_type 是 sea/ocean）
+                if (data.type === 'sea' || data.type === 'ocean') {
+                    ocean = data.name;
+                }
+                let terrain = '';
+                if (ocean) terrain = `海洋 (${ocean})`;
+                else if (continent) terrain = `${continent} · ${country} ${state ? state : ''} ${city ? city : ''}`.trim();
+                else terrain = '未知区域';
+                return terrain;
+            }
+            return '无法获取地理信息';
+        } catch (err) {
+            console.warn('地理编码失败', err);
+            return '查询失败，请检查网络';
+        }
+    }
+
+    // 更新显示（异步获取地理信息）
+    async function updateDisplay() {
         if (currentLat === null || currentLon === null) return;
         const now = new Date();
-        const JD = toJulianDay(now);
-        let sunLon = sunApparentLongitude(JD);
-        let { terrain, actualQi, organ: climateOrgan } = getActualQiAndOrgan(currentLat, currentLon, sunLon);
-        document.getElementById('terrainType').innerHTML = terrain;
+        const JD = getJulianDay(now);
+        let sunLon = getSunLongitude(JD);
+        let { qi: actualQi, organ: climateOrgan } = getActualQiAndOrgan(currentLat, sunLon);
         document.getElementById('actualQi').innerHTML = actualQi;
         document.getElementById('climateOrgan').innerHTML = climateOrgan;
         document.getElementById('hemisphere').innerHTML = currentLat >= 0 ? "北半球" : "南半球";
@@ -484,9 +468,14 @@
         let acupoint = getLingGuiAcupoint(dayGanZhi, hourGanZhi);
         document.getElementById('lingGuiAcupoint').innerHTML = acupoint;
 
-        let tip = `半球：${currentLat>=0?"北":"南"}，地貌：${terrain}，实际气候：${actualQi} → 宜调「${climateOrgan}」；时辰当令「${organMap[zodiacIdx]}」；灵龟开穴「${acupoint}」。`;
+        let tip = `半球：${currentLat>=0?"北":"南"}，主气：${actualQi} → 宜调「${climateOrgan}」；时辰当令「${organMap[zodiacIdx]}」；灵龟开穴「${acupoint}」。`;
         document.getElementById('dailyTip').innerHTML = `✨ ${tip}`;
         drawClock(zodiacIdx);
+        
+        // 获取地理信息（异步）
+        document.getElementById('geoInfo').innerHTML = '<span class="geoloading">加载地理信息…</span>';
+        let geo = await reverseGeocode(currentLat, currentLon);
+        document.getElementById('geoInfo').innerHTML = geo;
     }
 
     function drawClock(traditionalIdx) {
@@ -571,11 +560,10 @@
         let birthDateTime = new Date(birthDateStr + 'T' + birthTimeStr + ':00');
         if (isNaN(birthDateTime)) { alert('出生日期无效'); return; }
         let birthUTC = new Date(birthDateTime.getTime() - birthDateTime.getTimezoneOffset()*60000);
-        let birthJD = toJulianDay(birthUTC);
+        let birthJD = getJulianDay(birthUTC);
         let consti = computeConstitutionAt(birthJD, birthLat, birthLon, birthUTC);
-        let terrain = getTerrainType(birthLat, birthLon);
         let term = getSolarTermName(birthJD, birthLat);
-        let report = `【先天禀赋】\n出生：${birthDateStr} ${birthTimeStr}\n地点：${birthLat.toFixed(2)}°, ${birthLon.toFixed(2)}° ${birthLat>=0?"北半球":"南半球"}\n太阳黄经：${consti.sunLon.toFixed(1)}°（${term}）\n地貌：${terrain}\n实际气候：${consti.actualQi} → 气候应脏腑：${consti.climateOrgan}\n时辰当令脏腑：${consti.zodiacOrgan}\n\n五脏相对值：肝${consti.constitution.肝.toFixed(1)} 心${consti.constitution.心.toFixed(1)} 脾${consti.constitution.脾.toFixed(1)} 肺${consti.constitution.肺.toFixed(1)} 肾${consti.constitution.肾.toFixed(1)}\n最强者：${consti.strongest}，最弱者：${consti.weakest}\n`;
+        let report = `【先天禀赋】\n出生：${birthDateStr} ${birthTimeStr}\n地点：${birthLat.toFixed(2)}°, ${birthLon.toFixed(2)}° ${birthLat>=0?"北半球":"南半球"}\n太阳黄经：${consti.sunLon.toFixed(1)}°（${term}）\n主气：${consti.actualQi} → 气候应脏腑：${consti.climateOrgan}\n时辰当令脏腑：${consti.zodiacOrgan}\n\n五脏相对值：肝${consti.constitution.肝.toFixed(1)} 心${consti.constitution.心.toFixed(1)} 脾${consti.constitution.脾.toFixed(1)} 肺${consti.constitution.肺.toFixed(1)} 肾${consti.constitution.肾.toFixed(1)}\n最强者：${consti.strongest}，最弱者：${consti.weakest}\n`;
         document.getElementById('trajectoryReport').innerHTML = report.replace(/\n/g,'<br>');
         lastReport = report;
     }
@@ -588,16 +576,15 @@
             let dateObj = new Date(ev.dateStr);
             if (isNaN(dateObj)) continue;
             let utcDate = new Date(dateObj.getTime() - dateObj.getTimezoneOffset()*60000);
-            let jd = toJulianDay(utcDate);
+            let jd = getJulianDay(utcDate);
             let lat = parseFloat(ev.lat), lon = parseFloat(ev.lon);
             if (isNaN(lat)||isNaN(lon)) continue;
             let consti = computeConstitutionAt(jd, lat, lon, utcDate);
-            let terrain = getTerrainType(lat, lon);
             let term = getSolarTermName(jd, lat);
             report += `📌 ${ev.name}（${ev.dateStr}）\n`;
-            report += `   地点：${lat.toFixed(2)}°, ${lon.toFixed(2)}° ${lat>=0?"北半球":"南半球"} 地貌：${terrain}\n`;
+            report += `   地点：${lat.toFixed(2)}°, ${lon.toFixed(2)}° ${lat>=0?"北半球":"南半球"}\n`;
             report += `   太阳黄经：${consti.sunLon.toFixed(1)}°（${term}）\n`;
-            report += `   实际气候：${consti.actualQi} → 应脏腑：${consti.climateOrgan}\n`;
+            report += `   主气：${consti.actualQi} → 应脏腑：${consti.climateOrgan}\n`;
             report += `   时辰当令脏腑：${consti.zodiacOrgan}\n`;
             report += `   五脏偏性：肝${consti.constitution.肝.toFixed(1)} 心${consti.constitution.心.toFixed(1)} 脾${consti.constitution.脾.toFixed(1)} 肺${consti.constitution.肺.toFixed(1)} 肾${consti.constitution.肾.toFixed(1)}\n`;
             report += `   主导脏腑：${consti.strongest}（强），${consti.weakest}（弱）\n\n`;
@@ -607,10 +594,10 @@
         let lastDate = new Date(last.dateStr);
         if (!isNaN(lastDate)) {
             let years = (now - lastDate) / (365.25*24*3600000);
-            let currentJD = toJulianDay(now);
-            let currentSunLon = sunApparentLongitude(currentJD);
-            let currentQi = getActualQiAndOrgan(currentLat, currentLon, currentSunLon).actualQi;
-            report += `⏳ 距离「${last.name}」已过 ${years.toFixed(1)} 年，当前实际气候为「${currentQi}」，建议顺应此气调养。\n`;
+            let currentJD = getJulianDay(now);
+            let currentSunLon = getSunLongitude(currentJD);
+            let currentQi = getMainQi(currentLat, currentSunLon);
+            report += `⏳ 距离「${last.name}」已过 ${years.toFixed(1)} 年，当前主气为「${currentQi}」，建议顺应此气调养。\n`;
         }
         document.getElementById('trajectoryReport').innerHTML = report.replace(/\n/g,'<br>');
         lastReport = report;
@@ -638,7 +625,7 @@
         document.getElementById('analyzeTrajectoryBtn').onclick = analyzeTrajectory;
         document.getElementById('downloadTrajectoryBtn').onclick = downloadTrajectory;
         setCoordinates(39.9042, 116.4074, '默认坐标（北京）');
-        setInterval(updateDisplay, 1000);
+        setInterval(() => updateDisplay(), 1000);
         events.push({ name:"出生", dateStr:"1990-03-21", lat:"39.9042", lon:"116.4074" });
         events.push({ name:"大学就读", dateStr:"2008-09-01", lat:"31.2304", lon:"121.4737" });
         events.push({ name:"工作定居", dateStr:"2014-07-01", lat:"22.5431", lon:"114.0579" });
