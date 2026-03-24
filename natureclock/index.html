@@ -146,7 +146,8 @@
         <canvas id="clockCanvas" width="280" height="280"></canvas>
     </div>
     <div class="info-panel">
-        <div class="info-row"><span class="label">📅 日期</span><span class="value" id="localDate">----</span></div>
+        <div class="info-row"><span class="label">📅 公历日期</span><span class="value" id="localDate">----</span></div>
+        <div class="info-row"><span class="label">🌾 干支</span><span class="value" id="ganzhi">----</span></div>
         <div class="info-row"><span class="label">🌞 真太阳时</span><span class="value" id="trueTime">--:--:--</span></div>
         <div class="info-row"><span class="label">🌅 日出</span><span class="value" id="sunrise">--:--</span></div>
         <div class="info-row"><span class="label">🌇 日落</span><span class="value" id="sunset">--:--</span></div>
@@ -292,6 +293,81 @@
         return "风";
     }
 
+    // ---------- 干支计算 ----------
+    const gan = ["甲","乙","丙","丁","戊","己","庚","辛","壬","癸"];
+    const zhi = ["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
+
+    // 年干支（简单按公历年份，以立春为界稍简化，直接以公历年份-3取模）
+    function getYearGanZhi(year) {
+        let idx = (year - 4) % 60;
+        if (idx < 0) idx += 60;
+        return gan[idx % 10] + zhi[idx % 12];
+    }
+
+    // 月干支（根据年干和公历月份，不考虑节气精准，简单用五虎遁）
+    function getMonthGanZhi(year, month) {
+        let yearGanZhi = getYearGanZhi(year);
+        let yearGan = yearGanZhi[0];
+        let start = {甲:0,乙:2,丙:4,丁:6,戊:8,己:0,庚:2,辛:4,壬:6,癸:8}[yearGan];
+        let monthIdx = month - 1; // 0=寅,1=卯,...,11=丑
+        let ganIdx = (start + monthIdx) % 10;
+        let zhiIdx = monthIdx % 12;
+        return gan[ganIdx] + zhi[zhiIdx];
+    }
+
+    // 日干支（公历转干支，公式）
+    function getDayGanZhi(date) {
+        let year = date.getFullYear();
+        let month = date.getMonth() + 1;
+        let day = date.getDate();
+        let C = Math.floor(year / 100);
+        let Y = year % 100;
+        let M = month;
+        if (M === 1 || M === 2) {
+            M += 12;
+            Y -= 1;
+        }
+        let D = (C/4 - 2*C + Y + Y/4 + 13*(M+1)/5 + day - 1) % 60;
+        D = Math.floor(D);
+        if (D < 0) D += 60;
+        return gan[D % 10] + zhi[D % 12];
+    }
+
+    // 时干支（根据日干和时辰地支）
+    function getHourGanZhi(dayGan, hour) {
+        // 时辰地支：23-1子，1-3丑... 以真太阳时为基准
+        let zhiIdx = Math.floor((hour + 1) / 2) % 12;
+        let dayGanIdx = gan.indexOf(dayGan);
+        let start = {甲:0,乙:2,丙:4,丁:6,戊:8,己:0,庚:2,辛:4,壬:6,癸:8}[dayGan];
+        let ganIdx = (start + zhiIdx) % 10;
+        return gan[ganIdx] + zhi[zhiIdx];
+    }
+
+    // 时辰中文名
+    function getHourZhiName(hour) {
+        const zhiNames = ["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
+        let idx = Math.floor((hour + 1) / 2) % 12;
+        return zhiNames[idx];
+    }
+
+    // 时辰地支（用于五鼠遁）
+    function getHourZhiIndex(hour) {
+        return Math.floor((hour + 1) / 2) % 12;
+    }
+
+    // 获取完整干支显示
+    function getGanZhiDisplay(date, trueSolarHour) {
+        let year = date.getFullYear();
+        let month = date.getMonth() + 1;
+        let yearGZ = getYearGanZhi(year);
+        let monthGZ = getMonthGanZhi(year, month);
+        let dayGZ = getDayGanZhi(date);
+        let dayGan = dayGZ[0];
+        let hourZhi = getHourZhiName(trueSolarHour);
+        let hourGZ = getHourGanZhi(dayGan, trueSolarHour);
+        return `${yearGZ}年 ${monthGZ}月 ${dayGZ}日 ${hourGZ}时 (${hourZhi}时)`;
+    }
+
     // 时辰相关
     const traditionalZodiac = ["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
     const zodiacDisplay = ["午","未","申","酉","戌","亥","子","丑","寅","卯","辰","巳"];
@@ -398,22 +474,22 @@
     function updateDisplay() {
         if (currentLat === null || currentLon === null) return;
 
-        // 直接使用系统本地时间（内部存储为UTC，但获取的UTC方法返回正确值）
         const now = new Date();
-        const JD = toJulianDay(now);  // 注意：toJulianDay 期望 UTC 时间，而 now 是本地时间对象，但其 getUTCFullYear 等方法返回的是 UTC 值，所以正确
+        const JD = toJulianDay(now);
 
         // 显示本地日期
         let localDate = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
         let dateStr = `${localDate.getFullYear()}-${(localDate.getMonth()+1).toString().padStart(2,'0')}-${localDate.getDate().toString().padStart(2,'0')}`;
         document.getElementById('localDate').innerHTML = dateStr;
 
+        // 真太阳时
         let trueSolar = getTrueSolarTime(currentLat, currentLon, now);
         let hours = Math.floor(trueSolar);
         let minutes = Math.floor((trueSolar - hours)*60);
         let seconds = Math.floor(((trueSolar - hours)*60 - minutes)*60);
         document.getElementById('trueTime').innerHTML = `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
 
-        // 日出日落需要本地日期对象（仅日期部分）
+        // 日出日落
         let localDateForSun = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         let [sunrise, sunset] = getSunriseSunset(currentLat, currentLon, localDateForSun);
         let sunriseH = Math.floor(sunrise), sunriseM = Math.floor((sunrise%1)*60);
@@ -421,9 +497,11 @@
         document.getElementById('sunrise').innerHTML = `${sunriseH.toString().padStart(2,'0')}:${sunriseM.toString().padStart(2,'0')}`;
         document.getElementById('sunset').innerHTML = `${sunsetH.toString().padStart(2,'0')}:${sunsetM.toString().padStart(2,'0')}`;
 
+        // 节气
         let term = getSolarTermName(JD);
         document.getElementById('term').innerHTML = term;
 
+        // 当令脏腑
         let seasonQi = getMainQi(JD);
         let traditionalIdx = getZodiacIndex(trueSolar);
         let displayIdx = mapToDisplayIndex(traditionalIdx);
@@ -431,6 +509,10 @@
         document.getElementById('dangling').innerHTML = organ;
         let tip = getHealthTip(seasonQi, organ);
         document.getElementById('dailyTip').innerHTML = `✨ ${tip}`;
+
+        // 干支显示
+        let ganzhi = getGanZhiDisplay(localDate, trueSolar);
+        document.getElementById('ganzhi').innerHTML = ganzhi;
 
         drawClock(displayIdx);
     }
