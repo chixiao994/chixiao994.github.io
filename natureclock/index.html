@@ -278,6 +278,7 @@
         return `${yearGZ}年 ${monthGZ}月 ${dayGZ}日 ${hourGZ}时 (${hourZhi}时)`;
     }
 
+    // 灵龟八法（返回主穴及配穴）
     function getLingGuiPoint(date, trueSolarHour) {
         let dayGZ = getDayGanZhi(date);
         let dayIdx = liuShiJiaZi.indexOf(dayGZ) + 1;
@@ -287,7 +288,16 @@
         let mod = sum % 9;
         if (mod === 0) mod = 9;
         const pointMap = {1:"公孙",2:"内关",3:"足临泣",4:"外关",5:"后溪",6:"申脉",7:"列缺",8:"照海",9:"照海"};
-        return pointMap[mod];
+        const main = pointMap[mod];
+        // 配对：公孙↔内关，足临泣↔外关，后溪↔申脉，列缺↔照海
+        const pairMap = {
+            "公孙": "内关", "内关": "公孙",
+            "足临泣": "外关", "外关": "足临泣",
+            "后溪": "申脉", "申脉": "后溪",
+            "列缺": "照海", "照海": "列缺"
+        };
+        const pair = pairMap[main] || "";
+        return pair ? `${main} (配${pair})` : main;
     }
 
     // ==================== 时辰表盘（整体逆时针15°，文字再顺时针15°正立） ====================
@@ -423,7 +433,7 @@
         document.getElementById('ganzhi').innerHTML = ganzhi;
 
         let lingGuiPoint = getLingGuiPoint(localDate, trueSolar);
-        document.getElementById('linggui').innerHTML = `${lingGuiPoint} (开穴)`;
+        document.getElementById('linggui').innerHTML = `${lingGuiPoint} `;
 
         drawClock(displayIdx);
     }
