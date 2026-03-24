@@ -5,136 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>自然钟 · 时辰表盘</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            user-select: none;
-        }
-        body {
-            background: #e9e2d4;
-            font-family: 'Segoe UI', 'Roboto', 'Noto Sans', system-ui, sans-serif;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        .card {
-            max-width: 600px;
-            width: 100%;
-            background: #fffdf9;
-            border-radius: 48px;
-            box-shadow: 0 20px 35px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-        .header {
-            background: #3b5c3a;
-            color: white;
-            text-align: center;
-            padding: 20px 16px 12px;
-        }
-        .header h1 {
-            font-weight: 500;
-            letter-spacing: 2px;
-            font-size: 1.6rem;
-        }
-        .header p {
-            font-size: 0.75rem;
-            opacity: 0.8;
-            margin-top: 6px;
-        }
-        .location-bar {
-            background: #e9e2d4;
-            padding: 12px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-            font-size: 0.8rem;
-        }
-        .location-bar input {
-            width: 100px;
-            padding: 6px 8px;
-            border: none;
-            border-radius: 30px;
-            background: white;
-            text-align: center;
-        }
-        .location-bar button {
-            background: #3b5c3a;
-            border: none;
-            color: white;
-            padding: 6px 14px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-size: 0.75rem;
-        }
-        .clock-panel {
-            padding: 20px;
-            text-align: center;
-        }
-        canvas {
-            width: 280px;
-            height: 280px;
-            margin: 0 auto;
-            display: block;
-            background: #fef8e7;
-            border-radius: 50%;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-        }
-        .info-panel {
-            padding: 16px 20px 24px;
-            background: #f9f5ec;
-            border-top: 1px solid #e6dfd1;
-        }
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 12px;
-            font-size: 0.9rem;
-        }
-        .label {
-            color: #6c5b4b;
-            font-weight: 500;
-        }
-        .value {
-            font-weight: 600;
-            color: #3b5c3a;
-        }
-        .tip {
-            background: #e9e2d4;
-            border-radius: 28px;
-            padding: 12px 16px;
-            margin-top: 16px;
-            font-size: 0.85rem;
-            line-height: 1.4;
-            color: #2e3a24;
-        }
-        .source-note {
-            text-align: center;
-            font-size: 0.7rem;
-            color: #9c8a72;
-            margin-top: 12px;
-        }
-        @media (max-width: 480px) {
-            canvas {
-                width: 240px;
-                height: 240px;
-            }
-            .info-row {
-                font-size: 0.8rem;
-            }
-        }
+        * { margin:0; padding:0; box-sizing:border-box; user-select:none; }
+        body { background:#e9e2d4; font-family:'Segoe UI','Roboto','Noto Sans',system-ui,sans-serif; min-height:100vh; display:flex; justify-content:center; align-items:center; padding:20px; }
+        .card { max-width:600px; width:100%; background:#fffdf9; border-radius:48px; box-shadow:0 20px 35px rgba(0,0,0,0.1); overflow:hidden; }
+        .header { background:#3b5c3a; color:white; text-align:center; padding:20px 16px 12px; }
+        .header h1 { font-weight:500; letter-spacing:2px; font-size:1.6rem; }
+        .header p { font-size:0.75rem; opacity:0.8; margin-top:6px; }
+        .location-bar { background:#e9e2d4; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; font-size:0.8rem; }
+        .location-bar input { width:100px; padding:6px 8px; border:none; border-radius:30px; background:white; text-align:center; }
+        .location-bar button { background:#3b5c3a; border:none; color:white; padding:6px 14px; border-radius:30px; cursor:pointer; font-size:0.75rem; }
+        .clock-panel { padding:20px; text-align:center; }
+        canvas { width:280px; height:280px; margin:0 auto; display:block; background:#fef8e7; border-radius:50%; box-shadow:0 8px 20px rgba(0,0,0,0.1); }
+        .info-panel { padding:16px 20px 24px; background:#f9f5ec; border-top:1px solid #e6dfd1; }
+        .info-row { display:flex; justify-content:space-between; margin-bottom:12px; font-size:0.9rem; }
+        .label { color:#6c5b4b; font-weight:500; }
+        .value { font-weight:600; color:#3b5c3a; }
+        .tip { background:#e9e2d4; border-radius:28px; padding:12px 16px; margin-top:16px; font-size:0.85rem; line-height:1.4; color:#2e3a24; }
+        .source-note { text-align:center; font-size:0.7rem; color:#9c8a72; margin-top:12px; }
+        @media (max-width:480px) { canvas { width:240px; height:240px; } .info-row { font-size:0.8rem; } }
     </style>
 </head>
 <body>
 <div class="card">
-    <div class="header">
-        <h1>🌿 自然钟</h1>
-        <p>时辰 · 应天 · 养人</p>
-    </div>
+    <div class="header"><h1>🌿 自然钟</h1><p>时辰 · 应天 · 养人</p></div>
     <div class="location-bar">
         <span>📍</span>
         <input type="text" id="latInput" placeholder="纬度" value="">
@@ -142,9 +35,7 @@
         <button id="manualBtn">手动计算</button>
         <button id="gpsBtn">使用我的位置</button>
     </div>
-    <div class="clock-panel">
-        <canvas id="clockCanvas" width="280" height="280"></canvas>
-    </div>
+    <div class="clock-panel"><canvas id="clockCanvas" width="280" height="280"></canvas></div>
     <div class="info-panel">
         <div class="info-row"><span class="label">📅 公历日期</span><span class="value" id="localDate">----</span></div>
         <div class="info-row"><span class="label">🌾 干支</span><span class="value" id="ganzhi">----</span></div>
@@ -160,17 +51,12 @@
 </div>
 
 <script>
-    // --------------------------------------------------------------
-    // 天文计算（基于儒略日）
-    // --------------------------------------------------------------
+    // ==================== 天文计算（基于儒略日）====================
     function toJulianDay(date) {
         let year = date.getUTCFullYear();
         let month = date.getUTCMonth() + 1;
         let day = date.getUTCDate() + date.getUTCHours()/24 + date.getUTCMinutes()/1440 + date.getUTCSeconds()/86400;
-        if (month <= 2) {
-            year -= 1;
-            month += 12;
-        }
+        if (month <= 2) { year -= 1; month += 12; }
         let A = Math.floor(year / 100);
         let B = 2 - A + Math.floor(A / 4);
         let JD = Math.floor(365.25 * (year + 4716)) + Math.floor(30.6001 * (month + 1)) + day + B - 1524.5;
@@ -180,16 +66,14 @@
     function sunGeometricMeanLongitude(JD) {
         let T = (JD - 2451545.0) / 36525.0;
         let L0 = 280.46646 + 36000.76983 * T + 0.0003032 * T * T;
-        L0 = L0 % 360;
-        if (L0 < 0) L0 += 360;
+        L0 = L0 % 360; if (L0 < 0) L0 += 360;
         return L0;
     }
 
     function sunMeanAnomaly(JD) {
         let T = (JD - 2451545.0) / 36525.0;
         let M = 357.52911 + 35999.05029 * T - 0.0001537 * T * T;
-        M = M % 360;
-        if (M < 0) M += 360;
+        M = M % 360; if (M < 0) M += 360;
         return M;
     }
 
@@ -206,8 +90,7 @@
         let L0 = sunGeometricMeanLongitude(JD);
         let C = sunEquationOfCenter(JD);
         let theta = L0 + C;
-        theta = theta % 360;
-        if (theta < 0) theta += 360;
+        theta = theta % 360; if (theta < 0) theta += 360;
         return theta;
     }
 
@@ -215,8 +98,7 @@
         let T = (JD - 2451545.0) / 36525.0;
         let omega = 125.04452 - 1934.136261 * T;
         let lambda = sunTrueLongitude(JD) - 0.00569 - 0.00478 * Math.sin(omega * Math.PI / 180);
-        lambda = lambda % 360;
-        if (lambda < 0) lambda += 360;
+        lambda = lambda % 360; if (lambda < 0) lambda += 360;
         return lambda;
     }
 
@@ -277,50 +159,30 @@
         return trueSolar;
     }
 
-    // 节气名称（北半球顺序）
-    const solarTermsNorth = ["春分","清明","谷雨","立夏","小满","芒种","夏至","小暑","大暑",
-                             "立秋","处暑","白露","秋分","寒露","霜降","立冬","小雪","大雪","冬至","小寒","大寒","立春","雨水","惊蛰"];
+    // ==================== 节气 ====================
+    const solarTermsNorth = ["立春","雨水","惊蛰","春分","清明","谷雨","立夏","小满","芒种","夏至","小暑","大暑",
+                             "立秋","处暑","白露","秋分","寒露","霜降","立冬","小雪","大雪","冬至","小寒","大寒"];
 
-    // 节气对称映射：北半球索引 -> 南半球索引（春分<->秋分，夏至<->冬至等）
     function getSolarTermName(sunLon, lat) {
         let lon = sunLon;
-        // 南半球季节相反，将黄经偏移180°后再查节气
-        if (lat < 0) {
-            lon = (sunLon + 180) % 360;
-        }
-        let idx = Math.floor((lon + 7.5) % 360 / 15);
-        return solarTermsNorth[idx % 24];
+        if (lat < 0) lon = (sunLon + 180) % 360;
+        let idx = Math.floor(((lon + 360 - 315) % 360) / 15);
+        return solarTermsNorth[idx];
     }
 
-    // 根据纬度和当地季节判断寒暑
     function getSeasonalQi(sunLon, lat) {
-        // 计算当地太阳黄经（南半球偏移180°）
         let localLon = sunLon;
         if (lat < 0) localLon = (sunLon + 180) % 360;
-
-        // 判断当地季节
-        let isSummer = false;
-        let isWinter = false;
-        // 夏季：黄经45°～135°；冬季：225°～315°
-        if (localLon >= 45 && localLon < 135) isSummer = true;
-        else if (localLon >= 225 && localLon < 315) isWinter = true;
-
+        let isSummer = (localLon >= 45 && localLon < 135);
+        let isWinter = (localLon >= 225 && localLon < 315);
         let absLat = Math.abs(lat);
-        // 热带 (|lat| < 23.5°)
-        if (absLat < 23.5) {
-            return "暑";
-        }
-        // 寒带 (|lat| > 66.5°)
-        if (absLat > 66.5) {
-            return "寒";
-        }
-        // 温带：根据季节
+        if (absLat < 23.5) return "暑";
+        if (absLat > 66.5) return "寒";
         if (isSummer) return "暑";
         if (isWinter) return "寒";
         return "温";
     }
 
-    // 养生建议
     function getHealthTipBySeason(seasonQi, zodiacOrgan) {
         let tip = "";
         if (seasonQi === "寒") tip = "🌬️ 寒邪当令，注意保暖，护肾固阳。可食温热，少外出受寒。";
@@ -330,9 +192,10 @@
         return tip;
     }
 
-    // ---------- 干支计算 ----------
+    // ==================== 干支计算 ====================
     const gan = ["甲","乙","丙","丁","戊","己","庚","辛","壬","癸"];
     const zhi = ["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
+    const zhi_month = ["寅","卯","辰","巳","午","未","申","酉","戌","亥","子","丑"];
 
     const liuShiJiaZi = [
         "甲子","乙丑","丙寅","丁卯","戊辰","己巳","庚午","辛未","壬申","癸酉",
@@ -349,44 +212,43 @@
         return liuShiJiaZi[idx];
     }
 
-    // 根据太阳黄经确定月支索引（立春315°为寅月0，每30°递进一个地支）
     function getMonthZhiIndex(sunLon) {
-        // 黄经范围 0~360
         let lon = sunLon % 360;
-        // 立春315° ~ 345° 为寅月（索引0），雨水345°~15° 仍为寅？不，应该按节气交接时刻：黄经315°立春，下一节气雨水345°为寅月结束？更准确的是，每个地支对应两个节气，取起始节气黄经。
-        // 寅月：立春（315°）~ 惊蛰（345°）
-        // 卯月：惊蛰（345°）~ 清明（15°）
-        // 辰月：清明（15°）~ 立夏（45°）
-        // ...
-        // 为简化，使用起始节气判断：太阳黄经在 [315,345) 为寅月，[345,15) 为卯月？注意360/0边界。
-        // 更简单：用公式 (floor((lon + 360 - 315) / 30) % 12) 但需处理跨越360°。
         let offset = (lon - 315 + 360) % 360;
-        let idx = Math.floor(offset / 30) % 12;
-        return idx;
+        return Math.floor(offset / 30) % 12;
     }
 
     function getMonthGanZhi(yearGan, sunLon) {
         let monthZhiIdx = getMonthZhiIndex(sunLon);
-        // 五虎遁：甲己之年丙作首，乙庚之岁戊为头，丙辛必定寻庚起，丁壬壬位顺行流，戊癸甲寅之上求。
-        let start = {甲:0, 乙:2, 丙:4, 丁:6, 戊:8, 己:0, 庚:2, 辛:4, 壬:6, 癸:8}[yearGan];
+        const startMap = {
+            '甲': 2, '乙': 4, '丙': 6, '丁': 8, '戊': 0,
+            '己': 2, '庚': 4, '辛': 6, '壬': 8, '癸': 0
+        };
+        let start = startMap[yearGan];
         let ganIdx = (start + monthZhiIdx) % 10;
-        return gan[ganIdx] + zhi[monthZhiIdx];
+        return gan[ganIdx] + zhi_month[monthZhiIdx];
     }
 
     function getDayGanZhi(date) {
         let year = date.getFullYear();
         let month = date.getMonth() + 1;
         let day = date.getDate();
-        let C = Math.floor(year / 100);
-        let Y = year % 100;
-        let M = month;
-        if (M === 1 || M === 2) {
-            M += 12;
-            Y -= 1;
-        }
-        let D = Math.floor((C/4 - 2*C + Y + Y/4 + 13*(M+1)/5 + day - 1) % 60);
-        if (D < 0) D += 60;
-        return liuShiJiaZi[D];
+
+        let YY = year % 100;
+        let century = Math.floor(year / 100);
+        let base = (YY + 7) * 5 + 15 + Math.floor((YY + 19) / 4);
+        if (century === 20) base -= 1;
+        base = base % 60;
+
+        let isLeap = (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+        let daysInMonth = [31, isLeap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        let dayCount = 0;
+        for (let i = 0; i < month - 1; i++) dayCount += daysInMonth[i];
+        dayCount += day;
+
+        let idx = (base + dayCount) % 60;
+        if (idx < 0) idx += 60;
+        return liuShiJiaZi[idx];
     }
 
     function getHourGanZhi(dayGan, trueSolarHour) {
@@ -416,7 +278,6 @@
         return `${yearGZ}年 ${monthGZ}月 ${dayGZ}日 ${hourGZ}时 (${hourZhi}时)`;
     }
 
-    // 灵龟八法
     function getLingGuiPoint(date, trueSolarHour) {
         let dayGZ = getDayGanZhi(date);
         let dayIdx = liuShiJiaZi.indexOf(dayGZ) + 1;
@@ -429,22 +290,13 @@
         return pointMap[mod];
     }
 
-    // 时辰相关
+    // ==================== 时辰表盘（整体逆时针15°，文字再顺时针15°正立） ====================
     const traditionalZodiac = ["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
     const zodiacDisplay = ["午","未","申","酉","戌","亥","子","丑","寅","卯","辰","巳"];
-
-    function getZodiacIndex(trueSolarHour) {
-        let h = (trueSolarHour + 1) % 24;
-        return Math.floor(h / 2) % 12;
-    }
-
-    function mapToDisplayIndex(traditionalIdx) {
-        return (traditionalIdx + 6) % 12;
-    }
-
+    function getZodiacIndex(trueSolarHour) { let h = (trueSolarHour + 1) % 24; return Math.floor(h / 2) % 12; }
+    function mapToDisplayIndex(traditionalIdx) { return (traditionalIdx + 6) % 12; }
     const organMap = {0:"胆",1:"肝",2:"肺",3:"大肠",4:"胃",5:"脾",6:"心",7:"小肠",8:"膀胱",9:"肾",10:"心包",11:"三焦"};
 
-    // 画表盘
     let canvas, ctx;
     function drawClock(displayIdx) {
         if (!canvas) return;
@@ -452,16 +304,19 @@
         ctx.clearRect(0, 0, size, size);
         ctx.save();
         ctx.translate(size/2, size/2);
+        // 将0度指向正上方
         ctx.rotate(-Math.PI/2);
+        // 整体逆时针旋转15度
+        ctx.rotate(-15 * Math.PI/180);
 
-        // 外圈
+        // 外圆
         ctx.beginPath();
         ctx.arc(0, 0, size/2-5, 0, 2*Math.PI);
         ctx.strokeStyle = "#c0b28a";
         ctx.lineWidth = 2;
         ctx.stroke();
 
-        // 刻度和文字
+        // 绘制刻度线（位于每个时辰的边界，即 i*30°）
         for (let i = 0; i < 12; i++) {
             let angle = i * 30 * Math.PI/180;
             let inner = size/2 - 20;
@@ -476,14 +331,18 @@
             ctx.strokeStyle = "#a39474";
             ctx.lineWidth = 1.5;
             ctx.stroke();
+        }
 
+        // 绘制时辰文字（位于每个扇区的中央，即 i*30°+15°）
+        for (let i = 0; i < 12; i++) {
+            let angle = (i * 30 + 15) * Math.PI/180;  // 扇区中央
             let r = size/2 - 32;
             let xText = r * Math.cos(angle);
             let yText = r * Math.sin(angle);
-
             ctx.save();
             ctx.translate(xText, yText);
-            ctx.rotate(Math.PI/2);
+            ctx.rotate(Math.PI/2);          // 使文字默认朝上（相对于当前坐标系）
+            ctx.rotate(15 * Math.PI/180);   // 顺时针旋转15°，抵消整体逆时针15°
             ctx.font = `bold ${size/18}px "Segoe UI"`;
             ctx.fillStyle = "#5a4a3a";
             ctx.textAlign = "center";
@@ -492,7 +351,7 @@
             ctx.restore();
         }
 
-        // 高亮当前时辰扇形
+        // 高亮当前时辰扇形（边框）
         let startAngle = displayIdx * 30 * Math.PI/180;
         let endAngle = (displayIdx + 1) * 30 * Math.PI/180;
         ctx.beginPath();
@@ -501,7 +360,7 @@
         ctx.strokeStyle = "#e6b422";
         ctx.stroke();
 
-        // 指针
+        // 指针（指向扇区中央）
         let pointerAngle = (displayIdx * 30 + 15) * Math.PI/180;
         ctx.beginPath();
         ctx.moveTo(0, 0);
@@ -511,14 +370,17 @@
         ctx.strokeStyle = "#bd7a4a";
         ctx.lineWidth = 3;
         ctx.stroke();
+
+        // 中心圆点
         ctx.beginPath();
         ctx.arc(0, 0, 6, 0, 2*Math.PI);
         ctx.fillStyle = "#bd7a4a";
         ctx.fill();
+
         ctx.restore();
     }
 
-    // 全局变量
+    // ==================== 主逻辑 ====================
     let currentLat = null, currentLon = null;
 
     function updateDisplay() {
@@ -528,19 +390,16 @@
         const JD = toJulianDay(now);
         const sunLon = sunApparentLongitude(JD);
 
-        // 显示本地日期
         let localDate = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
         let dateStr = `${localDate.getFullYear()}-${(localDate.getMonth()+1).toString().padStart(2,'0')}-${localDate.getDate().toString().padStart(2,'0')}`;
         document.getElementById('localDate').innerHTML = dateStr;
 
-        // 真太阳时
         let trueSolar = getTrueSolarTime(currentLat, currentLon, now);
         let hours = Math.floor(trueSolar);
         let minutes = Math.floor((trueSolar - hours)*60);
         let seconds = Math.floor(((trueSolar - hours)*60 - minutes)*60);
         document.getElementById('trueTime').innerHTML = `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
 
-        // 日出日落
         let localDateForSun = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         let [sunrise, sunset] = getSunriseSunset(currentLat, currentLon, localDateForSun);
         let sunriseH = Math.floor(sunrise), sunriseM = Math.floor((sunrise%1)*60);
@@ -548,26 +407,21 @@
         document.getElementById('sunrise').innerHTML = `${sunriseH.toString().padStart(2,'0')}:${sunriseM.toString().padStart(2,'0')}`;
         document.getElementById('sunset').innerHTML = `${sunsetH.toString().padStart(2,'0')}:${sunsetM.toString().padStart(2,'0')}`;
 
-        // 节气（南半球自动翻转）
         let term = getSolarTermName(sunLon, currentLat);
         document.getElementById('term').innerHTML = term;
 
-        // 当令脏腑
         let traditionalIdx = getZodiacIndex(trueSolar);
         let displayIdx = mapToDisplayIndex(traditionalIdx);
         let organ = organMap[traditionalIdx];
         document.getElementById('dangling').innerHTML = organ;
 
-        // 寒暑（基于纬度和季节）
         let seasonQi = getSeasonalQi(sunLon, currentLat);
         let tip = getHealthTipBySeason(seasonQi, organ);
         document.getElementById('dailyTip').innerHTML = `✨ ${tip}`;
 
-        // 干支显示（传入太阳黄经）
         let ganzhi = getGanZhiDisplay(localDate, trueSolar, sunLon);
         document.getElementById('ganzhi').innerHTML = ganzhi;
 
-        // 灵龟八法
         let lingGuiPoint = getLingGuiPoint(localDate, trueSolar);
         document.getElementById('linggui').innerHTML = `${lingGuiPoint} (开穴)`;
 
@@ -608,17 +462,13 @@
         setCoordinates(lat, lon, '手动输入');
     }
 
-    // 初始化
     window.onload = () => {
         canvas = document.getElementById('clockCanvas');
         ctx = canvas.getContext('2d');
         canvas.width = 280;
         canvas.height = 280;
-
         document.getElementById('gpsBtn').onclick = requestGPS;
         document.getElementById('manualBtn').onclick = manualCalculate;
-
-        // 默认坐标（北京）
         setCoordinates(39.9042, 116.4074, '默认坐标（北京）');
         setInterval(updateDisplay, 1000);
     };
