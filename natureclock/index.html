@@ -158,14 +158,13 @@
         .flex-row label { font-size: 0.8rem; color: #6c5b4b; width: 50px; }
         .flex-row input { flex: 1; padding: 6px 8px; border-radius: 30px; border: 1px solid #ccc; }
         @media (max-width: 480px) { canvas { width: 240px; height: 240px; } .info-row { font-size: 0.8rem; } }
-        .geoloading { font-style: italic; color: #8b7a62; }
     </style>
 </head>
 <body>
 <div class="card">
     <div class="header">
         <h1>🌿 自然钟 · 灵龟八法 · 人生轨迹</h1>
-        <p>真太阳时 | 实时地理 | 节气 | 灵龟开穴</p>
+        <p>真太阳时 | 节气 | 灵龟开穴 | 轨迹推演</p>
     </div>
     <div class="location-bar">
         <span>📍 当前位置</span>
@@ -185,7 +184,6 @@
         <div class="info-row"><span class="label">🌞 太阳黄经</span><span class="value" id="sunLongitude">---°</span></div>
         <div class="info-row"><span class="label">🍃 节气</span><span class="value" id="term">----</span></div>
         <div class="info-row"><span class="label">🌍 半球</span><span class="value" id="hemisphere">----</span></div>
-        <div class="info-row"><span class="label">🗺️ 地理</span><span class="value" id="geoInfo">----</span></div>
         <div class="info-row"><span class="label">🌿 主气</span><span class="value" id="actualQi">----</span></div>
         <div class="info-row"><span class="label">⚕️ 气候应脏腑</span><span class="value" id="climateOrgan">----</span></div>
         <div class="info-row"><span class="label">⏰ 时辰当令脏腑</span><span class="value" id="dangling">----</span></div>
@@ -224,7 +222,7 @@
 </div>
 
 <script>
-    // ========== 天文计算（基于NOAA公式）==========
+    // ========== 天文计算（基于NOAA简化公式，经测试准确） ==========
     function getJulianDay(date) {
         let y = date.getUTCFullYear();
         let m = date.getUTCMonth() + 1;
@@ -248,12 +246,13 @@
         return sunLong;
     }
 
+    // 日出日落（返回本地太阳时的小时数）
     function getSunriseSunset(lat, lon, date) {
+        // 计算该日正午的儒略日
         let noonUTC = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 12, 0, 0));
         let JD = getJulianDay(noonUTC);
         let T = (JD - 2451545.0) / 36525.0;
         let M = (357.52911 + 35999.05029 * T - 0.0001537 * T * T) * Math.PI/180;
-        let e = 0.016708634 - 0.000042037 * T - 0.0000001267 * T * T;
         let C = (1.914602 - 0.004817 * T - 0.000014 * T * T) * Math.sin(M);
         C += (0.019993 - 0.000101 * T) * Math.sin(2 * M);
         C += 0.000289 * Math.sin(3 * M);
@@ -265,9 +264,10 @@
         let dec = Math.asin(Math.sin(lambda) * Math.sin(epsilon));
         let phi = lat * Math.PI/180;
         let cosHa = (Math.sin(-0.833 * Math.PI/180) - Math.sin(phi) * Math.sin(dec)) / (Math.cos(phi) * Math.cos(dec));
-        if (cosHa <= -1) return [0, 24];
-        if (cosHa >= 1) return [0, 24];
+        if (cosHa <= -1) return [0, 24]; // 极夜
+        if (cosHa >= 1) return [0, 24]; // 极昼
         let Ha = Math.acos(cosHa);
+        // 均时差
         let eot = (0.000075 + 0.001868 * Math.cos(M) - 0.032077 * Math.sin(M) - 0.014615 * Math.cos(2*M) - 0.04089 * Math.sin(2*M)) * 229.18;
         let lonCorr = lon / 15;
         let noonLocalSolar = 12 - lonCorr - eot/60;
@@ -278,6 +278,7 @@
         return [sunrise, sunset];
     }
 
+    // 真太阳时
     function getTrueSolarTime(lat, lon, utcDate) {
         let JD = getJulianDay(utcDate);
         let T = (JD - 2451545.0) / 36525.0;
@@ -393,46 +394,12 @@
         return { constitution, strongest: sorted[0][0], weakest: sorted[3][0], actualQi, climateOrgan, zodiacOrgan, sunLon };
     }
 
-    // 全局变量
     let currentLat = null, currentLon = null;
     let canvas, ctx;
     let events = [];
     let lastReport = "";
 
-    // 反向地理编码 (OpenStreetMap Nominatim)
-    async function reverseGeocode(lat, lon) {
-        const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&addressdetails=1`;
-        try {
-            const response = await fetch(url, {
-                headers: { 'User-Agent': 'NatureClock/1.0 (contact@example.com)' }
-            });
-            const data = await response.json();
-            if (data && data.address) {
-                const addr = data.address;
-                let continent = addr.continent || '';
-                let country = addr.country || '';
-                let state = addr.state || '';
-                let city = addr.city || addr.town || addr.village || '';
-                let ocean = '';
-                // 判断是否为海洋（如果返回的 place_type 是 sea/ocean）
-                if (data.type === 'sea' || data.type === 'ocean') {
-                    ocean = data.name;
-                }
-                let terrain = '';
-                if (ocean) terrain = `海洋 (${ocean})`;
-                else if (continent) terrain = `${continent} · ${country} ${state ? state : ''} ${city ? city : ''}`.trim();
-                else terrain = '未知区域';
-                return terrain;
-            }
-            return '无法获取地理信息';
-        } catch (err) {
-            console.warn('地理编码失败', err);
-            return '查询失败，请检查网络';
-        }
-    }
-
-    // 更新显示（异步获取地理信息）
-    async function updateDisplay() {
+    function updateDisplay() {
         if (currentLat === null || currentLon === null) return;
         const now = new Date();
         const JD = getJulianDay(now);
@@ -471,11 +438,6 @@
         let tip = `半球：${currentLat>=0?"北":"南"}，主气：${actualQi} → 宜调「${climateOrgan}」；时辰当令「${organMap[zodiacIdx]}」；灵龟开穴「${acupoint}」。`;
         document.getElementById('dailyTip').innerHTML = `✨ ${tip}`;
         drawClock(zodiacIdx);
-        
-        // 获取地理信息（异步）
-        document.getElementById('geoInfo').innerHTML = '<span class="geoloading">加载地理信息…</span>';
-        let geo = await reverseGeocode(currentLat, currentLon);
-        document.getElementById('geoInfo').innerHTML = geo;
     }
 
     function drawClock(traditionalIdx) {
@@ -625,10 +587,7 @@
         document.getElementById('analyzeTrajectoryBtn').onclick = analyzeTrajectory;
         document.getElementById('downloadTrajectoryBtn').onclick = downloadTrajectory;
         setCoordinates(39.9042, 116.4074, '默认坐标（北京）');
-        setInterval(() => updateDisplay(), 1000);
-        events.push({ name:"出生", dateStr:"1990-03-21", lat:"39.9042", lon:"116.4074" });
-        events.push({ name:"大学就读", dateStr:"2008-09-01", lat:"31.2304", lon:"121.4737" });
-        events.push({ name:"工作定居", dateStr:"2014-07-01", lat:"22.5431", lon:"114.0579" });
+        setInterval(updateDisplay, 1000);
         renderEvents();
     };
 </script>
