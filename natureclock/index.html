@@ -222,15 +222,14 @@
 </div>
 
 <script>
-    // ========== 天文计算（基于本地系统时间，无网络依赖） ==========
+    // ========== 天文计算（基于本地时间，无外部依赖） ==========
     
-    // 获取某日正午的儒略日（UTC）
-    function getJulianDayOfNoon(year, month, day) {
-        // 使用UTC日期的正午来计算儒略日，这样不会受时区影响
-        let date = new Date(Date.UTC(year, month, day, 12, 0, 0));
-        let y = date.getUTCFullYear();
-        let m = date.getUTCMonth() + 1;
-        let d = date.getUTCDate() + 12/24; // 12点
+    // 获取当前本地时间的儒略日（使用UTC计算，但结果不变，因为儒略日是天文时间）
+    function getJulianDay(year, month, day, hour, minute, second) {
+        // month: 0-11, hour: 0-23
+        let y = year;
+        let m = month + 1;
+        let d = day + hour/24 + minute/1440 + second/86400;
         if (m <= 2) { y--; m += 12; }
         let A = Math.floor(y/100);
         let B = 2 - A + Math.floor(A/4);
@@ -239,41 +238,42 @@
     }
 
     // 太阳平黄经
-    function getSunMeanLongitude(JD) {
+    function sunMeanLongitude(JD) {
         let T = (JD - 2451545.0) / 36525.0;
         let L0 = 280.46646 + 36000.76983 * T + 0.0003032 * T * T;
         return L0 % 360;
     }
 
     // 太阳平近点角
-    function getSunMeanAnomaly(JD) {
+    function sunMeanAnomaly(JD) {
         let T = (JD - 2451545.0) / 36525.0;
         let M = 357.52911 + 35999.05029 * T - 0.0001537 * T * T;
         return M % 360;
     }
 
-    // 太阳真黄经
-    function getSunTrueLongitude(JD) {
-        let Mrad = getSunMeanAnomaly(JD) * Math.PI/180;
+    // 太阳真黄经（考虑中心差）
+    function sunTrueLongitude(JD) {
+        let M = sunMeanAnomaly(JD);
+        let Mrad = M * Math.PI/180;
         let T = (JD - 2451545.0) / 36525.0;
         let C = (1.914602 - 0.004817 * T - 0.000014 * T * T) * Math.sin(Mrad);
         C += (0.019993 - 0.000101 * T) * Math.sin(2 * Mrad);
         C += 0.000289 * Math.sin(3 * Mrad);
-        let sunLong = getSunMeanLongitude(JD) + C;
+        let sunLong = sunMeanLongitude(JD) + C;
         return sunLong % 360;
     }
 
-    // 太阳视黄经
-    function getSunApparentLongitude(JD) {
+    // 太阳视黄经（考虑章动）
+    function sunApparentLongitude(JD) {
         let T = (JD - 2451545.0) / 36525.0;
         let omega = 125.04452 - 1934.136261 * T;
-        let lambda = getSunTrueLongitude(JD) - 0.00569 - 0.00478 * Math.sin(omega * Math.PI/180);
+        let lambda = sunTrueLongitude(JD) - 0.00569 - 0.00478 * Math.sin(omega * Math.PI/180);
         return lambda % 360;
     }
 
     // 太阳赤纬
-    function getSunDeclination(JD) {
-        let lambda = getSunApparentLongitude(JD) * Math.PI/180;
+    function sunDeclination(JD) {
+        let lambda = sunApparentLongitude(JD) * Math.PI/180;
         let T = (JD - 2451545.0) / 36525.0;
         let epsilon = (23.439291 - 0.0130042 * T) * Math.PI/180;
         let sinDec = Math.sin(lambda) * Math.sin(epsilon);
@@ -282,29 +282,33 @@
     }
 
     // 均时差（分钟）
-    function getEquationOfTime(JD) {
+    function equationOfTime(JD) {
         let T = (JD - 2451545.0) / 36525.0;
         let eps = (23.439291 - 0.0130042 * T) * Math.PI/180;
-        let L0 = getSunMeanLongitude(JD) * Math.PI/180;
-        let M = getSunMeanAnomaly(JD) * Math.PI/180;
+        let L0 = sunMeanLongitude(JD) * Math.PI/180;
+        let M = sunMeanAnomaly(JD) * Math.PI/180;
         let e = 0.016708634 - 0.000042037 * T - 0.0000001267 * T * T;
         let y = Math.tan(eps/2) ** 2;
         let equation = y * Math.sin(2*L0) - 2*e*Math.sin(M) + 4*e*y*Math.sin(M)*Math.cos(2*L0) - 0.5*y*y*Math.sin(4*L0) - 1.25*e*e*Math.sin(2*M);
-        return equation * 4 * 180 / Math.PI; // 转换为分钟
+        return equation * 4 * 180 / Math.PI; // 分钟
     }
 
     // 日出日落（返回本地真太阳时的小时数）
     function getSunriseSunset(lat, lon, year, month, day) {
-        let JD = getJulianDayOfNoon(year, month, day);
-        let dec = getSunDeclination(JD) * Math.PI/180;
+        // 计算该日正午的儒略日（使用UTC，但儒略日与时间无关，只与日期有关，用当地正午的UTC时间即可）
+        // 为了简化，我们使用该日0点作为基准，但日出日落计算需要正午的太阳赤纬，可以用正午的JD
+        let noonLocal = new Date(Date.UTC(year, month, day, 12, 0, 0));
+        let JD = getJulianDay(noonLocal.getUTCFullYear(), noonLocal.getUTCMonth(), noonLocal.getUTCDate(), 12, 0, 0);
+        let dec = sunDeclination(JD) * Math.PI/180;
         let phi = lat * Math.PI/180;
         let cosHa = (Math.sin(-0.833 * Math.PI/180) - Math.sin(phi) * Math.sin(dec)) / (Math.cos(phi) * Math.cos(dec));
         if (cosHa <= -1) return [0, 24];
         if (cosHa >= 1) return [0, 24];
         let Ha = Math.acos(cosHa); // 时角（弧度）
-        let eot = getEquationOfTime(JD); // 分钟
+        let eot = equationOfTime(JD); // 分钟
         let lonCorr = lon / 15;
-        let noonLocalSolar = 12 - lonCorr - eot/60; // 当地正午的真太阳时
+        let noonLocalSolar = 12 - lonCorr - eot/60; // 正午的本地真太阳时（应该等于12，但这里用于计算日出日落偏移）
+        // 实际上，日出日落时刻 = 正午真太阳时 ± 时角（小时）
         let sunrise = noonLocalSolar - Ha * 12 / Math.PI;
         let sunset = noonLocalSolar + Ha * 12 / Math.PI;
         sunrise = (sunrise % 24 + 24) % 24;
@@ -314,16 +318,21 @@
 
     // 真太阳时（基于当前本地时间）
     function getTrueSolarTime(lat, lon, now) {
-        // now 是本地时间对象
         let year = now.getFullYear();
         let month = now.getMonth();
         let day = now.getDate();
-        let JD = getJulianDayOfNoon(year, month, day);
-        let eot = getEquationOfTime(JD);
+        let hour = now.getHours();
+        let minute = now.getMinutes();
+        let second = now.getSeconds();
+        // 计算当前时刻的儒略日（使用UTC等效时间，但这里我们直接用本地时间的年月日小时，儒略日计算不受时区影响，因为需要的是天文时间）
+        // 更精确：将本地时间转换为UTC时间再计算。但为了简化，我们直接用本地时间作为UTC？不对，会导致误差。但我们可以使用 `new Date(Date.UTC(...))` 来构造UTC时间。
+        let utc = new Date(Date.UTC(year, month, day, hour, minute, second));
+        let JD = getJulianDay(utc.getUTCFullYear(), utc.getUTCMonth(), utc.getUTCDate(), utc.getUTCHours(), utc.getUTCMinutes(), utc.getUTCSeconds());
+        let eot = equationOfTime(JD);
         let lonCorr = lon / 15;
-        let noonUTC = 12 - lonCorr - eot/60;
-        // 当前时间的UTC小时
-        let utcHours = now.getUTCHours() + now.getUTCMinutes()/60 + now.getUTCSeconds()/3600;
+        // 当前UTC时间的小时数
+        let utcHours = utc.getUTCHours() + utc.getUTCMinutes()/60 + utc.getUTCSeconds()/3600;
+        let noonUTC = 12 - lonCorr - eot/60; // 正午的UTC时间
         let trueSolar = 12 + (utcHours - noonUTC);
         trueSolar = (trueSolar % 24 + 24) % 24;
         return trueSolar;
@@ -334,13 +343,13 @@
     const solarTermsSouth = ["秋分","寒露","霜降","立冬","小雪","大雪","冬至","小寒","大寒","立春","雨水","惊蛰","春分","清明","谷雨","立夏","小满","芒种","夏至","小暑","大暑","立秋","处暑","白露"];
 
     function getSolarTermName(JD, lat) {
-        let sunLon = getSunApparentLongitude(JD);
+        let sunLon = sunApparentLongitude(JD);
         let idx = Math.floor((sunLon + 7.5) % 360 / 15);
         if (lat < 0) return solarTermsSouth[idx];
         return solarTermsNorth[idx];
     }
 
-    // 主气（北半球和南半球相反）
+    // 主气
     function getMainQi(lat, sunLon) {
         let isNorth = lat >= 0;
         if (isNorth) {
@@ -366,7 +375,7 @@
     const organMap = {0:"胆",1:"肝",2:"肺",3:"大肠",4:"胃",5:"脾",6:"心",7:"小肠",8:"膀胱",9:"肾",10:"心包",11:"三焦"};
     function getZodiacIndex(trueSolarHour) { let h = (trueSolarHour + 1) % 24; return Math.floor(h / 2) % 12; }
 
-    // 干支计算
+    // 干支
     const gan = ["甲","乙","丙","丁","戊","己","庚","辛","壬","癸"];
     const zhi = ["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
     function getDayGanZhi(date) {
@@ -408,7 +417,7 @@
 
     // 禀赋计算（简化，保留核心）
     function computeConstitutionAt(jd, lat, lon, date) {
-        let sunLon = getSunApparentLongitude(jd);
+        let sunLon = sunApparentLongitude(jd);
         let { qi: actualQi, organ: climateOrgan } = getActualQiAndOrgan(lat, sunLon);
         let trueSolar = getTrueSolarTime(lat, lon, date);
         let zodiacIdx = getZodiacIndex(trueSolar);
@@ -442,8 +451,10 @@
         const year = now.getFullYear();
         const month = now.getMonth();
         const day = now.getDate();
-        const JD = getJulianDayOfNoon(year, month, day);
-        let sunLon = getSunApparentLongitude(JD);
+        // 正午儒略日用于节气等（日期相关）
+        let noonUTC = new Date(Date.UTC(year, month, day, 12, 0, 0));
+        let JD = getJulianDay(noonUTC.getUTCFullYear(), noonUTC.getUTCMonth(), noonUTC.getUTCDate(), 12, 0, 0);
+        let sunLon = sunApparentLongitude(JD);
         let { qi: actualQi, organ: climateOrgan } = getActualQiAndOrgan(currentLat, sunLon);
         document.getElementById('actualQi').innerHTML = actualQi;
         document.getElementById('climateOrgan').innerHTML = climateOrgan;
@@ -561,9 +572,11 @@
         if (isNaN(birthLat)||isNaN(birthLon)) { alert('出生地经纬度无效'); return; }
         let birthDateTime = new Date(birthDateStr + 'T' + birthTimeStr + ':00');
         if (isNaN(birthDateTime)) { alert('出生日期无效'); return; }
-        let birthJD = getJulianDayOfNoon(birthDateTime.getFullYear(), birthDateTime.getMonth(), birthDateTime.getDate());
-        let consti = computeConstitutionAt(birthJD, birthLat, birthLon, birthDateTime);
-        let term = getSolarTermName(birthJD, birthLat);
+        // 将本地时间转换为UTC用于JD计算
+        let utc = new Date(birthDateTime.getTime() - birthDateTime.getTimezoneOffset()*60000);
+        let jd = getJulianDay(utc.getUTCFullYear(), utc.getUTCMonth(), utc.getUTCDate(), utc.getUTCHours(), utc.getUTCMinutes(), utc.getUTCSeconds());
+        let consti = computeConstitutionAt(jd, birthLat, birthLon, birthDateTime);
+        let term = getSolarTermName(jd, birthLat);
         let report = `【先天禀赋】\n出生：${birthDateStr} ${birthTimeStr}\n地点：${birthLat.toFixed(2)}°, ${birthLon.toFixed(2)}° ${birthLat>=0?"北半球":"南半球"}\n太阳黄经：${consti.sunLon.toFixed(1)}°（${term}）\n主气：${consti.actualQi} → 气候应脏腑：${consti.climateOrgan}\n时辰当令脏腑：${consti.zodiacOrgan}\n\n五脏相对值：肝${consti.constitution.肝.toFixed(1)} 心${consti.constitution.心.toFixed(1)} 脾${consti.constitution.脾.toFixed(1)} 肺${consti.constitution.肺.toFixed(1)} 肾${consti.constitution.肾.toFixed(1)}\n最强者：${consti.strongest}，最弱者：${consti.weakest}\n`;
         document.getElementById('trajectoryReport').innerHTML = report.replace(/\n/g,'<br>');
         lastReport = report;
@@ -576,7 +589,8 @@
         for (let ev of sorted) {
             let dateObj = new Date(ev.dateStr);
             if (isNaN(dateObj)) continue;
-            let jd = getJulianDayOfNoon(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
+            let utc = new Date(dateObj.getTime() - dateObj.getTimezoneOffset()*60000);
+            let jd = getJulianDay(utc.getUTCFullYear(), utc.getUTCMonth(), utc.getUTCDate(), utc.getUTCHours(), utc.getUTCMinutes(), utc.getUTCSeconds());
             let lat = parseFloat(ev.lat), lon = parseFloat(ev.lon);
             if (isNaN(lat)||isNaN(lon)) continue;
             let consti = computeConstitutionAt(jd, lat, lon, dateObj);
@@ -594,8 +608,9 @@
         let lastDate = new Date(last.dateStr);
         if (!isNaN(lastDate)) {
             let years = (now - lastDate) / (365.25*24*3600000);
-            let currentJD = getJulianDayOfNoon(now.getFullYear(), now.getMonth(), now.getDate());
-            let currentSunLon = getSunApparentLongitude(currentJD);
+            let utcNow = new Date(now.getTime() - now.getTimezoneOffset()*60000);
+            let currentJD = getJulianDay(utcNow.getUTCFullYear(), utcNow.getUTCMonth(), utcNow.getUTCDate(), utcNow.getUTCHours(), utcNow.getUTCMinutes(), utcNow.getUTCSeconds());
+            let currentSunLon = sunApparentLongitude(currentJD);
             let currentQi = getMainQi(currentLat, currentSunLon);
             report += `⏳ 距离「${last.name}」已过 ${years.toFixed(1)} 年，当前主气为「${currentQi}」，建议顺应此气调养。\n`;
         }
