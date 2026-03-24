@@ -277,89 +277,77 @@
         return trueSolar;
     }
 
-    function getSolarTermName(JD) {
-        let lambda = sunApparentLongitude(JD);
-        const terms = ["立春","雨水","惊蛰","春分","清明","谷雨","立夏","小满","芒种","夏至","小暑","大暑",
-                       "立秋","处暑","白露","秋分","寒露","霜降","立冬","小雪","大雪","冬至","小寒","大寒"];
-        let idx = Math.floor((lambda + 7.5) % 360 / 15);
-        return terms[idx % 24];
+    // 节气名称（北半球顺序）
+    const solarTermsNorth = ["春分","清明","谷雨","立夏","小满","芒种","夏至","小暑","大暑",
+                             "立秋","处暑","白露","秋分","寒露","霜降","立冬","小雪","大雪","冬至","小寒","大寒","立春","雨水","惊蛰",];
+
+    // 节气黄经角度（北半球）
+    const solarTermLongitudes = [315,330,345,0,15,30,45,60,75,90,105,120,135,150,165,180,195,210,225,240,255,270,285,300];
+
+    // 根据太阳黄经获取节气名称（南半球自动翻转）
+    function getSolarTermName(sunLon, lat) {
+        let lon = sunLon;
+        if (lat < 0) lon = (sunLon + 180) % 360;
+        let idx = solarTermLongitudes.findIndex(l => l > lon);
+        if (idx === -1) idx = 0;
+        return solarTermsNorth[idx];
     }
 
-    function getMainQi(JD) {
-        let lambda = sunApparentLongitude(JD);
-        if ((lambda >= 315 && lambda < 360) || (lambda >= 0 && lambda < 45)) return "寒";
-        if (lambda >= 45 && lambda < 135) return "暑";
-        if (lambda >= 135 && lambda < 225) return "湿";
-        if (lambda >= 225 && lambda < 315) return "燥";
-        return "风";
+    // 根据太阳黄经获取月份序数（立春为1，雨水2...）
+    function getMonthOrderBySunLon(sunLon) {
+        let idx = solarTermLongitudes.findIndex(l => l > sunLon);
+        if (idx === -1) idx = 0;
+        // idx 对应节气索引，月份 = idx/2 + 1（因为每两个节气一个月）
+        let monthOrder = Math.floor(idx / 2) + 1;
+        return monthOrder;
     }
 
-    // ---------- 干支计算 ----------
-    const gan = ["甲","乙","丙","丁","戊","己","庚","辛","壬","癸"];
-    const zhi = ["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
+    // 年干支（以立春为界）
+    function getYearGanZhi(date, sunLon) {
+        let year = date.getFullYear();
+        // 立春黄经315°，如果当前黄经 < 315°，则属于上一年
+        let offset = (sunLon >= 315) ? 0 : -1;
+        let yearIdx = (year + offset - 4) % 60;
+        if (yearIdx < 0) yearIdx += 60;
+        return liuShiJiaZi[yearIdx];
+    }
 
-    // 六十甲子列表
-    const liuShiJiaZi = [
-        "甲子","乙丑","丙寅","丁卯","戊辰","己巳","庚午","辛未","壬申","癸酉",
-        "甲戌","乙亥","丙子","丁丑","戊寅","己卯","庚辰","辛巳","壬午","癸未",
-        "甲申","乙酉","丙戌","丁亥","戊子","己丑","庚寅","辛卯","壬辰","癸巳",
-        "甲午","乙未","丙申","丁酉","戊戌","己亥","庚子","辛丑","壬寅","癸卯",
-        "甲辰","乙巳","丙午","丁未","戊申","己酉","庚戌","辛亥","壬子","癸丑",
-        "甲寅","乙卯","丙辰","丁巳","戊午","己未","庚申","辛酉","壬戌","癸亥"
-    ];
+    // 月干支（基于节气月序和年干）
+    function getMonthGanZhi(yearGanZhi, monthOrder) {
+        let yearGan = yearGanZhi[0];
+        let start = {甲:0,乙:2,丙:4,丁:6,戊:8,己:0,庚:2,辛:4,壬:6,癸:8}[yearGan];
+        let ganIdx = (start + monthOrder - 1) % 10;
+        let zhiIdx = (monthOrder - 1) % 12;
+        return gan[ganIdx] + zhi[zhiIdx];
+    }
 
-    function getYearGanZhi(year) {
-        let idx = (year - 4) % 60;
+    // 日干支（基于基准点2000-1-1戊午）
+    function getDayGanZhi(date) {
+        let baseDate = new Date(Date.UTC(2000, 0, 1));
+        let targetDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+        let daysDiff = Math.floor((targetDate - baseDate) / (24 * 3600 * 1000));
+        let idx = (54 + daysDiff) % 60;
         if (idx < 0) idx += 60;
         return liuShiJiaZi[idx];
     }
 
-    function getMonthGanZhi(year, month) {
-        let yearGanZhi = getYearGanZhi(year);
-        let yearGan = yearGanZhi[0];
-        let start = {甲:0,乙:2,丙:4,丁:6,戊:8,己:0,庚:2,辛:4,壬:6,癸:8}[yearGan];
-        let monthIdx = month - 1;
-        let ganIdx = (start + monthIdx) % 10;
-        let zhiIdx = monthIdx % 12;
-        return gan[ganIdx] + zhi[zhiIdx];
-    }
-
-    function getDayGanZhi(date) {
-        let year = date.getFullYear();
-        let month = date.getMonth() + 1;
-        let day = date.getDate();
-        let C = Math.floor(year / 100);
-        let Y = year % 100;
-        let M = month;
-        if (M === 1 || M === 2) {
-            M += 12;
-            Y -= 1;
-        }
-        let D = Math.floor((C/4 - 2*C + Y + Y/4 + 13*(M+1)/5 + day - 1) % 60);
-        if (D < 0) D += 60;
-        return liuShiJiaZi[D];
-    }
-
+    // 时干支
     function getHourGanZhi(dayGan, trueSolarHour) {
         let zhiIdx = Math.floor((trueSolarHour + 1) / 2) % 12;
-        let dayGanIdx = gan.indexOf(dayGan);
         let start = {甲:0,乙:2,丙:4,丁:6,戊:8,己:0,庚:2,辛:4,壬:6,癸:8}[dayGan];
         let ganIdx = (start + zhiIdx) % 10;
         return gan[ganIdx] + zhi[zhiIdx];
     }
 
-    function getHourZhiIndex(trueSolarHour) {
-        return Math.floor((trueSolarHour + 1) / 2) % 12;
-    }
-
     function getHourZhiName(trueSolarHour) {
-        return zhi[getHourZhiIndex(trueSolarHour)];
+        let idx = Math.floor((trueSolarHour + 1) / 2) % 12;
+        return zhi[idx];
     }
 
-    function getGanZhiDisplay(date, trueSolarHour) {
-        let year = date.getFullYear();
-        let yearGZ = getYearGanZhi(year);
-        let monthGZ = getMonthGanZhi(year, date.getMonth()+1);
+    function getGanZhiDisplay(date, trueSolarHour, sunLon) {
+        let yearGZ = getYearGanZhi(date, sunLon);
+        let monthOrder = getMonthOrderBySunLon(sunLon);
+        let monthGZ = getMonthGanZhi(yearGZ, monthOrder);
         let dayGZ = getDayGanZhi(date);
         let dayGan = dayGZ[0];
         let hourGZ = getHourGanZhi(dayGan, trueSolarHour);
@@ -371,7 +359,7 @@
     function getLingGuiPoint(date, trueSolarHour) {
         let dayGZ = getDayGanZhi(date);
         let dayIdx = liuShiJiaZi.indexOf(dayGZ) + 1;
-        let hourZhiIdx = getHourZhiIndex(trueSolarHour);
+        let hourZhiIdx = Math.floor((trueSolarHour + 1) / 2) % 12;
         let hourSeq = hourZhiIdx + 1;
         let sum = dayIdx + hourSeq;
         let mod = sum % 9;
@@ -380,7 +368,44 @@
         return pointMap[mod];
     }
 
-    // 时辰相关
+    // 根据纬度和季节判断寒暑
+    function getSeasonalQi(sunLon, lat) {
+        let localLon = sunLon;
+        if (lat < 0) localLon = (sunLon + 180) % 360;
+
+        let isSummer = false, isWinter = false;
+        if (localLon >= 45 && localLon < 135) isSummer = true;
+        else if (localLon >= 225 && localLon < 315) isWinter = true;
+
+        let absLat = Math.abs(lat);
+        if (absLat < 23.5) return "暑";
+        if (absLat > 66.5) return "寒";
+        if (isSummer) return "暑";
+        if (isWinter) return "寒";
+        return "温";
+    }
+
+    function getHealthTipBySeason(seasonQi, zodiacOrgan) {
+        let tip = "";
+        if (seasonQi === "寒") tip = "🌬️ 寒邪当令，注意保暖，护肾固阳。可食温热，少外出受寒。";
+        else if (seasonQi === "暑") tip = "☀️ 暑气盛行，宜清心解暑，多饮水，忌暴晒，食苦味食物。";
+        else tip = "🍃 气候温和，注意平衡饮食，顺应自然起居。";
+        tip += ` 此时当令脏腑为「${zodiacOrgan}」，可静坐调息，顺应气血流注。`;
+        return tip;
+    }
+
+    // ---------- 时辰表盘相关 ----------
+    const gan = ["甲","乙","丙","丁","戊","己","庚","辛","壬","癸"];
+    const zhi = ["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
+    const liuShiJiaZi = [
+        "甲子","乙丑","丙寅","丁卯","戊辰","己巳","庚午","辛未","壬申","癸酉",
+        "甲戌","乙亥","丙子","丁丑","戊寅","己卯","庚辰","辛巳","壬午","癸未",
+        "甲申","乙酉","丙戌","丁亥","戊子","己丑","庚寅","辛卯","壬辰","癸巳",
+        "甲午","乙未","丙申","丁酉","戊戌","己亥","庚子","辛丑","壬寅","癸卯",
+        "甲辰","乙巳","丙午","丁未","戊申","己酉","庚戌","辛亥","壬子","癸丑",
+        "甲寅","乙卯","丙辰","丁巳","戊午","己未","庚申","辛酉","壬戌","癸亥"
+    ];
+
     const traditionalZodiac = ["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
     const zodiacDisplay = ["午","未","申","酉","戌","亥","子","丑","寅","卯","辰","巳"];
 
@@ -395,18 +420,6 @@
 
     const organMap = {0:"胆",1:"肝",2:"肺",3:"大肠",4:"胃",5:"脾",6:"心",7:"小肠",8:"膀胱",9:"肾",10:"心包",11:"三焦"};
 
-    function getHealthTip(seasonQi, zodiacOrgan) {
-        let tip = "";
-        if (seasonQi === "寒") tip = "🌬️ 寒邪当令，注意保暖，护肾固阳。可食温热，少外出受寒。";
-        else if (seasonQi === "暑") tip = "☀️ 暑气盛行，宜清心解暑，多饮水，忌暴晒，食苦味食物。";
-        else if (seasonQi === "湿") tip = "💧 湿气偏重，注意健脾祛湿，少食油腻，可饮薏米红豆水。";
-        else if (seasonQi === "燥") tip = "🍂 秋燥来袭，养肺润燥，多食梨、百合，避免辛辣。";
-        else tip = "🍃 风气易动，宜疏肝理气，戒躁怒，适当运动舒展筋骨。";
-        tip += ` 此时当令脏腑为「${zodiacOrgan}」，可静坐调息，顺应气血流注。`;
-        return tip;
-    }
-
-    // 画表盘
     let canvas, ctx;
     function drawClock(displayIdx) {
         if (!canvas) return;
@@ -414,7 +427,7 @@
         ctx.clearRect(0, 0, size, size);
         ctx.save();
         ctx.translate(size/2, size/2);
-        ctx.rotate(-Math.PI/2); // 使0°指向正上方
+        ctx.rotate(-Math.PI/2);
 
         // 外圈
         ctx.beginPath();
@@ -423,7 +436,6 @@
         ctx.lineWidth = 2;
         ctx.stroke();
 
-        // 刻度和文字
         for (let i = 0; i < 12; i++) {
             let angle = i * 30 * Math.PI/180;
             let inner = size/2 - 20;
@@ -442,10 +454,9 @@
             let r = size/2 - 32;
             let xText = r * Math.cos(angle);
             let yText = r * Math.sin(angle);
-
             ctx.save();
             ctx.translate(xText, yText);
-            ctx.rotate(Math.PI/2);  // 自身顺时针旋转90度
+            ctx.rotate(Math.PI/2);
             ctx.font = `bold ${size/18}px "Segoe UI"`;
             ctx.fillStyle = "#5a4a3a";
             ctx.textAlign = "center";
@@ -454,7 +465,6 @@
             ctx.restore();
         }
 
-        // 高亮当前时辰扇形
         let startAngle = displayIdx * 30 * Math.PI/180;
         let endAngle = (displayIdx + 1) * 30 * Math.PI/180;
         ctx.beginPath();
@@ -463,7 +473,6 @@
         ctx.strokeStyle = "#e6b422";
         ctx.stroke();
 
-        // 指针
         let pointerAngle = (displayIdx * 30 + 15) * Math.PI/180;
         ctx.beginPath();
         ctx.moveTo(0, 0);
@@ -480,7 +489,6 @@
         ctx.restore();
     }
 
-    // 全局变量
     let currentLat = null, currentLon = null;
 
     function updateDisplay() {
@@ -488,8 +496,9 @@
 
         const now = new Date();
         const JD = toJulianDay(now);
+        const sunLon = sunApparentLongitude(JD);
 
-        // 显示本地日期
+        // 本地日期显示
         let localDate = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
         let dateStr = `${localDate.getFullYear()}-${(localDate.getMonth()+1).toString().padStart(2,'0')}-${localDate.getDate().toString().padStart(2,'0')}`;
         document.getElementById('localDate').innerHTML = dateStr;
@@ -510,20 +519,22 @@
         document.getElementById('sunset').innerHTML = `${sunsetH.toString().padStart(2,'0')}:${sunsetM.toString().padStart(2,'0')}`;
 
         // 节气
-        let term = getSolarTermName(JD);
+        let term = getSolarTermName(sunLon, currentLat);
         document.getElementById('term').innerHTML = term;
 
         // 当令脏腑
-        let seasonQi = getMainQi(JD);
         let traditionalIdx = getZodiacIndex(trueSolar);
         let displayIdx = mapToDisplayIndex(traditionalIdx);
         let organ = organMap[traditionalIdx];
         document.getElementById('dangling').innerHTML = organ;
-        let tip = getHealthTip(seasonQi, organ);
+
+        // 寒暑提示
+        let seasonQi = getSeasonalQi(sunLon, currentLat);
+        let tip = getHealthTipBySeason(seasonQi, organ);
         document.getElementById('dailyTip').innerHTML = `✨ ${tip}`;
 
-        // 干支显示
-        let ganzhi = getGanZhiDisplay(localDate, trueSolar);
+        // 干支显示（传入太阳黄经）
+        let ganzhi = getGanZhiDisplay(localDate, trueSolar, sunLon);
         document.getElementById('ganzhi').innerHTML = ganzhi;
 
         // 灵龟八法
@@ -567,7 +578,6 @@
         setCoordinates(lat, lon, '手动输入');
     }
 
-    // 初始化
     window.onload = () => {
         canvas = document.getElementById('clockCanvas');
         ctx = canvas.getContext('2d');
@@ -577,7 +587,7 @@
         document.getElementById('gpsBtn').onclick = requestGPS;
         document.getElementById('manualBtn').onclick = manualCalculate;
 
-        // 默认坐标（北京）
+        // 默认北京坐标
         setCoordinates(39.9042, 116.4074, '默认坐标（北京）');
         setInterval(updateDisplay, 1000);
     };
