@@ -161,7 +161,7 @@
 
 <script>
     // --------------------------------------------------------------
-    // 天文计算（基于儒略日）
+    // 精确天文计算（基于儒略日，参考天文算法）
     // --------------------------------------------------------------
     function toJulianDay(date) {
         let year = date.getUTCFullYear();
@@ -277,37 +277,23 @@
         return trueSolar;
     }
 
-    // ---------- 节气相关 ----------
-    const solarTermsNorth = ["春分","清明","谷雨","立夏","小满","芒种","夏至","小暑","大暑",
-                             "立秋","处暑","白露","秋分","寒露","霜降","立冬","小雪","大雪","冬至","小寒","大寒","立春","雨水","惊蛰"];
+    // ---------- 节气 ----------
+    const solarTermsNorth = ["立春","雨水","惊蛰","春分","清明","谷雨","立夏","小满","芒种","夏至","小暑","大暑",
+                             "立秋","处暑","白露","秋分","寒露","霜降","立冬","小雪","大雪","冬至","小寒","大寒"];
     const solarTermLongitudes = [315,330,345,0,15,30,45,60,75,90,105,120,135,150,165,180,195,210,225,240,255,270,285,300];
 
     function getSolarTermName(sunLon, lat) {
         let lon = sunLon;
         if (lat < 0) lon = (sunLon + 180) % 360;
-        let idx = 0;
-        for (let i = 0; i < solarTermLongitudes.length; i++) {
-            if (lon < solarTermLongitudes[i]) {
-                idx = i;
-                break;
-            }
-        }
-        if (lon >= solarTermLongitudes[solarTermLongitudes.length-1]) idx = 0;
+        let idx = solarTermLongitudes.findIndex(l => l > lon);
+        if (idx === -1) idx = 0;
         return solarTermsNorth[idx];
     }
 
-    // 根据太阳黄经获取当前月份地支（用于月干支）
-    function getCurrentMonthZhi(sunLon, lat) {
-        let lon = sunLon;
-        if (lat < 0) lon = (sunLon + 180) % 360;
-        let idx = 0;
-        for (let i = 0; i < solarTermLongitudes.length; i++) {
-            if (lon < solarTermLongitudes[i]) {
-                idx = i;
-                break;
-            }
-        }
-        if (lon >= solarTermLongitudes[solarTermLongitudes.length-1]) idx = 0;
+    // 获取节气月支（全球统一，不因南半球偏移）
+    function getMonthZhi(sunLon) {
+        let idx = solarTermLongitudes.findIndex(l => l > sunLon);
+        if (idx === -1) idx = 0;
         const monthZhi = ["寅","卯","辰","巳","午","未","申","酉","戌","亥","子","丑"];
         let zhiIndex = Math.floor(idx / 2);
         return monthZhi[zhiIndex % 12];
@@ -325,30 +311,32 @@
         "甲寅","乙卯","丙辰","丁巳","戊午","己未","庚申","辛酉","壬戌","癸亥"
     ];
 
-    // 年干支（以立春为界，立春黄经315°）
+    // 年干支（以立春为界，太阳黄经≥315°为新年）
     function getYearGanZhi(date, sunLon) {
         let year = date.getFullYear();
-        let yearIdx = (sunLon >= 315) ? year : year - 1;
-        let idx = (yearIdx - 4) % 60;
-        if (idx < 0) idx += 60;
-        return liuShiJiaZi[idx];
+        // 如果当前太阳黄经小于立春(315°)，则属于上一年
+        let adjust = (sunLon < 315) ? -1 : 0;
+        let yearIdx = (year + adjust - 4) % 60;
+        if (yearIdx < 0) yearIdx += 60;
+        return liuShiJiaZi[yearIdx];
     }
 
     // 月干支（基于节气月支和年干）
-    function getMonthGanZhi(yearGanZhi, sunLon, lat) {
+    function getMonthGanZhi(yearGanZhi, sunLon) {
         let yearGan = yearGanZhi[0];
+        // 五虎遁起月干
         const startMap = {
             '甲':0, '丙':2, '戊':4, '庚':6, '壬':8,
             '乙':0, '丁':2, '己':4, '辛':6, '癸':8
         };
         let startGanIndex = startMap[yearGan];
-        let monthZhi = getCurrentMonthZhi(sunLon, lat);
+        let monthZhi = getMonthZhi(sunLon);
         let zhiIndex = zhi.indexOf(monthZhi);
         let ganIndex = (startGanIndex + zhiIndex) % 10;
         return gan[ganIndex] + monthZhi;
     }
 
-    // 日干支（基于基准点2000-1-1戊午）
+    // 日干支（基准点2000-1-1为戊午）
     function getDayGanZhi(date) {
         let baseDate = new Date(Date.UTC(2000, 0, 1));
         let targetDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
@@ -371,9 +359,9 @@
         return zhi[idx];
     }
 
-    function getGanZhiDisplay(date, trueSolarHour, sunLon, lat) {
+    function getGanZhiDisplay(date, trueSolarHour, sunLon) {
         let yearGZ = getYearGanZhi(date, sunLon);
-        let monthGZ = getMonthGanZhi(yearGZ, sunLon, lat);
+        let monthGZ = getMonthGanZhi(yearGZ, sunLon);
         let dayGZ = getDayGanZhi(date);
         let dayGan = dayGZ[0];
         let hourGZ = getHourGanZhi(dayGan, trueSolarHour);
@@ -394,7 +382,7 @@
         return pointMap[mod];
     }
 
-    // 根据纬度和季节判断寒暑
+    // 寒暑判断
     function getSeasonalQi(sunLon, lat) {
         let localLon = sunLon;
         if (lat < 0) localLon = (sunLon + 180) % 360;
@@ -418,7 +406,7 @@
         return tip;
     }
 
-    // ---------- 时辰表盘相关 ----------
+    // ---------- 表盘绘制 ----------
     const traditionalZodiac = ["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
     const zodiacDisplay = ["午","未","申","酉","戌","亥","子","丑","寅","卯","辰","巳"];
 
@@ -441,7 +429,6 @@
         ctx.save();
         ctx.translate(size/2, size/2);
         ctx.rotate(-Math.PI/2);
-
         // 外圈
         ctx.beginPath();
         ctx.arc(0, 0, size/2-5, 0, 2*Math.PI);
@@ -511,7 +498,7 @@
         const JD = toJulianDay(now);
         const sunLon = sunApparentLongitude(JD);
 
-        // 本地日期显示
+        // 本地日期
         let localDate = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
         let dateStr = `${localDate.getFullYear()}-${(localDate.getMonth()+1).toString().padStart(2,'0')}-${localDate.getDate().toString().padStart(2,'0')}`;
         document.getElementById('localDate').innerHTML = dateStr;
@@ -546,8 +533,8 @@
         let tip = getHealthTipBySeason(seasonQi, organ);
         document.getElementById('dailyTip').innerHTML = `✨ ${tip}`;
 
-        // 干支显示
-        let ganzhi = getGanZhiDisplay(localDate, trueSolar, sunLon, currentLat);
+        // 干支
+        let ganzhi = getGanZhiDisplay(localDate, trueSolar, sunLon);
         document.getElementById('ganzhi').innerHTML = ganzhi;
 
         // 灵龟八法
