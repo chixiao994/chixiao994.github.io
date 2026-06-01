@@ -24,3 +24,21 @@ body {
 今辨此辑，广搜先贤遗文，萃其精粹，依时编纂，而以一贯之。具悉追衍，惟愿古光复澈，传诸华夏，供我族裔涵泳体认。若使读者观千载之文，而恍然有会于未分之前，则此心慰矣。
 
 乙巳冬 · 与为谨记
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // 尝试找到站点标题的链接元素（GitHub Pages 默认主题的 class 通常是 .site-title）
+    var titleLink = document.querySelector('.site-title');
+    if (titleLink) {
+      titleLink.textContent = '识辨辑';
+      titleLink.href = '/shibianji/';
+    } else {
+      // 如果找不到，可能是其他结构，尝试用其他选择器
+      var header = document.querySelector('header a');
+      if (header) {
+        header.textContent = '识辨辑';
+        header.href = '/shibianji/';
+      }
+    }
+  });
+</script>
