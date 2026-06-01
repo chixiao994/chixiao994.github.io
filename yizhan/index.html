@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎋 中医传承系统 - 伤寒六经·针灸大成 📜</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="meridian-flow"></div>
+    <div class="yin-yang-container">
+        <div class="yin-yang" title="阴阳和合"></div>
+    </div>
+    
+    <div class="game-container">
+        <!-- 头部 -->
+        <div class="game-header">
+            <h1>📜 中医传承系统 🎋</h1>
+            <div class="subtitle">《伤寒论》六经辨证 × 《针灸大成》八大配穴法</div>
+            <div class="subtitle">体验仲景经方智慧，掌握针灸配穴精髓</div>
+            
+            <div class="meridian-indicator">
+                <span class="meridian-tag taiyang" onclick="filterByChannel('太阳')">太阳</span>
+                <span class="meridian-tag yangming" onclick="filterByChannel('阳明')">阳明</span>
+                <span class="meridian-tag shaoyang" onclick="filterByChannel('少阳')">少阳</span>
+                <span class="meridian-tag taiyin" onclick="filterByChannel('太阴')">太阴</span>
+                <span class="meridian-tag shaoyin" onclick="filterByChannel('少阴')">少阴</span>
+                <span class="meridian-tag jueyin" onclick="filterByChannel('厥阴')">厥阴</span>
+                <span class="meridian-tag" style="background:#9C27B0" onclick="showAcupunctureTab()">针灸</span>
+                <span class="meridian-tag" style="background:#4CAF50" onclick="showHerbalTab()">经方</span>
+            </div>
+        </div>
+        
+        <!-- 主标签页 -->
+        <div class="tabs-container">
+            <div class="main-tabs">
+                <div class="main-tab active" data-tab="home">🏠 系统首页</div>
+                <div class="main-tab" data-tab="shanghan">📖 伤寒辨证</div>
+                <div class="main-tab" data-tab="acupuncture">🪡 针灸配穴</div>
+                <div class="main-tab" data-tab="integration">⚡ 综合治疗</div>
+                <div class="main-tab" data-tab="learning">📚 中医学习</div>
+                <div class="main-tab" data-tab="progress">📊 学习进度</div>
+            </div>
+            
+            <!-- 伤寒论子标签 -->
+            <div class="sub-tabs" id="shanghan-subtabs">
+                <div class="sub-tab active" data-subtab="case">🎯 医案辨证</div>
+                <div class="sub-tab" data-subtab="diagnosis">🔍 四诊系统</div>
+                <div class="sub-tab" data-subtab="formula">🌿 经方应用</div>
+                <div class="sub-tab" data-subtab="theory">📜 六经理论</div>
+            </div>
+            
+            <!-- 针灸子标签 -->
+            <div class="sub-tabs" id="acupuncture-subtabs">
+                <div class="sub-tab active" data-subtab="meridian">🔄 循经取穴</div>
+                <div class="sub-tab" data-subtab="yuan-luo">🎯 原络取穴</div>
+                <div class="sub-tab" data-subtab="mother-child">🌱 子母取穴</div>
+            </div>
+        </div>
+        
+        <!-- 内容区域 -->
+        <div class="content">
+            <!-- 首页 -->
+            <div class="tab-content active" id="home-tab">
+                <div class="tcm-card">
+                    <div class="tcm-card-header">🎋 欢迎使用中医传承系统</div>
+                    <p>本系统整合了《伤寒论》六经辨证与《针灸大成》八大配穴法，为您提供完整的中医学习和实践平台。</p>
+                    
+                    <div style="display: flex; flex-wrap: wrap; gap: 20px; margin: 25px 0;">
+                        <div style="flex: 1; min-width: 300px;">
+                            <h3 style="color: #D84315; margin-bottom: 15px;">📖 《伤寒论》系统</h3>
+                            <ul style="list-style: none; padding-left: 0;">
+                                <li style="margin: 10px 0; padding-left: 25px; position: relative;">
+                                    <span style="position: absolute; left: 0;">✅</span> 8个经典六经医案
+                                </li>
+                                <li style="margin: 10px 0; padding-left: 25px; position: relative;">
+                                    <span style="position: absolute; left: 0;">✅</span> 完整四诊辨证系统
+                                </li>
+                                <li style="margin: 10px 0; padding-left: 25px; position: relative;">
+                                    <span style="position: absolute; left: 0;">✅</span> 经方配伍与应用
+                                </li>
+                                <li style="margin: 10px 0; padding-left: 25px; position: relative;">
+                                    <span style="position: absolute; left: 0;">✅</span> 六经传变模拟
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div style="flex: 1; min-width: 300px;">
+                            <h3 style="color: #7B1FA2; margin-bottom: 15px;">🪡 《针灸大成》系统</h3>
+                            <ul style="list-style: none; padding-left: 0;">
+                                <li style="margin: 10px 0; padding-left: 25px; position: relative;">
+                                    <span style="position: absolute; left: 0;">✅</span> 完整12正经穴位库
+                                </li>
+                                <li style="margin: 10px 0; padding-left: 25px; position: relative;">
+                                    <span style="position: absolute; left: 0;">✅</span> 三大核心配穴法
+                                </li>
+                                <li style="margin: 10px 0; padding-left: 25px; position: relative;">
+                                    <span style="position: absolute; left: 0;">✅</span> 五行生克关系
+                                </li>
+                                <li style="margin: 10px 0; padding-left: 25px; position: relative;">
+                                    <span style="position: absolute; left: 0;">✅</span> 智能辨证配穴
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button class="tcm-button" onclick="TCMSystem.switchMainTab('shanghan')">
+                            🎮 开始伤寒辨证
+                        </button>
+                        <button class="tcm-button acupuncture" onclick="TCMSystem.switchMainTab('acupuncture')">
+                            🪡 开始针灸配穴
+                        </button>
+                        <button class="tcm-button success" onclick="TCMSystem.startIntegratedCase()">
+                            ⚡ 综合治疗案例
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="tcm-card">
+                    <div class="tcm-card-header">📈 您的学习进度</div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+                        <div style="flex: 1; min-width: 200px;">
+                            <div style="font-size: 14px; margin-bottom: 8px;">伤寒辨证准确率</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="shanghan-progress" style="width: 0%"></div>
+                            </div>
+                            <div id="shanghan-accuracy" style="text-align: right; font-size: 12px; margin-top: 5px;">0%</div>
+                        </div>
+                        
+                        <div style="flex: 1; min-width: 200px;">
+                            <div style="font-size: 14px; margin-bottom: 8px;">针灸配穴掌握度</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="acu-progress" style="width: 0%"></div>
+                            </div>
+                            <div id="acu-accuracy" style="text-align: right; font-size: 12px; margin-top: 5px;">0%</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px; text-align: center;">
+                        <div id="today-challenge"></div>
+                        <button class="tcm-button secondary" onclick="TCMSystem.startDailyChallenge()" style="margin-top: 15px;">
+                            🎯 今日挑战
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ==================== 《伤寒论》系统 ==================== -->
+            
+            <!-- 伤寒医案辨证 -->
+            <div class="tab-content" id="shanghan-case">
+                <div class="tcm-card">
+                    <div class="tcm-card-header">🎯 六经医案辨证</div>
+                    <div id="current-case-info">
+                        <!-- 当前医案信息动态加载 -->
+                    </div>
+                    
+                    <div class="option-grid" id="case-options">
+                        <!-- 医案选项动态加载 -->
+                    </div>
+                    
+                    <div class="diagnosis-result" id="shanghan-result" style="display: none;">
+                        <div class="result-title">🧠 六经辨证结果</div>
+                        <div id="shanghan-diagnosis-output"></div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 25px;">
+                        <button class="tcm-button" onclick="TCMSystem.shanghan.submitDiagnosis()" id="submit-diagnosis-btn">
+                            ✅ 提交辨证
+                        </button>
+                        <button class="tcm-button secondary" onclick="TCMSystem.shanghan.loadRandomCase()">
+                            🎲 随机医案
+                        </button>
+                        <button class="tcm-button" onclick="TCMSystem.shanghan.showFormulas()" id="next-formula-btn" style="display: none;">
+                            🌿 查看经方
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="tcm-card" id="formula-section" style="display: none;">
+                    <div class="tcm-card-header">🌿 经方治疗选择</div>
+                    <div id="formula-selection">
+                        <!-- 经方选项动态加载 -->
+                    </div>
+                    
+                    <div class="diagnosis-result" id="formula-result" style="display: none;">
+                        <div class="result-title">📜 治疗结果</div>
+                        <div id="formula-result-output"></div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 25px;">
+                        <button class="tcm-button success" onclick="TCMSystem.shanghan.applyTreatment()" id="apply-treatment-btn">
+                            💊 应用治疗
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 伤寒四诊系统 -->
+            <div class="tab-content" id="shanghan-diagnosis">
+                <div class="tcm-card">
+                    <div class="tcm-card-header">🔍 四诊合参与六经辨证</div>
+                    <p>请根据医案症状进行四诊收集，系统将自动进行六经辨证</p>
+                    
+                    <div id="shanghan-examination-sections">
+                        <!-- 四诊选项动态加载 -->
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button class="tcm-button" onclick="TCMSystem.shanghan.comprehensiveDiagnosis()">
+                            🧬 综合辨证
+                        </button>
+                        <button class="tcm-button secondary" onclick="TCMSystem.shanghan.resetExamination()">
+                            🔄 重新四诊
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 伤寒经方应用 -->
+            <div class="tab-content" id="shanghan-formula">
+                <div class="tcm-card">
+                    <div class="tcm-card-header">🌿 《伤寒论》经方数据库</div>
+                    <div id="formula-database">
+                        <!-- 经方数据库动态加载 -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 伤寒六经理论 -->
+            <div class="tab-content" id="shanghan-theory">
+                <div class="tcm-card">
+                    <div class="tcm-card-header">📜 六经辨证理论体系</div>
+                    <div id="six-channel-theory">
+                        <!-- 六经理论动态加载 -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ==================== 《针灸大成》系统 ==================== -->
+            
+            <!-- 针灸循经取穴 -->
+            <div class="tab-content" id="acupuncture-meridian">
+                <div class="tcm-card">
+                    <div class="tcm-card-header">🔄 循经取穴法</div>
+                    <p><strong>核心原理：</strong>"经脉所过，主治所及" - 根据病变部位所属经络取穴</p>
+                    
+                    <div id="acu-meridian-selection">
+                        <!-- 经络选择 -->
+                    </div>
+                    
+                    <div id="local-points-section">
+                        <!-- 近取穴 -->
+                    </div>
+                    
+                    <div id="distant-points-section">
+                        <!-- 远取穴 -->
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 25px;">
+                        <button class="tcm-button acupuncture" onclick="TCMSystem.acupuncture.selectMeridianPoints()">
+                            ✅ 选择穴位
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 原络取穴法 -->
+            <div class="tab-content" id="acupuncture-yuan-luo">
+                <div class="tcm-card">
+                    <div class="tcm-card-header">🎯 原络取穴法（主客配穴）</div>
+                    <p><strong>核心原理：</strong>原穴调本经元气 + 络穴通表里经气，主治表里两经同病</p>
+                    
+                    <div id="yuan-luo-selection">
+                        <!-- 原络选择 -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 子母取穴法 -->
+            <div class="tab-content" id="acupuncture-mother-child">
+                <div class="tcm-card">
+                    <div class="tcm-card-header">🌱 子母取穴法（五行补泻）</div>
+                    <p><strong>核心原理：</strong>"虚则补其母，实则泻其子" - 基于五行相生关系</p>
+                    
+                    <div id="mother-child-selection">
+                        <!-- 子母选择 -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ==================== 综合治疗系统 ==================== -->
+            
+            <div class="tab-content" id="integration-tab">
+                <div class="tcm-card">
+                    <div class="tcm-card-header">⚡ 综合治疗方案</div>
+                    <p>结合《伤寒论》经方与《针灸大成》配穴法，制定综合治疗方案</p>
+                    
+                    <div id="integrated-case-info">
+                        <!-- 综合案例信息 -->
+                    </div>
+                    
+                    <div style="display: flex; flex-wrap: wrap; gap: 20px; margin: 25px 0;">
+                        <div style="flex: 1; min-width: 300px;">
+                            <h3 style="color: #D84315;">🌿 经方治疗</h3>
+                            <div id="integrated-formula">
+                                <!-- 经方治疗部分 -->
+                            </div>
+                        </div>
+                        
+                        <div style="flex: 1; min-width: 300px;">
+                            <h3 style="color: #7B1FA2;">🪡 针灸配穴</h3>
+                            <div id="integrated-acupuncture">
+                                <!-- 针灸治疗部分 -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button class="tcm-button success" onclick="TCMSystem.applyIntegratedTreatment()">
+                            ⚡ 应用综合治疗
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ==================== 学习系统 ==================== -->
+            
+            <div class="tab-content" id="learning-tab">
+                <div class="tcm-card">
+                    <div class="tcm-card-header">📚 中医经典学习</div>
+                    <div id="learning-content">
+                        <!-- 学习内容动态加载 -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ==================== 进度系统 ==================== -->
+            
+            <div class="tab-content" id="progress-tab">
+                <div class="tcm-card">
+                    <div class="tcm-card-header">📊 学习进度统计</div>
+                    <div id="progress-stats">
+                        <!-- 统计信息动态加载 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入JavaScript文件 -->
+    <script src="main.js"></script>
+    <script src="shanghan.js"></script>
+    <script src="acupuncture.js"></script>
+    <script src="other.js"></script>
+    <script src="init.js"></script>
+</body>
+</html>
