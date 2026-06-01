@@ -1,3 +1,15 @@
+<style>
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #1e1e1e;
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+</style>
+
 # 识辨辑序
 
 道隐非一日矣。方今寰宇纷纶，典册散寄四方，虽闻见日广，而古道转晦。典籍所在，或藏于秘府，或囿于方隅，不啻灵珠沉海，使人怅望太虚。
