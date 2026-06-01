@@ -1,3 +1,16 @@
+<style>
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #1e1e1e;
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+</style>
+
+
 # 道衍
 
 ## 卷一·立本
