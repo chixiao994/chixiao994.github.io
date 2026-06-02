@@ -6,9 +6,18 @@
     <title>识辨辑序 · 识辨辑</title>
     <link rel="stylesheet" href="/shibianji/assets/css/common.css">
     <style>
-        /* 确保即使 common.css 未完全加载，样式也一致 */
         h1 { text-align: center; }
         .container p { text-indent: 2em; margin-bottom: 1rem; }
+        .home-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: #2c6e2f;
+            text-decoration: none;
+            border-bottom: 1px solid #c8d6c8;
+        }
+        .home-link:hover { color: #1a4a1c; border-bottom-color: #2c6e2f; }
+        .footer-note { margin-top: 2rem; font-size: 0.8rem; text-align: center; color: #8a9b8a; }
     </style>
 </head>
 <body>
@@ -21,7 +30,7 @@
 <p>今辨此辑，广搜先贤遗文，萃其精粹，依时编纂，而以一贯之。具悉追衍，惟愿古光复澈，传诸华夏，供我族裔涵泳体认。若使读者观千载之文，而恍然有会于未分之前，则此心慰矣。</p>
 <p>乙巳冬 · 与为谨记</p>
 
-    <div class="footer-note" style="margin-top: 2rem;">识辨辑 · 古籍解读与知识重构</div>
+    <div class="footer-note">识辨辑 · 古籍解读与知识重构</div>
 </div>
 </body>
 </html>
