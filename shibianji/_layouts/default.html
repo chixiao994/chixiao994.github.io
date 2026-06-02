@@ -1,21 +1,154 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>{{ page.title | default: "识辨辑" }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>{{ page.title | default: site.title | default: "识辨辑" }}</title>
     <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-            font-size: 1rem;
-            line-height: 1.6;
+            background-color: #faf9f8;
             color: #1e1e1e;
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
+
+        .container {
             max-width: 800px;
-            margin: 2rem auto;
-            padding: 0 1rem;
+            margin: 0 auto;
+        }
+
+        /* 标题样式 */
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+            font-weight: 600;
+            line-height: 1.25;
+        }
+        h1 { font-size: 2rem; border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; }
+        h2 { font-size: 1.5rem; border-bottom: 1px solid #eaecef; padding-bottom: 0.2em; }
+        h3 { font-size: 1.25rem; }
+        h4 { font-size: 1rem; }
+
+        /* 段落、列表 */
+        p, ul, ol {
+            margin-bottom: 1rem;
+        }
+        ul, ol {
+            padding-left: 2rem;
+        }
+        li {
+            margin-bottom: 0.25rem;
+        }
+
+        /* 链接 */
+        a {
+            color: #2c6e2f;
+            text-decoration: none;
+            border-bottom: 1px dotted #c8d6c8;
+        }
+        a:hover {
+            color: #1a4a1c;
+            border-bottom-color: #2c6e2f;
+        }
+
+        /* 引用块 */
+        blockquote {
+            margin: 1rem 0;
+            padding: 0.5rem 1rem;
+            background-color: #fefaf0;
+            border-left: 4px solid #b88b4a;
+            color: #3a3a2a;
+            font-style: italic;
+        }
+
+        /* 代码块 */
+        pre {
+            background-color: #f6f8fa;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: "SF Mono", Monaco, Consolas, monospace;
+            font-size: 0.85rem;
+            line-height: 1.45;
+            margin-bottom: 1rem;
+        }
+        code {
+            background-color: #f6f8fa;
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 0.85rem;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+        }
+
+        /* 表格 */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        th, td {
+            border: 1px solid #dfe2e5;
+            padding: 0.5rem 1rem;
+            text-align: left;
+        }
+        th {
+            background-color: #f6f8fa;
+            font-weight: 600;
+        }
+
+        /* 图片 */
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1rem auto;
+        }
+
+        /* 水平线 */
+        hr {
+            margin: 2rem 0;
+            border: none;
+            border-top: 1px solid #eaecef;
+        }
+
+        /* 脚注 */
+        .footer-note {
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            color: #8a9b8a;
+            text-align: center;
+            border-top: 1px solid #eaecef;
+            padding-top: 1rem;
+        }
+
+        /* 响应式 */
+        @media (max-width: 600px) {
+            body { padding: 1rem; }
+            .container { max-width: 100%; }
+            h1 { font-size: 1.6rem; }
+            h2 { font-size: 1.3rem; }
+            pre { font-size: 0.75rem; }
         }
     </style>
 </head>
 <body>
-    {{ content }}
+    <div class="container">
+        {{ content }}
+        <div class="footer-note">
+            <p>识辨辑 · 古籍解读与知识重构</p>
+        </div>
+    </div>
 </body>
 </html>
