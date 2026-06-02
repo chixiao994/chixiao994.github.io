@@ -1,1 +1,2 @@
 # 空配置，仅启用 Jekyll 处理
+markdown: kramdown
