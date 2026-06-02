@@ -1,19 +1,16 @@
----
-layout: page
----
-<style>
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-  font-size: 1rem;
-  line-height: 1.6;
-  color: #1e1e1e;
-  max-width: 800px;
-  margin: 2rem auto;
-  padding: 0 1rem;
-}
-</style>
-
-
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>示例文章 · 识辨辑</title>
+    <link rel="stylesheet" href="/shibianji/assets/css/common.css">
+</head>
+<body>
+<div class="container">
+    <a href="/shibianji/" class="home-link">← 识辨辑</a>
+    <h1>示例文章</h1>
+    
 # 道衍
 
 ## 卷一·立本
@@ -730,3 +727,8 @@ body {
     }
   });
 </script>
+
+    <div class="footer-note" style="margin-top: 2rem;">识辨辑 · 古籍解读与知识重构</div>
+</div>
+</body>
+</html>
