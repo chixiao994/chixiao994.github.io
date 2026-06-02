@@ -21,12 +21,23 @@ body {
     padding: 2rem;
 }
 
-/* 标题居中 */
+/* 一级标题居中 */
 h1 {
     text-align: center;
 }
 
-/* 段落首行缩进2字符（2em 即两个汉字的宽度） */
+/* 二级、三级标题整体左缩进两个字符 */
+h2, h3 {
+    margin-left: 2em;
+}
+
+/* 原有h2的左边框保留，但因整体左移，左边框也在2em处 */
+h2 {
+    border-left: 3px solid #2c6e2f;
+    padding-left: 0.8rem;
+}
+
+/* 正文段落首行缩进两字符 */
 .container p {
     text-indent: 2em;
     margin-bottom: 1rem;
@@ -46,17 +57,14 @@ h1 {
 }
 
 /* 其余标题样式 */
-h2 {
-    font-size: 1.3rem;
-    margin: 1.5rem 0 0.8rem 0;
-    font-weight: 600;
-    border-left: 3px solid #2c6e2f;
-    padding-left: 0.8rem;
-}
-h3, h4, h5, h6 {
+h2, h3, h4, h5, h6 {
     margin-top: 1.2em;
     margin-bottom: 0.5em;
-    font-weight: 500;
+    font-weight: 600;
+}
+/* 针对h2/h3的margin-left已经设置，这里补充h4/h5/h6不缩进 */
+h4, h5, h6 {
+    margin-left: 0;
 }
 
 ul, ol {
@@ -152,104 +160,6 @@ th {
     .container { padding: 1.5rem; }
     h1 { font-size: 1.5rem; }
     h2 { font-size: 1.2rem; }
-.search-box, .modal-search-box {
-    padding: 0.6rem 1rem;
-    font-size: 1rem;
-}
-}
-
-/* 搜索框样式 */
-.search-container {
-    margin: 1rem auto 0;
-    max-width: 400px;
-    text-align: center;
-}
-.search-box {
-    width: 100%;
-    padding: 0.8rem 1.2rem;       /* 原来可能是 0.5rem 0.8rem，增大内边距 */
-    font-size: 1.1rem;            /* 增大字体 */
-    border: 1px solid #ccc;
-    border-radius: 32px;          /* 更圆的角 */
-    outline: none;
-    transition: 0.2s;
-}
-.search-box:focus {
-    border-color: #2c6e2f;
-    box-shadow: 0 0 0 2px rgba(44,110,47,0.2);
-}
-.search-results {
-    margin-top: 1rem;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    max-height: 300px;
-    overflow-y: auto;
-    text-align: left;
-}
-.search-results a {
-    display: block;
-    padding: 0.5rem 1rem;
-    border-bottom: 1px solid #eee;
-    text-decoration: none;
-    color: #2c6e2f;
-}
-.search-results a:hover {
-    background: #f6f8fa;
-}
-.search-results .result-summary {
-    font-size: 0.85rem;
-    color: #586069;
-    margin-top: 0.2rem;
-}
-
-/* 模态框 */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.5);
-    align-items: center;
-    justify-content: center;
-}
-.modal-content {
-    background: white;
-    max-width: 600px;
-    width: 90%;
-    border-radius: 12px;
-    padding: 1.5rem;
-    position: relative;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-}
-.modal-close {
-    position: absolute;
-    right: 1rem;
-    top: 0.5rem;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: #aaa;
-}
-.modal-close:hover {
-    color: #000;
-}
-.modal-search-box {
-    width: 100%;
-    padding: 0.8rem 1.2rem;
-    font-size: 1.1rem;
-    border: 1px solid #ccc;
-    border-radius: 32px;
-    margin-bottom: 1rem;
-}
-.modal-results {
-    max-height: 400px;
-    overflow-y: auto;
-}
-.search-icon {
-    cursor: pointer;
-    margin-left: 0.5rem;
-    vertical-align: middle;
-    font-size: 1.2rem;
+    /* 移动端缩进适当减小 */
+    h2, h3 { margin-left: 1em; }
 }
