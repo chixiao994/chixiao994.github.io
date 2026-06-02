@@ -26,12 +26,12 @@ h1 {
     text-align: center;
 }
 
-/* 二级、三级标题整体左缩进两个半字符，与正文首行对齐 */
+/* 二级、三级标题整体左缩进5em（测试用） */
 h2, h3 {
-    margin-left: 2.5em;
+    margin-left: 5em;
 }
 
-/* 原有h2的左边框保留，但因整体左移，左边框也在2.5em处 */
+/* 原有h2的左边框保留 */
 h2 {
     border-left: 3px solid #2c6e2f;
     padding-left: 0.8rem;
@@ -62,7 +62,7 @@ h2, h3, h4, h5, h6 {
     margin-bottom: 0.5em;
     font-weight: 600;
 }
-/* 针对h2/h3的margin-left已经设置，这里补充h4/h5/h6不缩进 */
+/* h4/h5/h6不缩进 */
 h4, h5, h6 {
     margin-left: 0;
 }
@@ -160,6 +160,6 @@ th {
     .container { padding: 1.5rem; }
     h1 { font-size: 1.5rem; }
     h2 { font-size: 1.2rem; }
-    /* 移动端缩进适当减小，保持比例 */
-    h2, h3 { margin-left: 1.5em; }
+    /* 移动端相应增大缩进 */
+    h2, h3 { margin-left: 3em; }
 }
