@@ -26,15 +26,15 @@ h1 {
     text-align: center;
 }
 
-/* 二级、三级标题整体左缩进5em（测试用） */
-h2, h3 {
-    margin-left: 5em;
-}
-
-/* 原有h2的左边框保留 */
+/* h2 不做缩进，保留原有左边框 */
 h2 {
     border-left: 3px solid #2c6e2f;
     padding-left: 0.8rem;
+}
+
+/* 只对 h3 进行右缩（左边距） */
+h3 {
+    margin-left: 2.5em;
 }
 
 /* 正文段落首行缩进两字符 */
@@ -62,7 +62,7 @@ h2, h3, h4, h5, h6 {
     margin-bottom: 0.5em;
     font-weight: 600;
 }
-/* h4/h5/h6不缩进 */
+/* h4/h5/h6 不缩进 */
 h4, h5, h6 {
     margin-left: 0;
 }
@@ -160,6 +160,5 @@ th {
     .container { padding: 1.5rem; }
     h1 { font-size: 1.5rem; }
     h2 { font-size: 1.2rem; }
-    /* 移动端相应增大缩进 */
-    h2, h3 { margin-left: 3em; }
+    h3 { margin-left: 1.5em; }
 }
