@@ -21,6 +21,17 @@ body {
     padding: 2rem;
 }
 
+/* 标题居中 */
+h1 {
+    text-align: center;
+}
+
+/* 段落首行缩进2字符（2em 即两个汉字的宽度） */
+.container p {
+    text-indent: 2em;
+    margin-bottom: 1rem;
+}
+
 .home-link {
     display: inline-block;
     margin-bottom: 1.5rem;
@@ -34,13 +45,7 @@ body {
     border-bottom-color: #2c6e2f;
 }
 
-h1 {
-    font-size: 1.8rem;
-    margin-bottom: 0.5rem;
-    border-bottom: 1px solid #eaecef;
-    padding-bottom: 0.3rem;
-    font-weight: 600;
-}
+/* 其余标题样式 */
 h2 {
     font-size: 1.3rem;
     margin: 1.5rem 0 0.8rem 0;
@@ -52,10 +57,6 @@ h3, h4, h5, h6 {
     margin-top: 1.2em;
     margin-bottom: 0.5em;
     font-weight: 500;
-}
-
-p {
-    margin-bottom: 1rem;
 }
 
 ul, ol {
