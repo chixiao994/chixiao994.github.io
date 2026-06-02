@@ -152,7 +152,12 @@ th {
     .container { padding: 1.5rem; }
     h1 { font-size: 1.5rem; }
     h2 { font-size: 1.2rem; }
+.search-box, .modal-search-box {
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
 }
+}
+
 /* 搜索框样式 */
 .search-container {
     margin: 1rem auto 0;
@@ -161,10 +166,10 @@ th {
 }
 .search-box {
     width: 100%;
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
+    padding: 0.8rem 1.2rem;       /* 原来可能是 0.5rem 0.8rem，增大内边距 */
+    font-size: 1.1rem;            /* 增大字体 */
     border: 1px solid #ccc;
-    border-radius: 24px;
+    border-radius: 32px;          /* 更圆的角 */
     outline: none;
     transition: 0.2s;
 }
@@ -232,10 +237,10 @@ th {
 }
 .modal-search-box {
     width: 100%;
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
+    padding: 0.8rem 1.2rem;
+    font-size: 1.1rem;
     border: 1px solid #ccc;
-    border-radius: 24px;
+    border-radius: 32px;
     margin-bottom: 1rem;
 }
 .modal-results {
