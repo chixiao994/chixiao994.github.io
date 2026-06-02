@@ -25,14 +25,4 @@ body {
 
 乙巳冬 · 与为谨记
 
-<script>
-  // 移除整个头部（包括标题链接）
-  var header = document.querySelector('header.site-header, .site-header, header[role="banner"]');
-  if (header) header.remove();
 
-  // 或者如果头部有特定类名，也可以这样：
-  var titleLink = document.querySelector('.site-title');
-  if (titleLink && titleLink.parentElement) {
-    titleLink.parentElement.remove(); // 移除整个包含标题的父元素
-  }
-</script>
