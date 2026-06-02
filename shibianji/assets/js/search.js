@@ -44,14 +44,26 @@ function initHomeSearch() {
     const searchBox = document.getElementById('home-search');
     const resultsDiv = document.getElementById('home-search-results');
     if (!searchBox) return;
-    searchBox.addEventListener('input', (e) => {
-        const query = e.target.value;
+    
+    // 定义搜索执行函数
+    const doSearch = () => {
+        const query = searchBox.value;
         if (query.length < 1) {
             resultsDiv.innerHTML = '';
             return;
         }
         const results = performSearch(query);
-        if (resultsDiv) renderResults(results, 'home-search-results');
+        renderResults(results, 'home-search-results');
+    };
+    
+    // 实时输入搜索（保留）
+    searchBox.addEventListener('input', doSearch);
+    // 回车搜索
+    searchBox.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            doSearch();
+        }
     });
 }
 
@@ -60,48 +72,39 @@ function initModalSearch() {
     const modal = document.getElementById('search-modal');
     const searchInput = document.getElementById('modal-search-input');
     const resultsDiv = document.getElementById('modal-search-results');
-    if (!modal) return;
+    if (!modal || !searchInput) return;
+    
+    const doSearch = () => {
+        const query = searchInput.value;
+        if (query.length < 1) {
+            resultsDiv.innerHTML = '';
+            return;
+        }
+        const results = performSearch(query);
+        renderResults(results, 'modal-search-results');
+    };
+    
+    searchInput.addEventListener('input', doSearch);
+    searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            doSearch();
+        }
+    });
+    
     window.openSearchModal = function() {
         modal.style.display = 'flex';
-        if (searchInput) {
-            searchInput.focus();
-            searchInput.value = '';
-            resultsDiv.innerHTML = '';
-        }
+        searchInput.focus();
+        searchInput.value = '';
+        resultsDiv.innerHTML = '';
     };
     window.closeSearchModal = function() {
         modal.style.display = 'none';
     };
-    if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-            const query = e.target.value;
-            if (query.length < 1) {
-                resultsDiv.innerHTML = '';
-                return;
-            }
-            const results = performSearch(query);
-            renderResults(results, 'modal-search-results');
-        });
-    }
-    // 点击模态框背景关闭
     modal.addEventListener('click', (e) => {
         if (e.target === modal) window.closeSearchModal();
     });
 }
-
-// 在所有页面添加放大镜图标（如果不存在）
-function addSearchIconToTop() {
-    const homeLink = document.querySelector('.home-link');
-    if (homeLink && !document.querySelector('.search-icon')) {
-        const iconSpan = document.createElement('span');
-        iconSpan.className = 'search-icon';
-        iconSpan.innerHTML = ' 🔍';
-        iconSpan.style.cursor = 'pointer';
-        iconSpan.onclick = () => window.openSearchModal();
-        homeLink.parentNode.insertBefore(iconSpan, homeLink.nextSibling);
-    }
-}
-
 // 初始化
 document.addEventListener('DOMContentLoaded', () => {
     loadSearchIndex().then(() => {
