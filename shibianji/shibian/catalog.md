@@ -1,182 +1,196 @@
----
-layout: page
----
-<style>
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-  font-size: 1rem;
-  line-height: 1.6;
-  color: #1e1e1e;
-  max-width: 800px;
-  margin: 2rem auto;
-  padding: 0 1rem;
-}
-</style>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>书单 · 识辨辑</title>
+    <link rel="stylesheet" href="/shibianji/assets/css/common.css">
+    <style>
+        h1 { text-align: center; }
+        .container p { text-indent: 2em; margin-bottom: 1rem; }
+        .home-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: #2c6e2f;
+            text-decoration: none;
+            border-bottom: 1px solid #c8d6c8;
+        }
+        .home-link:hover { color: #1a4a1c; border-bottom-color: #2c6e2f; }
+        .footer-note { margin-top: 2rem; font-size: 0.8rem; text-align: center; color: #8a9b8a; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="/shibianji/" class="home-link">← 识辨辑</a>
+    <h1>书单</h1>
+    <h2>童蒙</h2>
+<ul>
+<li>对相四言</li>
+<li>千字文</li>
+<li>百家姓</li>
+<li>增广贤文</li>
+<li>幼学琼林</li>
+<li>千家诗</li>
+<li>正音攟言</li>
+<li>算法纂要</li>
+</ul>
+<h2>先秦</h2>
+<ul>
+<li>三坟</li>
+<li>周易</li>
+<li>周髀</li>
+<li>老子</li>
+<li>关尹子</li>
+<li>文子</li>
+<li>列子</li>
+<li>素问</li>
+<li>灵枢</li>
+<li>难经</li>
+<li>本草经</li>
+<li>汤液经</li>
+<li>鬼谷子</li>
+<li>子华子</li>
+<li>尸子</li>
+<li>晏子春秋</li>
+<li>尚书</li>
+<li>周书</li>
+<li>竹书纪年</li>
+<li>管子</li>
+<li>商君书</li>
+<li>慎子</li>
+<li>孙子</li>
+<li>六韬</li>
+<li>吴子</li>
+<li>司马法</li>
+<li>尉缭子</li>
+<li>鬻子</li>
+<li>尹文子</li>
+<li>鹖冠子</li>
+<li>亢仓子</li>
+<li>公孙龙子</li>
+<li>邓析子</li>
+<li>韩非子</li>
+<li>论语</li>
+<li>孟子</li>
+<li>墨子</li>
+<li>庄子</li>
+<li>吕氏春秋</li>
+<li>荀子</li>
+<li>春秋</li>
+<li>国语</li>
+<li>越绝书</li>
+<li>战国策</li>
+<li>楚辞</li>
+<li>山海经</li>
+<li>尔雅</li>
+</ul>
+<h2>汉唐</h2>
+<ul>
+<li>淮南子</li>
+<li>新语</li>
+<li>新书</li>
+<li>盐铁论</li>
+<li>史记</li>
+<li>急就篇</li>
+<li>方言</li>
+<li>太玄经</li>
+<li>法言</li>
+<li>说苑</li>
+<li>新序</li>
+<li>论衡</li>
+<li>潜夫论</li>
+<li>申鉴</li>
+<li>新论</li>
+<li>白虎通</li>
+<li>中论</li>
+<li>说文解字</li>
+<li>释名</li>
+<li>汉书</li>
+<li>后汉书</li>
+<li>水经</li>
+<li>抱朴子</li>
+<li>三国志</li>
+<li>世说新语</li>
+<li>玉篇</li>
+<li>曹植集</li>
+<li>陶渊明集</li>
+<li>华阳国志</li>
+<li>晋书</li>
+<li>南史</li>
+<li>隋书</li>
+<li>千金方</li>
+<li>脉经</li>
+<li>针灸甲乙经</li>
+<li>肘后备急方</li>
+<li>新唐书</li>
+<li>骆宾王集</li>
+<li>王维集</li>
+<li>孟浩然集</li>
+<li>高适集</li>
+<li>李白集</li>
+<li>杜甫集</li>
+<li>韩愈集</li>
+<li>河岳英灵集</li>
+<li>文选</li>
+<li>玉台新咏</li>
+<li>花间集</li>
+<li>茶经</li>
+<li>李卫公问对</li>
+<li>阴符经</li>
+<li>黄庭经</li>
+<li>参同契</li>
+<li>神仙传</li>
+<li>九章算术</li>
+<li>海岛算经</li>
+<li>孙子算经</li>
+<li>夏侯阳算经</li>
+<li>张丘建算经</li>
+<li>数术记遗</li>
+<li>三略</li>
+<li>素书</li>
+</ul>
+<h2>宋明</h2>
+<ul>
+<li>梦溪笔谈</li>
+<li>营造法式</li>
+<li>杨辉算法</li>
+<li>皇极经世</li>
+<li>梅花易数</li>
+<li>太极图说</li>
+<li>通书</li>
+<li>棋经</li>
+<li>酒经</li>
+<li>琴史</li>
+<li>广韵</li>
+<li>资治通鉴</li>
+<li>新五代史</li>
+<li>范仲淹集</li>
+<li>苏轼集</li>
+<li>王安石集</li>
+<li>家礼</li>
+<li>洗冤集录</li>
+<li>数书九章</li>
+<li>算法统宗</li>
+<li>针灸大成</li>
+<li>饮食书</li>
+<li>食物辑要</li>
+<li>天工开物</li>
+<li>徐霞客游记</li>
+<li>造福全书</li>
+<li>乐律全书</li>
+<li>耕余剩技</li>
+<li>证类本草</li>
+<li>武经总要</li>
+<li>宋史质</li>
+<li>国榷</li>
+<li>琴谱</li>
+<li>墨谱</li>
+<li>橘中秘</li>
+<li>万宝全书</li>
+</ul>
 
-# 书单
-
-## 童蒙
-
-- 对相四言
-- 千字文
-- 百家姓
-- 增广贤文
-- 幼学琼林
-- 千家诗
-- 正音攟言
-- 算法纂要
-
-## 先秦
-
-- 三坟
-- 周易
-- 周髀
-- 老子
-- 关尹子
-- 文子
-- 列子
-- 素问
-- 灵枢
-- 难经
-- 本草经
-- 汤液经
-- 鬼谷子
-- 子华子
-- 尸子
-- 晏子春秋
-- 尚书
-- 周书
-- 竹书纪年
-- 管子
-- 商君书
-- 慎子
-- 孙子
-- 六韬
-- 吴子
-- 司马法
-- 尉缭子
-- 鬻子
-- 尹文子
-- 鹖冠子
-- 亢仓子
-- 公孙龙子
-- 邓析子
-- 韩非子
-- 论语
-- 孟子
-- 墨子
-- 庄子
-- 吕氏春秋
-- 荀子
-- 春秋
-- 国语
-- 越绝书
-- 战国策
-- 楚辞
-- 山海经
-- 尔雅
-
-## 汉唐
-
-- 淮南子
-- 新语
-- 新书
-- 盐铁论
-- 史记
-- 急就篇
-- 方言
-- 太玄经
-- 法言
-- 说苑
-- 新序
-- 论衡
-- 潜夫论
-- 申鉴
-- 新论
-- 白虎通
-- 中论
-- 说文解字
-- 释名
-- 汉书
-- 后汉书
-- 水经
-- 抱朴子
-- 三国志
-- 世说新语
-- 玉篇
-- 曹植集
-- 陶渊明集
-- 华阳国志
-- 晋书
-- 南史
-- 隋书
-- 千金方
-- 脉经
-- 针灸甲乙经
-- 肘后备急方
-- 新唐书
-- 骆宾王集
-- 王维集
-- 孟浩然集
-- 高适集
-- 李白集
-- 杜甫集
-- 韩愈集
-- 河岳英灵集
-- 文选
-- 玉台新咏
-- 花间集
-- 茶经
-- 李卫公问对
-- 阴符经
-- 黄庭经
-- 参同契
-- 神仙传
-- 九章算术
-- 海岛算经
-- 孙子算经
-- 夏侯阳算经
-- 张丘建算经
-- 数术记遗
-- 三略
-- 素书
-
-## 宋明
-
-- 梦溪笔谈
-- 营造法式
-- 杨辉算法
-- 皇极经世
-- 梅花易数
-- 太极图说
-- 通书
-- 棋经
-- 酒经
-- 琴史
-- 广韵
-- 资治通鉴
-- 新五代史
-- 范仲淹集
-- 苏轼集
-- 王安石集
-- 家礼
-- 洗冤集录
-- 数书九章
-- 算法统宗
-- 针灸大成
-- 饮食书
-- 食物辑要
-- 天工开物
-- 徐霞客游记
-- 造福全书
-- 乐律全书
-- 耕余剩技
-- 证类本草
-- 武经总要
-- 宋史质
-- 国榷
-- 琴谱
-- 墨谱
-- 橘中秘
-- 万宝全书
-
+    <div class="footer-note">识辨辑 · 古籍解读与知识重构</div>
+</div>
+</body>
+</html>
