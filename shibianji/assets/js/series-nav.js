@@ -3,7 +3,7 @@ const seriesConfig = {
     "伤寒卒病论": {
         path: "/shibianji/interpretations/汉唐/伤寒卒病论/",
         files: [
-            "01-伤寒小传.html",
+            "01-伤寒卒病小传.html",
             "02-伤寒卒病论辑复稿.html",
             "03-医圣传.html",
             "04-仲景一生的中星图.html",
