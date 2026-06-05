@@ -154,6 +154,41 @@ th, td {
 th {
     background-color: #f6f8fa;
 }
+/* 系列文章底部导航 */
+.series-nav {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eaecef;
+}
+.series-nav a {
+    display: inline-block;
+    background: #f6f8fa;
+    color: #2c6e2f;
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    border: 1px solid #e2e4e8;
+    transition: 0.2s;
+}
+.series-nav a:hover {
+    background: #edf0f3;
+    border-color: #c8d6c8;
+}
+.series-nav .prev {
+    margin-right: auto;
+}
+.series-nav .next {
+    margin-left: auto;
+}
+@media (max-width: 600px) {
+    .series-nav {
+        gap: 1rem;
+    }
+}
 
 @media (max-width: 600px) {
     body { padding: 1rem; }
