@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>象由第三 · 物象论 · 道衍 · 识辨辑</title>
+    <link rel="stylesheet" href="/shibianji/assets/css/common.css">
+    <style>
+        /* 后备样式，确保即使 common.css 未加载也保持基本排版 */
+        h1 { text-align: center; }
+        .container p { text-indent: 2em; margin-bottom: 1rem; }
+        .home-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: #2c6e2f;
+            text-decoration: none;
+            border-bottom: 1px solid #c8d6c8;
+        }
+        .home-link:hover { color: #1a4a1c; border-bottom-color: #2c6e2f; }
+        .footer-note { margin-top: 2rem; font-size: 0.8rem; text-align: center; color: #8a9b8a; }
+        h2, h3, h4, h5, h6 { margin-top: 1.2em; margin-bottom: 0.5em; }
+        ul, ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+        li { margin-bottom: 0.3rem; }
+        .toc { background: #f9fafb; border-left: 4px solid #2c6e2f; padding: 0.8rem 1.2rem; margin: 1.5rem 0; border-radius: 8px; }
+        .toc h2 { font-size: 1.1rem; margin: 0 0 0.5rem 0; color: #2c6e2f; }
+        .toc ul { margin: 0; padding-left: 1.2rem; }
+        .toc li { margin: 0.3rem 0; }
+        .toc a { text-decoration: none; color: #2c6e2f; border-bottom: 1px dotted #c8d6c8; }
+        .toc a:hover { border-bottom-style: solid; }
+        /* 返回顶部样式（透明圆球，^ 居中微调） */
+        .back-to-top-ball {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: transparent;
+            color: #2c6e2f;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: none;
+            transition: 0.2s;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: normal;
+            transform: translateY(2px);
+        }
+        .back-to-top-ball:hover {
+            background: rgba(44, 110, 47, 0.1);
+            transform: scale(1.05) translateY(2px);
+            color: #1f5222;
+        }
+        @media (max-width: 600px) {
+            .back-to-top-ball {
+                width: 38px;
+                height: 38px;
+                font-size: 24px;
+                bottom: 15px;
+                right: 15px;
+                transform: translateY(2px);
+            }
+            .back-to-top-ball:hover {
+                transform: scale(1.05) translateY(2px);
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="/shibianji/" class="home-link">← 识辨辑</a>
+    <h1>象由第三</h1>
+    <p>—— 物之所从来：时、地、气</p>
+
+    <!-- 章内目录（基于全文 h2 标题） -->
+    <nav class="toc" aria-label="章节目录">
+        <h2>目录</h2>
+        <ul>
+            <li><a href="#sanyao">一、由之三要</a>
+                <ul>
+                    <li><a href="#shiyou">一曰时由</a></li>
+                    <li><a href="#diyou">二曰地由</a></li>
+                    <li><a href="#qiyou">三曰气由</a></li>
+                </ul>
+            </li>
+            <li><a href="#yuanyuqi">二、由与七元</a>
+                <ul>
+                    <li><a href="#yuanyu-xing">由与形</a></li>
+                    <li><a href="#yuanyu-gan">由与感</a></li>
+                    <li><a href="#yuanyu-yong">由与用</a></li>
+                    <li><a href="#yuanyu-liu">由与流</a></li>
+                    <li><a href="#yuanyu-chuan">由与传</a></li>
+                    <li><a href="#yuanyu-hua">由与化</a></li>
+                </ul>
+            </li>
+            <li><a href="#yuanyuliulun">三、由与六论</a>
+                <ul>
+                    <li><a href="#yuanyu-xiangshu">由与象数</a></li>
+                    <li><a href="#yuanyu-yinyang">由与阴阳</a></li>
+                    <li><a href="#yuanyu-wuxing">由与五行</a></li>
+                    <li><a href="#yuanyu-ganzhi">由与干支</a></li>
+                    <li><a href="#yuanyu-sanyi">由与三易</a></li>
+                    <li><a href="#yuanyu-jiezi">由与解字</a></li>
+                </ul>
+            </li>
+            <li><a href="#yaoyi">四、由之要义</a>
+                <ul>
+                    <li><a href="#ben">由者，本也</a></li>
+                    <li><a href="#yuan">由者，源也</a></li>
+                    <li><a href="#gen">由者，根也</a></li>
+                </ul>
+            </li>
+            <li><a href="#zhichidao">五、执由之道</a></li>
+            <li><a href="#zongyao">六、由之总要</a></li>
+        </ul>
+    </nav>
+
+    <!-- 正文开始 -->
+    <p>由者，物之所从来也。</p>
+    <p>物非自生，天地与之。非徒与之，乃以时、以地、以气与之。时也、地也、气也，三者合而物之由立。知其所由，则知其本；知其本，则知其所以然。</p>
+
+    <h2 id="sanyao">一、由之三要</h2>
+    <h3 id="shiyou">一曰时由</h3>
+    <p>物生于时，春生、夏长、秋收、冬藏，昼夜寒暑，皆时之由。</p>
+    <p>《本经》曰：“采造时月，阴干暴干，并各有法。”违其时，则失其气。茵陈三月采则为药，四月采则为蒿，时之由也。半夏夏半采，得夏至阴生之气，时之由也。</p>
+    <p>春采者得升发之气，夏采者得长养之气，秋采者得收敛之气，冬采者得闭藏之气。时不同，气不同，用亦不同。</p>
+    <p>古以干支纪其时，今以节气分其时。执时由者，知物之生有其时，用有其候。</p>
+
+    <h3 id="diyou">二曰地由</h3>
+    <p>物产于地，山高、水低、阳坡、阴谷，东西南北，皆地之由。</p>
+    <p>《本经》曰：“土地所出，真伪陈新，并各有法。”非其地，则异其性。橘逾淮为枳，地之由也。川芎产蜀中则气雄，他处则力薄，地之由也。</p>
+    <p>山地多刚，泽地多柔；阳坡多暖，阴谷多寒。地不同，性不同，功亦不同。</p>
+    <p>古以九州分其地，今以经纬定其位。执地由者，知物之产有其地，性有其源。</p>
+
+    <h3 id="qiyou">三曰气由</h3>
+    <p>物禀于气，寒热温凉，升降浮沉，皆气之由。</p>
+    <p>天地之气，合而生万物；万物之气，聚而成其性。气之所赋，物之性成。南方多湿热，北方多寒燥，气之由也。高原气清，河谷气浊，气之由也。</p>
+    <p>气不同，质不同，象亦不同。清者升，浊者降；热者散，寒者收。执气由者，知物之成有其气，变有其机。</p>
+
+    <h2 id="yuanyuqi">二、由与七元</h2>
+    <h3 id="yuanyu-xing">由与形</h3>
+    <p>物之所由，必形之于外。时由形之于荣枯，地由形之于刚柔，气由形之于升降。</p>
+    <p>观其形，可知其由：根深者得地气之厚，茎直者得天气之清，叶茂者得时气之和。</p>
+
+    <h3 id="yuanyu-gan">由与感</h3>
+    <p>物之所由，可感而知。时之感在鲜陈，地之感在厚薄，气之感在寒温。</p>
+    <p>触而知其由，嗅而知其由，尝而知其由。能感者，能知其由。</p>
+
+    <h3 id="yuanyu-yong">由与用</h3>
+    <p>物之所由，定其用。时当其采，其用全；地当其产，其用专；气得其和，其用神。</p>
+    <p>违其时，失其用；非其地，减其用；乖其气，乱其用。用由所定，不可不察。</p>
+
+    <h3 id="yuanyu-liu">由与流</h3>
+    <p>物之所由，因流而变。离其生地，地由失；易其时令，时由改；入他气域，气由移。流之愈远，由之愈杂。</p>
+
+    <h3 id="yuanyu-chuan">由与传</h3>
+    <p>物之所由，因传而续。血脉之传，存其由；市井之传，变其由；世代之传，厚其由。传之久，由之积也。</p>
+
+    <h3 id="yuanyu-hua">由与化</h3>
+    <p>物之所由，因化而迁。陈化者，时由之积也；熟化者，气由之变也；气化者，人由之入也。化者，由之新也。</p>
+
+    <h2 id="yuanyuliulun">三、由与六论</h2>
+    <h3 id="yuanyu-xiangshu">由与象数</h3>
+    <p>由有数焉。时由有数，年月日时；地由有数，经纬度里；气由有数，温度湿度。数以纪由，数以度由，数以推由。</p>
+
+    <h3 id="yuanyu-yinyang">由与阴阳</h3>
+    <p>由有阴阳。时为阳，地为阴；昼为阳，夜为阴；春夏为阳，秋冬为阴。阳由主动，阴由主静。阴阳合而由立。</p>
+
+    <h3 id="yuanyu-wuxing">由与五行</h3>
+    <p>由有五行。木由春生，火由夏长，金由秋收，水由冬藏，土由四季。五行之行，由之所循。</p>
+
+    <h3 id="yuanyu-ganzhi">由与干支</h3>
+    <p>由有干支。干支纪时，干支纪地，干支纪气。甲子乙丑，所以定由之序；子午卯酉，所以位由之方。</p>
+
+    <h3 id="yuanyu-sanyi">由与三易</h3>
+    <p>由有三易。有不易之由，物之本源也；有变易之由，物之流变也；有简易之由，物之常道也。执其三易，乃能通其变。</p>
+
+    <h3 id="yuanyu-jiezi">由与解字</h3>
+    <p>由之名，载于字。考其字源，知其所由。字从某，其义某，其音某，皆由之迹也。解字者，解物之所由名也。</p>
+
+    <h2 id="yaoyi">四、由之要义</h2>
+    <h3 id="ben">由者，本也</h3>
+    <p>知由则知本。物之性，由其定；物之功，由所成。不知由，则用物而惑；知由，则御物而明。</p>
+
+    <h3 id="yuan">由者，源也</h3>
+    <p>溯源而知流，知源而明变。物之流、传、化，皆自其由来。执其由，乃能循其流、考其传、观其化。</p>
+
+    <h3 id="gen">由者，根也</h3>
+    <p>根深则叶茂，源远则流长。物之形、感、用，皆根于由。厚其由，乃能壮其形、通其感、尽其用。</p>
+
+    <h2 id="zhichidao">五、执由之道</h2>
+    <p>古之先贤，以干支纪其时由，以九州分其地由，以阴阳察其气由。此古之执由者也。</p>
+    <p>今之学者，以历史考其时由，以地理究其地由，以物理测其气由。此今之执由者也。</p>
+    <p>古今之道，其揆一也。皆所以知物之所从来，明物之所以然。</p>
+    <p>执由者，能知物之始；知始者，能御物之变；御变者，能用物之全。</p>
+
+    <h2 id="zongyao">六、由之总要</h2>
+    <p>时也、地也、气也，三者合而物之由立。</p>
+    <p>由立而本明，本明而用全。</p>
+    <p>观物者，必观其由；<br>
+    用物者，必考其由；<br>
+    论物者，必明其由。</p>
+    <p>由不明，则物不可知；<br>
+    由既明，则物无遁形。</p>
+    <p>执由之道，可以观天地、察万物、应人事、通古今。</p>
+
+    <!-- 底部导航（系列文章） -->
+    <div class="series-nav">
+        <a href="03-物象论·具象第二.html" class="prev">上一篇</a>
+        <a href="index.html" class="index">返回目录</a>
+        <a href="05-物象论·象形第四.html" class="next">下一篇</a>
+    </div>
+
+    <div class="footer-note">识辨辑 · 古籍解读与知识重构</div>
+</div>
+
+<!-- 返回顶部透明小圆球 -->
+<a href="#" id="backToTop" class="back-to-top-ball" aria-label="返回顶部">^</a>
+<script>
+    (function() {
+        var btn = document.getElementById('backToTop');
+        if (btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+    })();
+</script>
+</body>
+</html>
