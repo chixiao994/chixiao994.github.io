@@ -202,7 +202,7 @@ th {
     opacity: 0.5;
     pointer-events: none;
 }
-/* 返回顶部小圆球 - 透明版，^ 符号视觉居中（向下微调） */
+/* 返回顶部小圆球 - 透明版，只保留 HTML 中的 ^ 符号 */
 .back-to-top-ball {
     position: fixed;
     bottom: 20px;
@@ -217,37 +217,32 @@ th {
     box-shadow: none;
     transition: 0.2s;
     z-index: 1000;
-    /* 使用 flex 实现水平垂直居中 */
+    /* 使用 flex 居中 */
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-/* 对 ^ 符号本身做向下偏移，实现视觉居中 */
-.back-to-top-ball::before {
-    content: "^";
+    /* 对内部文本进行微调 */
     font-size: 28px;
     font-weight: normal;
-    transform: translateY(2px);  /* 向下微调，具体数值可根据字体微调 */
+    transform: translateY(2px);  /* 向下偏移实现视觉居中 */
 }
 
-/* 悬浮效果 */
 .back-to-top-ball:hover {
     background: rgba(44, 110, 47, 0.1);
-    transform: scale(1.05);
+    transform: scale(1.05) translateY(2px);  /* 悬浮时保留偏移 */
     color: #1f5222;
 }
 
-/* 移动端适配 */
 @media (max-width: 600px) {
     .back-to-top-ball {
         width: 38px;
         height: 38px;
+        font-size: 24px;
         bottom: 15px;
         right: 15px;
+        transform: translateY(2px);
     }
-    .back-to-top-ball::before {
-        font-size: 24px;
-        transform: translateY(2px);  /* 移动端同样微调 */
+    .back-to-top-ball:hover {
+        transform: scale(1.05) translateY(2px);
     }
 }
