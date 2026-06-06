@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>象形第四 · 物象论 · 道衍 · 识辨辑</title>
+    <link rel="stylesheet" href="/shibianji/assets/css/common.css">
+    <style>
+        /* 后备样式，确保即使 common.css 未加载也保持基本排版 */
+        h1 { text-align: center; }
+        .container p { text-indent: 2em; margin-bottom: 1rem; }
+        .home-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: #2c6e2f;
+            text-decoration: none;
+            border-bottom: 1px solid #c8d6c8;
+        }
+        .home-link:hover { color: #1a4a1c; border-bottom-color: #2c6e2f; }
+        .footer-note { margin-top: 2rem; font-size: 0.8rem; text-align: center; color: #8a9b8a; }
+        h2, h3, h4, h5, h6 { margin-top: 1.2em; margin-bottom: 0.5em; }
+        ul, ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+        li { margin-bottom: 0.3rem; }
+        .toc { background: #f9fafb; border-left: 4px solid #2c6e2f; padding: 0.8rem 1.2rem; margin: 1.5rem 0; border-radius: 8px; }
+        .toc h2 { font-size: 1.1rem; margin: 0 0 0.5rem 0; color: #2c6e2f; }
+        .toc ul { margin: 0; padding-left: 1.2rem; }
+        .toc li { margin: 0.3rem 0; }
+        .toc a { text-decoration: none; color: #2c6e2f; border-bottom: 1px dotted #c8d6c8; }
+        .toc a:hover { border-bottom-style: solid; }
+        /* 返回顶部样式（透明圆球，^ 居中微调） */
+        .back-to-top-ball {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: transparent;
+            color: #2c6e2f;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: none;
+            transition: 0.2s;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: normal;
+            transform: translateY(2px);
+        }
+        .back-to-top-ball:hover {
+            background: rgba(44, 110, 47, 0.1);
+            transform: scale(1.05) translateY(2px);
+            color: #1f5222;
+        }
+        @media (max-width: 600px) {
+            .back-to-top-ball {
+                width: 38px;
+                height: 38px;
+                font-size: 24px;
+                bottom: 15px;
+                right: 15px;
+                transform: translateY(2px);
+            }
+            .back-to-top-ball:hover {
+                transform: scale(1.05) translateY(2px);
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="/shibianji/" class="home-link">← 识辨辑</a>
+    <h1>象形第四</h1>
+    <p>—— 物之所形：全形、变形、阴阳、五行</p>
+
+    <!-- 章内目录（基于全文 h2 和 h3 标题） -->
+    <nav class="toc" aria-label="章节目录">
+        <h2>目录</h2>
+        <ul>
+            <li><a href="#er-yao">一、形之二要</a>
+                <ul>
+                    <li><a href="#quanxing">一曰全形</a></li>
+                    <li><a href="#bianxing">二曰变形</a></li>
+                </ul>
+            </li>
+            <li><a href="#xing-yinyang">二、形之阴阳</a></li>
+            <li><a href="#xing-wuxing">三、形之五行</a></li>
+            <li><a href="#xing-yu-qi">四、形与七元</a>
+                <ul>
+                    <li><a href="#xing-yu-you">形与由</a></li>
+                    <li><a href="#xing-yu-gan">形与感</a></li>
+                    <li><a href="#xing-yu-yong">形与用</a></li>
+                    <li><a href="#xing-yu-liu">形与流</a></li>
+                    <li><a href="#xing-yu-chuan">形与传</a></li>
+                    <li><a href="#xing-yu-hua">形与化</a></li>
+                </ul>
+            </li>
+            <li><a href="#xing-yu-liulun">五、形与六论</a>
+                <ul>
+                    <li><a href="#xing-yu-xiangshu">形与象数</a></li>
+                    <li><a href="#xing-yu-yinyang2">形与阴阳</a></li>
+                    <li><a href="#xing-yu-wuxing2">形与五行</a></li>
+                    <li><a href="#xing-yu-ganzhi">形与干支</a></li>
+                    <li><a href="#xing-yu-sanyi">形与三易</a></li>
+                    <li><a href="#xing-yu-jiezi">形与解字</a></li>
+                </ul>
+            </li>
+            <li><a href="#xing-yaoyi">六、形之要义</a>
+                <ul>
+                    <li><a href="#ti">形者，体也</a></li>
+                    <li><a href="#xiang">形者，象也</a></li>
+                    <li><a href="#lei">形者，类也</a></li>
+                </ul>
+            </li>
+            <li><a href="#zhixingzhidao">七、执形之道</a></li>
+            <li><a href="#xing-zongyao">八、形之总要</a></li>
+        </ul>
+    </nav>
+
+    <!-- 正文开始 -->
+    <p>形者，物之所形也。</p>
+    <p>物既有体，必有其形。形者，物之可见、可触、可度者也。无形则物不可知，无形则象无所附。故观物者，必先观其形。</p>
+
+    <h2 id="er-yao">一、形之二要</h2>
+    <h3 id="quanxing">一曰全形</h3>
+    <p>全形者，物之初生、长成、未伤之貌。</p>
+    <p>根茎叶花，果实种子，各具其态。观全形，可知其禀受天地之全气。</p>
+    <p>人参形如人，故能补人之元气。其芦头如人之首，其支根如人之四肢，其须根如人之脉络。形如此，用如此。</p>
+    <p>核桃形如脑，其壳如颅，其仁如脑髓，沟回宛然。故能补人之脑髓。</p>
+    <p>猪腰形如肾，故能补肾。猪心形如心，故能养心。猪肚形如胃，故能补胃。此以形补形，形同则气通，气通则效显。</p>
+    <p>全形者，物之本也。得其全形，可知其禀受之全气。</p>
+
+    <h3 id="bianxing">二曰变形</h3>
+    <p>变形者，物之经人加工之后。</p>
+    <p>切片、碾末、熬膏、烧灰，皆变形也。变形之后，全象虽隐，而新象生焉。</p>
+    <p>生地黄，其形润，其色黄褐，凉血也。九蒸九晒而为熟地黄，其形干，其色黑亮，补血也。变形而性变。</p>
+    <p>生姜，其形鲜，其质润，发散也。干姜，其形缩，其质燥，温中也。变形而用殊。</p>
+    <p>附子，生用则毒烈，久煎则毒去而温存。变形而功异。</p>
+    <p>变形者，物之变也。识其变，可知其用；知其用，乃能用物。</p>
+    <p>全形其气厚，变形其用专。识全知变，乃能用物。</p>
+
+    <h2 id="xing-yinyang">二、形之阴阳</h2>
+    <p>形有阴阳，不可不辨。</p>
+    <ul>
+        <li>外为阳，内为阴：皮为阳，肉为阴；壳为阳，仁为阴。观外可知内，察皮可知肉。</li>
+        <li>上为阳，下为阴：花为阳，根为阴；枝为阳，干为阴。升者为阳，降者为阴。</li>
+        <li>背为阳，腹为阴：背刚而腹柔，背厚而腹薄。刚者属阳，柔者属阴。</li>
+        <li>动为阳，静为阴：叶动为阳，根静为阴；花动为阳，实静为阴。</li>
+    </ul>
+    <p>形之阴阳，用之所本。阳形主升主散，阴形主降主敛。观其形之阴阳，可知其用之趋向。</p>
+
+    <h2 id="xing-wuxing">三、形之五行</h2>
+    <p>形有五行，各有所属。</p>
+    <ul>
+        <li><strong>木形</strong>：曲直、条达、生发。枝、藤、茎之属。桂枝、桑枝、藤类，皆木形也。其用主疏泄、主通达。</li>
+        <li><strong>火形</strong>：尖圆、炎上、温热。花、叶之属。菊花、红花、辛夷，皆火形也。其用主升散、主温通。</li>
+        <li><strong>土形</strong>：方厚、圆实、中和。根、实之属。甘草、山药、大枣，皆土形也。其用主补中、主和缓。</li>
+        <li><strong>金形</strong>：方正、刚硬、清肃。皮、石之属。厚朴、石膏、龙骨，皆金形也。其用主降敛、主收束。</li>
+        <li><strong>水形</strong>：润下、流动、柔滑。脂、液之属。阿胶、地黄、蜂蜜，皆水形也。其用主滋润、主下行。</li>
+    </ul>
+    <p>形具五行，各有所归。观其形，知其类；知其类，明其用。</p>
+
+    <h2 id="xing-yu-qi">四、形与七元</h2>
+    <h3 id="xing-yu-you">形与由</h3>
+    <p>形因由生。时由形之于荣枯，地由形之于刚柔，气由形之于升降。</p>
+    <p>春生者形柔，夏长者形茂，秋收者形实，冬藏者形敛。地高者形刚，地低者形柔。气清者形轻，气浊者形重。观其形，可知其由。</p>
+
+    <h3 id="xing-yu-gan">形与感</h3>
+    <p>形感于物。目遇其形，得其色；身触其形，得其质；心感其形，得其情。</p>
+    <p>形之曲直，感之于目；形之刚柔，感之于手；形之动静，感之于心。感形而知物，感物而通神。</p>
+
+    <h3 id="xing-yu-yong">形与用</h3>
+    <p>形定其用。根主补，茎主通，花主散，实主敛，皮主收，脂主润。</p>
+    <p>观其形，知其用。核桃形如脑，故补脑；腰子形如肾，故补肾。形之用，自然之理也。</p>
+
+    <h3 id="xing-yu-liu">形与流</h3>
+    <p>形因流而变。物离其地，形因气候而改；物经人手，形因加工而变。流之愈远，形之愈异。</p>
+
+    <h3 id="xing-yu-chuan">形与传</h3>
+    <p>形因传而存。器物之形，传于后世；典籍之形，传于万代。传之久，形之范也。</p>
+
+    <h3 id="xing-yu-hua">形与化</h3>
+    <p>形因化而迁。生熟异形，陈新异形，干鲜异形。化者，形之变也。</p>
+
+    <h2 id="xing-yu-liulun">五、形与六论</h2>
+    <h3 id="xing-yu-xiangshu">形与象数</h3>
+    <p>形有数焉。长短有数，大小有数，轻重有数。度其形，得其数；得其数，明其量。</p>
+    <p>三寸之参，其力薄；五寸之参，其力厚。形之大小，数之多寡，用之轻重也。</p>
+
+    <h3 id="xing-yu-yinyang2">形与阴阳</h3>
+    <p>形有阴阳，已如前论。阴阳判形，形以类别。</p>
+
+    <h3 id="xing-yu-wuxing2">形与五行</h3>
+    <p>形有五行，已如前论。五行类形，形以性分。</p>
+
+    <h3 id="xing-yu-ganzhi">形与干支</h3>
+    <p>形应干支。子午卯酉，形有四方；寅申巳亥，形有高下。干支之位，形之所处。</p>
+
+    <h3 id="xing-yu-sanyi">形与三易</h3>
+    <p>形有三易。有不易之形，物之本相也；有变易之形，物之他相也；有简易之形，物之共相也。执其三易，乃能通形之变。</p>
+
+    <h3 id="xing-yu-jiezi">形与解字</h3>
+    <p>形之名，载于字。字象其形，形显于字。山象山形，水象水形，木象木形，火象火形。解字者，解形之所象也。</p>
+
+    <h2 id="xing-yaoyi">六、形之要义</h2>
+    <h3 id="ti">形者，体也</h3>
+    <p>形为物之体。无形则物不可见，无体则用无所依。观其形，得其体；得其体，明其用。</p>
+
+    <h3 id="xiang">形者，象也</h3>
+    <p>形为物之象。象在形中，形显象外。察其形，得其象；得其象，通其神。</p>
+
+    <h3 id="lei">形者，类也</h3>
+    <p>形以类物。同类之形，必有同用之性。观形知类，以类知用。</p>
+
+    <h2 id="zhixingzhidao">七、执形之道</h2>
+    <p>古之先贤，以阴阳辨其形，以五行类其形，以象数量其形。此古之执形者也。</p>
+    <p>今之学者，以几何量其形，以物理测其形，以生物解其形。此今之执形者也。</p>
+    <p>古今之道，其揆一也。皆所以知物之所形，明物之所以用。</p>
+    <p>执形者，能知物之体；知体者，能通物之用；通用者，能尽物之利。</p>
+
+    <h2 id="xing-zongyao">八、形之总要</h2>
+    <p>形者，物之可见、可触、可度者也。</p>
+    <p>全形见其本，变形见其用。<br>
+    阴阳辨其性，五行类其属。</p>
+    <p>形由时地气而生，形因感用流而显。<br>
+    形传于世代，形化于变化。</p>
+    <p>观形者，必观其全、察其变、辨其阴阳、类其五行。<br>
+    形明而物可知，形尽而物可用。</p>
+    <p>执形之道，可以观天地、察万物、应人事、通古今。</p>
+
+    <!-- 底部导航（系列文章） -->
+    <div class="series-nav">
+        <a href="04-物象论·象由第三.html" class="prev">上一篇</a>
+        <a href="index.html" class="index">返回目录</a>
+        <a href="06-物象论·象感第五.html" class="next">下一篇</a>
+    </div>
+
+    <div class="footer-note">识辨辑 · 古籍解读与知识重构</div>
+</div>
+
+<!-- 返回顶部透明小圆球 -->
+<a href="#" id="backToTop" class="back-to-top-ball" aria-label="返回顶部">^</a>
+<script>
+    (function() {
+        var btn = document.getElementById('backToTop');
+        if (btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+    })();
+</script>
+</body>
+</html>
