@@ -202,7 +202,7 @@ th {
     opacity: 0.5;
     pointer-events: none;
 }
-/* 返回顶部小圆球 - 透明版 */
+/* 返回顶部小圆球 - 透明版，^ 符号不加粗且垂直居中 */
 .back-to-top-ball {
     position: fixed;
     bottom: 20px;
@@ -210,27 +210,26 @@ th {
     width: 44px;
     height: 44px;
     border-radius: 50%;
-    background: transparent;      /* 完全透明背景 */
-    color: #2c6e2f;              /* 符号颜色保留绿色，可自行调整 */
+    background: transparent;
+    color: #2c6e2f;
     text-align: center;
-    line-height: 44px;
+    line-height: 44px;      /* 与 height 相等，实现垂直居中 */
     font-size: 28px;
-    font-weight: bold;
+    font-weight: normal;    /* 不加粗 */
     text-decoration: none;
     cursor: pointer;
-    box-shadow: none;            /* 移除阴影，也可保留浅阴影，按需 */
+    box-shadow: none;
     transition: 0.2s;
     z-index: 1000;
     display: inline-block;
 }
 
 .back-to-top-ball:hover {
-    background: rgba(44, 110, 47, 0.1);  /* 悬浮时轻微绿色背景，可选 */
+    background: rgba(44, 110, 47, 0.1);
     transform: scale(1.05);
     color: #1f5222;
 }
 
-/* 移动端 */
 @media (max-width: 600px) {
     .back-to-top-ball {
         width: 38px;
