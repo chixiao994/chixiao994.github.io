@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>象感第五 · 物象论 · 道衍 · 识辨辑</title>
+    <link rel="stylesheet" href="/shibianji/assets/css/common.css">
+    <style>
+        /* 后备样式，确保即使 common.css 未加载也保持基本排版 */
+        h1 { text-align: center; }
+        .container p { text-indent: 2em; margin-bottom: 1rem; }
+        .home-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: #2c6e2f;
+            text-decoration: none;
+            border-bottom: 1px solid #c8d6c8;
+        }
+        .home-link:hover { color: #1a4a1c; border-bottom-color: #2c6e2f; }
+        .footer-note { margin-top: 2rem; font-size: 0.8rem; text-align: center; color: #8a9b8a; }
+        h2, h3, h4, h5, h6 { margin-top: 1.2em; margin-bottom: 0.5em; }
+        ul, ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+        li { margin-bottom: 0.3rem; }
+        .toc { background: #f9fafb; border-left: 4px solid #2c6e2f; padding: 0.8rem 1.2rem; margin: 1.5rem 0; border-radius: 8px; }
+        .toc h2 { font-size: 1.1rem; margin: 0 0 0.5rem 0; color: #2c6e2f; }
+        .toc ul { margin: 0; padding-left: 1.2rem; }
+        .toc li { margin: 0.3rem 0; }
+        .toc a { text-decoration: none; color: #2c6e2f; border-bottom: 1px dotted #c8d6c8; }
+        .toc a:hover { border-bottom-style: solid; }
+        /* 返回顶部样式（透明圆球，^ 居中微调） */
+        .back-to-top-ball {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: transparent;
+            color: #2c6e2f;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: none;
+            transition: 0.2s;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: normal;
+            transform: translateY(2px);
+        }
+        .back-to-top-ball:hover {
+            background: rgba(44, 110, 47, 0.1);
+            transform: scale(1.05) translateY(2px);
+            color: #1f5222;
+        }
+        @media (max-width: 600px) {
+            .back-to-top-ball {
+                width: 38px;
+                height: 38px;
+                font-size: 24px;
+                bottom: 15px;
+                right: 15px;
+                transform: translateY(2px);
+            }
+            .back-to-top-ball:hover {
+                transform: scale(1.05) translateY(2px);
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="/shibianji/" class="home-link">← 识辨辑</a>
+    <h1>象感第五</h1>
+    <p>—— 物之所感于人也：五感分论</p>
+
+    <!-- 章内目录（基于全文 h2 和 h3 标题） -->
+    <nav class="toc" aria-label="章节目录">
+        <h2>目录</h2>
+        <ul>
+            <li><a href="#wuganfenlun">一、五感分论</a>
+                <ul>
+                    <li><a href="#mugan">一曰目感——色</a></li>
+                    <li><a href="#bigan">二曰鼻感——臭</a></li>
+                    <li><a href="#shegan">三曰舌感——味</a></li>
+                    <li><a href="#shengan">四曰身感——触</a></li>
+                    <li><a href="#xingan">五曰心感——情</a></li>
+                </ul>
+            </li>
+            <li><a href="#gan-yu-qi">二、感与七元</a>
+                <ul>
+                    <li><a href="#gan-yu-you">感与由</a></li>
+                    <li><a href="#gan-yu-xing">感与形</a></li>
+                    <li><a href="#gan-yu-yong">感与用</a></li>
+                    <li><a href="#gan-yu-liu">感与流</a></li>
+                    <li><a href="#gan-yu-chuan">感与传</a></li>
+                    <li><a href="#gan-yu-hua">感与化</a></li>
+                </ul>
+            </li>
+            <li><a href="#gan-yu-liulun">三、感与六论</a>
+                <ul>
+                    <li><a href="#gan-yu-xiangshu">感与象数</a></li>
+                    <li><a href="#gan-yu-yinyang">感与阴阳</a></li>
+                    <li><a href="#gan-yu-wuxing">感与五行</a></li>
+                    <li><a href="#gan-yu-ganzhi">感与干支</a></li>
+                    <li><a href="#gan-yu-sanyi">感与三易</a></li>
+                    <li><a href="#gan-yu-jiezi">感与解字</a></li>
+                </ul>
+            </li>
+            <li><a href="#gan-yaoyi">四、感之要义</a>
+                <ul>
+                    <li><a href="#tong">感者，通也</a></li>
+                    <li><a href="#zhen">感者，真也</a></li>
+                    <li><a href="#ji">感者，机也</a></li>
+                </ul>
+            </li>
+            <li><a href="#zhiganzhidao">五、执感之道</a></li>
+            <li><a href="#gan-zongyao">六、感之总要</a></li>
+        </ul>
+    </nav>
+
+    <!-- 正文开始 -->
+    <p>感者，物之所感于人也。</p>
+    <p>物有形，人感之。感者，非思非知，乃身与物接，自然而觉。目遇之色，鼻遇之气，舌遇之味，身遇之触，心遇之情，五感交会，而物之象入于心。</p>
+    <p>入于心者，非名也，乃物之真也。能感，则物非物，我非我，象在其中矣。</p>
+
+    <h2 id="wuganfenlun">一、五感分论</h2>
+    <h3 id="mugan">一曰目感——色</h3>
+    <p>目者，天之牖也。物之色，入于目而感于心。</p>
+    <p>五色者，青赤黄白黑。青入肝，赤入心，黄入脾，白入肺，黑入肾。色之感也，深于脏腑。</p>
+    <ul>
+        <li>青者，草木之色，感之而生仁。目遇青，心平气静。</li>
+        <li>赤者，火之色，感之而生喜。目遇赤，心热血沸。</li>
+        <li>黄者，土之色，感之而生信。目遇黄，心安气和。</li>
+        <li>白者，金之色，感之而生义。目遇白，心清志定。</li>
+        <li>黑者，水之色，感之而生智。目遇黑，心沉神敛。</li>
+    </ul>
+    <p>色之感人，入于无间。医者观色而知病，艺者用色而表情，皆感色之能也。</p>
+
+    <h3 id="bigan">二曰鼻感——臭</h3>
+    <p>鼻者，气之户也。物之臭，入于鼻而感于肺。</p>
+    <p>五臭者，香臭腥臊焦。香入脾，臭入肾，腥入肺，臊入肝，焦入心。</p>
+    <ul>
+        <li>香者，土之臭，感之而醒脾。闻香则思食。</li>
+        <li>臭者，水之臭，感之而通肾。闻臭则欲便。</li>
+        <li>腥者，金之臭，感之而宣肺。闻腥则欲咳。</li>
+        <li>臊者，木之臭，感之而疏肝。闻臊则欲怒。</li>
+        <li>焦者，火之臭，感之而清心。闻焦则欲烦。</li>
+    </ul>
+    <p>臭之感人，入于无形。医者闻臭而知病，厨者用臭而调味，皆感臭之能也。</p>
+
+    <h3 id="shegan">三曰舌感——味</h3>
+    <p>舌者，味之府也。物之味，入于舌而感于脏。</p>
+    <p>五味者，酸苦甘辛咸。酸入肝，苦入心，甘入脾，辛入肺，咸入肾。</p>
+    <ul>
+        <li>酸者，木之味，感之而收敛。食酸则齿软，肝气收也。</li>
+        <li>苦者，火之味，感之而坚降。食苦则心清，火气降也。</li>
+        <li>甘者，土之味，感之而缓补。食甘则气和，脾气充也。</li>
+        <li>辛者，金之味，感之而发散。食辛则汗出，肺气宣也。</li>
+        <li>咸者，水之味，感之而软润。食咸则口渴，肾气润也。</li>
+    </ul>
+    <p>味之感人，入于至微。医者尝味而知药，食者品味而养身，皆感味之能也。</p>
+
+    <h3 id="shengan">四曰身感——触</h3>
+    <p>身者，形之宅也。物之触，入于身而感于五脏。</p>
+    <p>五触者，寒热温凉、燥润滑涩、刚柔轻重。</p>
+    <ul>
+        <li>寒热温凉，感于肌肤，应于肺。寒则栗，热则汗。</li>
+        <li>燥润滑涩，感于皮肉，应于脾。燥则皱，滑则舒。</li>
+        <li>刚柔轻重，感于筋骨，应于肝肾。刚则力，柔则安。</li>
+    </ul>
+    <p>触之感人，入于全体。医者切而知病，工者度而知材，皆感触之能也。</p>
+
+    <h3 id="xingan">五曰心感——情</h3>
+    <p>心者，神之舍也。物之象，入于心而感于神。</p>
+    <p>七情者，喜怒忧思悲恐惊。</p>
+    <ul>
+        <li>感物而喜，心之气舒</li>
+        <li>感物而怒，肝之气逆</li>
+        <li>感物而忧，肺之气郁</li>
+        <li>感物而思，脾之气结</li>
+        <li>感物而悲，肺之气伤</li>
+        <li>感物而恐，肾之气下</li>
+        <li>感物而惊，心之气乱</li>
+    </ul>
+    <p>情之感人，入于最深。观物而悦，闻声而悲，触景而情生，皆心感之能也。</p>
+    <p>五感者，人之所以通于物也。五感交会，而物之全象入于心。</p>
+
+    <h2 id="gan-yu-qi">二、感与七元</h2>
+    <h3 id="gan-yu-you">感与由</h3>
+    <p>感因由异。时不同，感不同；地不同，感不同；气不同，感不同。</p>
+    <p>春之感生，夏之感长，秋之感收，冬之感藏。南之感热，北之感寒。清之感爽，浊之感闷。观其感，可知其由。</p>
+
+    <h3 id="gan-yu-xing">感与形</h3>
+    <p>感因形显。形色感目，形声感耳，形味感舌，形质感身。无形则无可感，无感则不知形。</p>
+    <p>观形而知感，感形而知物。</p>
+
+    <h3 id="gan-yu-yong">感与用</h3>
+    <p>感定其用。物之可感者，其可用也。感寒者知寒用，感热者知热用，感甘者知补用，感辛者知散用。</p>
+    <p>感之用，用之感。能感者，能用之。</p>
+
+    <h3 id="gan-yu-liu">感与流</h3>
+    <p>感因流而变。物流异地，感因气候而改；物流异时，感因时代而迁。流之变，感之变也。</p>
+
+    <h3 id="gan-yu-chuan">感与传</h3>
+    <p>感因传而续。前人之感，传之后人；古人之感，传于今人。传之久，感之深。</p>
+
+    <h3 id="gan-yu-hua">感与化</h3>
+    <p>感因化而新。物化则感异，形变则感迁，质变则感殊。化者，感之新也。</p>
+
+    <h2 id="gan-yu-liulun">三、感与六论</h2>
+    <h3 id="gan-yu-xiangshu">感与象数</h3>
+    <p>感有数焉。寒热有度，痛痒有级，喜悲有节。数以度感，数以量感，数以推感。</p>
+    <p>脉之至数，感于医者之手；色之深浅，感于观者之目。数在其中矣。</p>
+
+    <h3 id="gan-yu-yinyang">感与阴阳</h3>
+    <p>感有阴阳。寒为阴，热为阳；静为阴，动为阳；抑为阴，扬为阳。阴阳之感，对立而统一。</p>
+    <p>阳感主动，阴感主静。阴阳和，感乃正。</p>
+
+    <h3 id="gan-yu-wuxing">感与五行</h3>
+    <p>感有五行。五色应五行，五臭应五行，五味应五行，五触应五行。五行之感，类于五行。</p>
+    <p>木感生发，火感温热，土感和缓，金感清肃，水感寒润。</p>
+
+    <h3 id="gan-yu-ganzhi">感与干支</h3>
+    <p>感应干支。春感生，夏感长，秋感收，冬感藏。子感夜静，午感日喧。干支之时，感之候也。</p>
+
+    <h3 id="gan-yu-sanyi">感与三易</h3>
+    <p>感有三易。有感之常，物之本感也；有感之变，物之他感也；有感之简，物之共感也。</p>
+    <p>执其三易，乃能通感之变。</p>
+
+    <h3 id="gan-yu-jiezi">感与解字</h3>
+    <p>感之名，载于字。字从心，某声，某义，皆感之迹也。</p>
+    <p>感从咸从心，咸者皆也，心者心也。感者，心之所感，无物不接也。解字者，解感之所由名也。</p>
+
+    <h2 id="gan-yaoyi">四、感之要义</h2>
+    <h3 id="tong">感者，通也</h3>
+    <p>感者，物我相通之机也。无感则物我隔绝，有感则物我交融。能感者，能通于物。</p>
+
+    <h3 id="zhen">感者，真也</h3>
+    <p>感者，得物之真也。名可伪，象可伪，感不可伪。能感者，得物之真。</p>
+
+    <h3 id="ji">感者，机也</h3>
+    <p>感者，用物之机也。感其性，乃能用其性；感其情，乃能应其情。能感者，能用物。</p>
+
+    <h2 id="zhiganzhidao">五、执感之道</h2>
+    <p>古之先贤，以五色感于目，以五声感于耳，以五味感于舌，以五臭感于鼻，以五触感于身。此古之执感者也。</p>
+    <p>今之学者，以心理研其感，以生理究其感，以艺术发其感，以医学用其感。此今之执感者也。</p>
+    <p>古今之道，其揆一也。皆所以通物我、得物真、用物机者也。</p>
+
+    <h2 id="gan-zongyao">六、感之总要</h2>
+    <p>感者，物我相通之机也。</p>
+    <p>目感其色，鼻感其臭，舌感其味，身感其触，心感其情。</p>
+    <p>五感交会，而物象入心。</p>
+    <p>感因由异，感因形显，感定其用。<br>
+    感随流变，感因传续，感随化新。</p>
+    <p>感有数可度，感有阴阳可辨，感有五行可类，感有干支可应，感有常变可推，感有字名可解。</p>
+    <p>能感者，能通物；能感者，能用物；能感者，能得物之真。</p>
+    <p>执感之道，可以观天地、察万物、应人事、通古今。</p>
+
+    <!-- 底部导航（系列文章） -->
+    <div class="series-nav">
+        <a href="05-物象论·象形第四.html" class="prev">上一篇</a>
+        <a href="index.html" class="index">返回目录</a>
+        <a href="07-物象论·象用第六.html" class="next">下一篇</a>
+    </div>
+
+    <div class="footer-note">识辨辑 · 古籍解读与知识重构</div>
+</div>
+
+<!-- 返回顶部透明小圆球 -->
+<a href="#" id="backToTop" class="back-to-top-ball" aria-label="返回顶部">^</a>
+<script>
+    (function() {
+        var btn = document.getElementById('backToTop');
+        if (btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+    })();
+</script>
+</body>
+</html>
