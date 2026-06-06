@@ -227,7 +227,7 @@ th {
     
     /* 关键：将 ^ 符号向下微调，使其视觉居中 */
     position: relative;
-    top: 4px;                 /* 向下移动 2px，可按需调整 */
+    top: 2px;                 /* 向下移动 2px，可按需调整 */
 }
 
 .back-to-top-ball:hover {
