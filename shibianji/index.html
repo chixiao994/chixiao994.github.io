@@ -137,7 +137,7 @@
             display: none;
         }
 
-        /* 三列网格，平板/桌面默认 */
+        /* 三列网格：桌面、平板、手机全部三列 */
         .book-list {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -200,16 +200,8 @@
             padding-top: 2rem;
         }
 
-        /* 移动端：两列（包括手机和平板竖屏） */
-        @media (max-width: 700px) {
-            .book-list {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 0.2rem 1rem;
-            }
-        }
-
-        /* 其他移动端样式调整（不改变列数） */
-        @media (max-width: 450px) {
+        /* 移动端其他样式调整（列数保持三列不变） */
+        @media (max-width: 600px) {
             body {
                 padding: 1rem;
             }
@@ -235,7 +227,23 @@
                 width: 100%;
                 text-align: center;
             }
-            /* 不覆盖 .book-list 的 grid 列数，保持两列 */
+            /* 手机三列，缩小字号和间距以适应小屏 */
+            .book-list {
+                gap: 0.2rem 0.8rem;
+            }
+            .book-list a {
+                font-size: 0.85rem;
+            }
+        }
+
+        /* 超小屏（宽度<360px）进一步微调，避免挤爆 */
+        @media (max-width: 360px) {
+            .book-list {
+                gap: 0.15rem 0.5rem;
+            }
+            .book-list a {
+                font-size: 0.8rem;
+            }
         }
     </style>
 </head>
@@ -270,7 +278,7 @@
     </div>
 
     <div class="footer">
-        <p>铭心阁识辨辑 · 溯华夏正脉</p>
+        <p>铭心阁识辨辑 · 追溯华夏正脉</p>
     </div>
 </div>
 
