@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>铭心阁识辨辑 · 古籍解读与知识重构</title>
+    <title>识辨辑 · 古籍解读与知识重构</title>
     <style>
         * {
             margin: 0;
@@ -137,11 +137,11 @@
             display: none;
         }
 
-        /* 三列网格布局 */
+        /* 两列网格布局 */
         .book-list {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0.3rem 1.5rem;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.3rem 2rem;
         }
 
         .book-list a {
@@ -201,14 +201,7 @@
         }
 
         /* 移动端适配 */
-        @media (max-width: 700px) {
-            .book-list {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 0.2rem 1rem;
-            }
-        }
-
-        @media (max-width: 450px) {
+        @media (max-width: 600px) {
             body {
                 padding: 1rem;
             }
@@ -244,7 +237,7 @@
 <body>
 <div class="container">
     <div class="header">
-        <h1>铭心阁识辨辑</h1>
+        <h1>识辨辑</h1>
     </div>
 
     <div class="nav">
