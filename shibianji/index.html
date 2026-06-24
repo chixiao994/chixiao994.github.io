@@ -137,11 +137,11 @@
             display: none;
         }
 
-        /* 两列网格布局 */
+        /* 三列网格，平板/桌面默认 */
         .book-list {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.3rem 2rem;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.3rem 1.5rem;
         }
 
         .book-list a {
@@ -200,8 +200,16 @@
             padding-top: 2rem;
         }
 
-        /* 移动端适配 */
-        @media (max-width: 600px) {
+        /* 移动端：两列（包括手机和平板竖屏） */
+        @media (max-width: 700px) {
+            .book-list {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.2rem 1rem;
+            }
+        }
+
+        /* 其他移动端样式调整（不改变列数） */
+        @media (max-width: 450px) {
             body {
                 padding: 1rem;
             }
@@ -227,10 +235,7 @@
                 width: 100%;
                 text-align: center;
             }
-            .book-list {
-                grid-template-columns: 1fr;
-                gap: 0.1rem 0;
-            }
+            /* 不覆盖 .book-list 的 grid 列数，保持两列 */
         }
     </style>
 </head>
