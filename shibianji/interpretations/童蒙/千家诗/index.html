@@ -18,39 +18,50 @@
         }
         .home-link:hover { color: #1a4a1c; border-bottom-color: #2c6e2f; }
         .footer-note { margin-top: 2rem; font-size: 0.8rem; text-align: center; color: #8a9b8a; }
+
+        /* 下载链接区 - 双条并排 */
         .download-links {
             margin: 2rem 0;
-            padding: 1.2rem;
-            background: #f8f9fa;
-            border-radius: 8px;
-            border: 1px solid #eaecef;
         }
         .download-links h2 {
             font-size: 1.1rem;
-            margin: 0 0 0.8rem 0;
+            margin: 0 0 1rem 0;
             color: #2c6e2f;
         }
-        .download-links ul {
-            margin: 0;
-            padding-left: 1.2rem;
-            list-style: none;
+        .download-grid {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
         }
-        .download-links li {
-            margin-bottom: 0.5rem;
-        }
-        .download-links a {
-            color: #2c6e2f;
+        .download-grid a {
+            flex: 1;
+            min-width: 160px;
+            display: block;
+            padding: 0.8rem 1.2rem;
+            background: #f8f9fa;
+            border: 1px solid #eaecef;
+            border-radius: 8px;
+            text-align: center;
             text-decoration: none;
-            border-bottom: 1px dotted #c8d6c8;
-            padding: 0.2rem 0;
+            color: #2c6e2f;
+            font-size: 1rem;
+            transition: 0.2s;
         }
-        .download-links a:hover {
-            border-bottom-style: solid;
+        .download-grid a:hover {
+            background: #edf0f3;
+            border-color: #c8d6c8;
+            transform: translateY(-1px);
         }
-        .download-links .note {
-            font-size: 0.85rem;
+        .download-grid .note {
+            display: block;
+            font-size: 0.75rem;
             color: #8a9b8a;
-            margin-top: 0.5rem;
+            margin-top: 0.2rem;
+        }
+        @media (max-width: 480px) {
+            .download-grid a {
+                min-width: 100%;
+            }
         }
     </style>
 </head>
@@ -63,26 +74,19 @@
     <h1>明解增和千家诗</h1>
     <p>—— 谢枋得 编 · 赵南星 注 · 明万历刻本</p>
 
-    <!-- 解读内容区（可为空） -->
-    <h2>解读</h2>
-    <p>（此处存放书籍解读内容，可按需填充。若暂无内容，保留此占位即可。）</p>
 
-    <!-- 下载链接区（两个示例） -->
+    <!-- 下载链接区 - 两个下载条并排 -->
     <div class="download-links">
         <h2>📄 下载资源</h2>
-        <ul>
-            <li>
-                <a href="https://pan.quark.cn/s/916e358fff22" target="_blank" rel="noopener noreferrer">
-                    ⬇️ 夸克网盘
-                </a>
-            </li>
-            <li>
-                <a href="https://pan.baidu.com/s/148Qoyrghk8kjqaYm8goS4g?pwd=y424" target="_blank" rel="noopener noreferrer">
-                    ⬇️ 百度网盘
-                </a>
-            </li>
-        </ul>
-        <p class="note">提示：若链接失效，请联系管理员更新。</p>
+        <div class="download-grid">
+            <a href="https://pan.quark.cn/s/916e358fff22" target="_blank" rel="noopener noreferrer">
+                ⬇️ 夸克网盘
+            </a>
+            <a href="https://pan.baidu.com/s/148Qoyrghk8kjqaYm8goS4g?pwd=y424" target="_blank" rel="noopener noreferrer">
+                ⬇️ 百度网盘
+                <span class="note">提取码：y424</span>
+            </a>
+        </div>
     </div>
 
     <!-- 底部版权信息 -->
