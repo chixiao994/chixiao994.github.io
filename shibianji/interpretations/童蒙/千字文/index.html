@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>千字文：装在心里的世界 · 铭心阁识辨辑</title>
+    <link rel="stylesheet" href="/shibianji/assets/css/common.css">
+    <style>
+        /* 后备样式 */
+        .container p {
+            text-indent: 2em;
+            margin-bottom: 1rem;
+        }
+        .container p.no-indent {
+            text-indent: 0;
+        }
+        .home-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: #2c6e2f;
+            text-decoration: none;
+            border-bottom: 1px solid #c8d6c8;
+        }
+        .home-link:hover {
+            color: #1a4a1c;
+            border-bottom-color: #2c6e2f;
+        }
+        .footer-note {
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            text-align: center;
+            color: #8a9b8a;
+        }
+
+        /* 章内目录样式 */
+        .toc {
+            background: #f9fafb;
+            border-left: 4px solid #2c6e2f;
+            padding: 0.8rem 1.2rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+        .toc h2 {
+            font-size: 1.1rem;
+            margin: 0 0 0.5rem 0;
+            color: #2c6e2f;
+        }
+        .toc ul {
+            margin: 0;
+            padding-left: 1.2rem;
+        }
+        .toc li {
+            margin: 0.3rem 0;
+        }
+        .toc a {
+            text-decoration: none;
+            color: #2c6e2f;
+            border-bottom: 1px dotted #c8d6c8;
+        }
+        .toc a:hover {
+            border-bottom-style: solid;
+        }
+
+        /* 独立诗句引用 - 居中、清爽 */
+        .poem-quote {
+            display: block;
+            margin: 1rem 0;
+            padding: 0.8rem 1.2rem;
+            font-style: italic;
+            color: #2c6e2f;
+            background: #f0f5f0;
+            border-radius: 8px;
+            border-left: 3px solid #2c6e2f;
+            line-height: 2;
+            text-align: center;
+            font-size: 1.05rem;
+            letter-spacing: 0.04em;
+        }
+        .poem-quote + p {
+            margin-top: 0.8rem;
+        }
+
+        /* 行内诗句引用 */
+        .inline-quote {
+            color: #2c6e2f;
+            font-style: italic;
+            background: #f0f5f0;
+            padding: 0.1rem 0.4rem;
+            border-radius: 3px;
+            white-space: nowrap;
+        }
+
+        /* 下载链接区 - 双条并排 */
+        .download-links {
+            margin: 2rem 0;
+        }
+        .download-links h2 {
+            font-size: 1.1rem;
+            margin: 0 0 1rem 0;
+            color: #2c6e2f;
+        }
+        .download-grid {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .download-grid a {
+            flex: 1;
+            min-width: 160px;
+            display: block;
+            padding: 0.8rem 1.2rem;
+            background: #f8f9fa;
+            border: 1px solid #eaecef;
+            border-radius: 8px;
+            text-align: center;
+            text-decoration: none;
+            color: #2c6e2f;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+        .download-grid a:hover {
+            background: #edf0f3;
+            border-color: #c8d6c8;
+            transform: translateY(-1px);
+        }
+        @media (max-width: 480px) {
+            .download-grid a {
+                min-width: 100%;
+            }
+            .poem-quote {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.95rem;
+                line-height: 1.9;
+                border-left-width: 2px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- 顶部：返回主页 -->
+    <a href="/shibianji/" class="home-link">← 识辨辑</a>
+
+    <!-- 标题 -->
+    <h1>千字文：装在心里的世界</h1>
+    <p>—— 一千个字，一副拼图，一个世界</p>
+
+    <!-- 章内目录 -->
+    <nav class="toc" aria-label="章节目录">
+        <h2>目录</h2>
+        <ul>
+            <li><a href="#miyi-one">第一个秘密：一个字就是一片小拼图</a></li>
+            <li><a href="#miyi-two">第二个秘密：四个字一拼，画面就出来了</a></li>
+            <li><a href="#miyi-three">第三个秘密：从头到尾，走一遍世界</a>
+                <ul>
+                    <li><a href="#step1">第一步：先搭舞台</a></li>
+                    <li><a href="#step2">第二步：在舞台上摆东西</a></li>
+                    <li><a href="#step3">第三步：请人上场</a></li>
+                    <li><a href="#step4">最后一步：合上书本</a></li>
+                </ul>
+            </li>
+            <li><a href="#miyi-four">第四个秘密：背下来，世界就装进心里了</a></li>
+            <li><a href="#xiao-jie">小结</a></li>
+        </ul>
+    </nav>
+
+    <!-- 正文开始 -->
+    <p>小朋友，你有没有想过，一本书能装下整个世界？</p>
+    <p>天那么高，地那么广，日月星辰那么多，花草树木、飞鸟走兽、男女老少，世界上要多少东西有多少东西。可是，《千字文》只用了一千个字，就把这世界整个装进去了。</p>
+    <p>它是怎么做到的？我们一起来找找它的秘密。</p>
+
+    <h2 id="miyi-one">第一个秘密：一个字就是一片小拼图</h2>
+    <p>你看，世界上本来是没有字的。天是蓝蓝的一大片，地是宽宽的一大块，太阳升起来又落下去，月亮圆了又缺。这些东西一直都在，可是没有名字。</p>
+    <p>后来，有人给它们取了名字。抬头看见的蓝蓝的一大片，叫“天”。脚下踩着的厚厚的一大块，叫“地”。火热的那个圆球，叫“日”。夜晚亮亮的那个，叫“月”。</p>
+    <p>一个字，就是世界的一块小碎片。这就像拼图——世界是一幅巨大的图画，古人把它拆成了一片片的小拼图。天是一片，地是一片，日是一片，月是一片，山是一片，河是一片，人是一片，孝是一片，德是一片。《千字文》收集了一千片这样的小拼图，每一片都不一样。</p>
+    <p>这是它的第一个秘密：把大世界拆成小碎片，一种东西用一个字代表。这一千个字，就是一千片世界的拼图。</p>
+
+    <h2 id="miyi-two">第二个秘密：四个字一拼，画面就出来了</h2>
+    <p>可是，光有一千片拼图，散落在盒子里，它们还不是一幅画呀。你要把它们拼起来。</p>
+    <p>《千字文》的第二个秘密，就是四个字一拼。</p>
+    <p>你看第一句：</p>
+    <p class="poem-quote">天地玄黄。</p>
+    <p>天、地、玄、黄，这是四片拼图。天是高高在上的，地是低低在下的，玄是深深的黑色，黄是暖乎乎的土黄色。四片一拼——哇，天空在上面，大地在下面，天色深深，地色黄黄，天地刚刚分开的样子，就出现在你眼前了。</p>
+    <p>再往下看：</p>
+    <p class="poem-quote">日月盈昃，辰宿列张。</p>
+    <p>太阳和月亮升起来又落下去，星星在夜空里排列得整整齐齐。这哪里是八个字呀，这分明是一幅日月交替、星辰满天的活动图画。</p>
+    <p>再看：</p>
+    <p class="poem-quote">寒来暑往，秋收冬藏。</p>
+    <p>冬天来了，夏天就走了；秋天收起粮食，冬天好好储藏。四时更替，一年又一年，全在这八个字里了。</p>
+    <p>你看，四片拼图拼在一起，就不再只是四片拼图了，它们变成了一幅会动的画、一个故事、一个道理。这就是《千字文》的第二个秘密：四个字一组，让小小的拼图活起来，画面、时间、道理，都从拼图之间生出来。</p>
+
+    <h2 id="miyi-three">第三个秘密：从头到尾，走一遍世界</h2>
+    <p>有了画面，还不够。画面要排好顺序，才能变成一个完整的世界。</p>
+    <p>你想想，如果你有二百五十幅小画，乱糟糟地堆在一起，能叫一个世界吗？不能。你得一开头就知道先放哪一幅，接着放哪一幅，最后放哪一幅。《千字文》的第三个秘密，就是它有一个特别好的顺序。</p>
+    <p>这个顺序，就是世界一点一点长出来的样子。</p>
+
+    <h3 id="step1">第一步：先搭舞台。</h3>
+    <p>一开头，</p>
+    <p class="poem-quote">天地玄黄，宇宙洪荒。</p>
+    <p>天和地最先出来，时间和空间刚刚诞生。然后是</p>
+    <p class="poem-quote">日月盈昃，辰宿列张。</p>
+    <p>太阳月亮上班了，星星也铺开了。然后是</p>
+    <p class="poem-quote">寒来暑往，秋收冬藏。</p>
+    <p>四季开始转圈了。这是世界的大舞台，先搭好。</p>
+
+    <h3 id="step2">第二步：在舞台上摆东西。</h3>
+    <p>舞台有了，接着就是舞台上面的东西。</p>
+    <p class="poem-quote">金生丽水，玉出昆冈。</p>
+    <p>河里出金子，山里出玉石。</p>
+    <p class="poem-quote">果珍李柰，菜重芥姜。</p>
+    <p>好吃的果子，重要的蔬菜。</p>
+    <p class="poem-quote">海咸河淡，鳞潜羽翔。</p>
+    <p>海水咸，河水淡，鱼儿在水里游，鸟儿在天上飞。天地之间，万物都摆出来了，丰丰富富，热热闹闹。</p>
+
+    <h3 id="step3">第三步：请人上场。</h3>
+    <p>万物都有了，人该出来了。</p>
+    <p class="poem-quote">盖此身发，四大五常。</p>
+    <p>身体是从天地得来的，品德是要自己修养的。</p>
+    <p class="poem-quote">资父事君，曰严与敬。</p>
+    <p>对父母要孝顺，对君主要敬重。</p>
+    <p class="poem-quote">坚持雅操，好爵自縻。</p>
+    <p>守住好品德，好事情自然会来。</p>
+    <p>你看，先有天地，再有万物，再有人，再讲做人的道理。这个顺序，就是世界一点一点长出来的样子。从头读到尾，你就像是沿着世界的生长之路，走了一遍。</p>
+
+    <h3 id="step4">最后一步：合上书本。</h3>
+    <p>读到</p>
+    <p class="poem-quote">谓语助者，焉哉乎也。</p>
+    <p>的时候，就像一扇门轻轻合上，告诉你：这个世界讲完了。有开头，有结尾，整整齐齐。</p>
+
+    <h2 id="miyi-four">第四个秘密：背下来，世界就装进心里了</h2>
+    <p>从前的孩子，都要把这一千个字从头到尾背下来。</p>
+    <p>背的时候，可不是死记硬背。一边背，一边在心里搭积木呢。先记住一千片小拼图——每个字都认识了。再学会拼图的方法——四个字一拼，画面就出来了。最后记住拼图的大顺序——从天地初开到万物生长，从学会做人到做好事情。整个背熟的那一天，这个小世界就完完整整地装进心里了。</p>
+    <p>从此以后，你走到哪里，这个世界就跟到哪里。抬头看天，你知道这是<span class="inline-quote">“天地玄黄”</span>的天；低头看地，你知道这是<span class="inline-quote">“天地玄黄”</span>的地。冬天冷了，你心里响起<span class="inline-quote">“寒来暑往”</span>；遇到选择，你记起<span class="inline-quote">“坚持雅操，好爵自縻”</span>。世界在外面，也在你心里。</p>
+
+    <h2 id="xiao-jie">小结</h2>
+    <p>《千字文》的厉害之处，就是用了一千个字，造了一个小小的世界。它先拆世界为千片，再以四字拼出万象，最后排出一个从天地到人生的完整顺序。背会它，就是把这世界装进心里。</p>
+    <p>一千个字，一副拼图，一个世界。这就是《千字文》的秘密。你去哪里，这个世界就跟去哪里。</p>
+
+    <!-- 下载链接区 -->
+    <div class="download-links">
+        <h2>📄 下载《千字文》</h2>
+        <div class="download-grid">
+            <a href="https://pan.quark.cn/s/xxxxxxxx" target="_blank" rel="noopener noreferrer">
+                夸克网盘
+            </a>
+            <a href="https://pan.baidu.com/s/xxxxxxxxxxxxxxxx" target="_blank" rel="noopener noreferrer">
+                百度网盘
+            </a>
+        </div>
+    </div>
+
+    <!-- 底部版权信息 -->
+    <div class="footer-note">铭心阁识辨辑 · 古籍解读与知识重构</div>
+</div>
+
+<!-- 返回顶部透明小圆球 -->
+<a href="#" id="backToTop" class="back-to-top-ball" aria-label="返回顶部">^</a>
+<script>
+    (function() {
+        var btn = document.getElementById('backToTop');
+        if (btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+    })();
+</script>
+</body>
+</html>
