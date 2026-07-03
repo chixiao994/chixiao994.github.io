@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>铭心阁</title>
   <style>
-    /* ===== 重置与基础 ===== */
+    /* 全局重置 */
     * {
       margin: 0;
       padding: 0;
@@ -13,368 +13,126 @@
     }
 
     body {
-      background: #f3ede5;
+      background: #f5efe8;  /* 温润宣纸色 */
       color: #2c241b;
       font-family: '华文楷体', 'KaiTi', '宋体', 'SimSun', serif;
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 1rem;
-      background-image: radial-gradient(circle at 30% 40%, #e8dfd2 0%, #f3ede5 90%);
+      padding: 2rem 1.5rem;
     }
 
-    /* 主卷轴 */
+    /* 主容器 — 无框无饰，仅留内边距与背景 */
     .scroll {
-      max-width: 1100px;
+      max-width: 880px;
       width: 100%;
-      background: #fcf8f0;
-      padding: 2rem 2.8rem 2rem 2.8rem;
-      border-radius: 12px 40px 12px 40px;
-      box-shadow: 0 12px 30px rgba(40, 30, 20, 0.2), inset 0 0 0 1px #d6c9b8;
-      border-left: 6px solid #b3472a;
-      border-right: 6px solid #b3472a;
-      position: relative;
-      transition: all 0.2s;
-    }
-
-    /* 仿古题签 */
-    .scroll::before {
-      content: "◆ 铭 心 阁 ◆";
-      position: absolute;
-      top: -14px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #b3472a;
-      color: #f3ede5;
-      padding: 0.1rem 2rem;
-      font-size: 1.1rem;
-      letter-spacing: 8px;
-      border-radius: 30px;
-      white-space: nowrap;
-      font-weight: normal;
-    }
-
-    /* ===== 页眉 ===== */
-    .header {
+      background: transparent;  /* 完全透明，让底色透出 */
+      padding: 1rem 0.5rem;
       text-align: center;
-      border-bottom: 2px solid #d6c9b8;
-      padding-bottom: 1.2rem;
-      margin-bottom: 1.6rem;
     }
 
+    /* 标题 — 干净厚重 */
     .header h1 {
-      font-size: 2.8rem;
+      font-size: 4rem;
       font-weight: normal;
-      letter-spacing: 12px;
+      letter-spacing: 20px;
       color: #3b2a1e;
-      text-shadow: 2px 2px 0 #d6c9b8;
-      margin-top: 0.4rem;
+      margin-bottom: 2.8rem;
+      line-height: 1.2;
     }
 
-    .header .sub {
-      font-size: 1.1rem;
-      color: #6b5543;
-      letter-spacing: 6px;
-      margin-top: 0.2rem;
-      border-top: 1px dashed #d6c9b8;
-      display: inline-block;
-      padding-top: 0.2rem;
-    }
-
-    /* 阁训 */
-    .motto {
-      text-align: center;
-      font-size: 1.1rem;
-      background: #efe8dc;
-      padding: 0.7rem 1.5rem;
-      border-radius: 40px 6px 40px 6px;
-      margin: 1rem 0 1.6rem;
-      color: #3b2a1e;
-      border-left: 4px solid #b3472a;
-      border-right: 4px solid #b3472a;
-      letter-spacing: 2px;
-    }
-
-    /* ===== 四项目网格 ===== */
+    /* 四个版块网格 — 简洁块状，无边框 */
     .grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 1.4rem;
-      margin: 1.8rem 0 1.8rem;
+      gap: 2rem;
+      margin: 2rem 0 3rem;
     }
 
     .item {
-      background: #fcf8f0;
-      padding: 1.2rem 1rem 1rem;
-      border-radius: 16px 4px 16px 4px;
-      border: 1px solid #d6c9b8;
-      box-shadow: 0 4px 8px rgba(40,30,20,0.06);
-      transition: 0.2s;
       display: flex;
-      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #faf6f0;   /* 极浅底色，区别于背景 */
+      padding: 2.2rem 0.5rem;
+      border-radius: 4px;    /* 微圆角，近乎直角，更显古朴 */
+      text-decoration: none;
+      color: #3b2a1e;
+      font-size: 2.2rem;
+      letter-spacing: 8px;
+      transition: background 0.25s ease, transform 0.15s ease;
+      box-shadow: none;      /* 无阴影 */
+      border: none;          /* 无边框 */
     }
 
     .item:hover {
-      background: #f8f0e4;
-      border-color: #b3472a;
+      background: #e8dfd2;   /* 沉稳的浅褐 */
       transform: translateY(-2px);
     }
 
-    .item .name {
-      font-size: 1.8rem;
-      font-weight: normal;
-      letter-spacing: 6px;
-      color: #3b2a1e;
-      border-bottom: 1px dashed #d6c9b8;
-      padding-bottom: 0.2rem;
-      margin-bottom: 0.2rem;
-    }
-
-    .item .subname {
-      font-size: 0.9rem;
-      color: #6b5543;
-      letter-spacing: 3px;
-      margin-bottom: 0.4rem;
-    }
-
-    .item .desc {
-      font-size: 0.85rem;
-      color: #4d3d2e;
-      line-height: 1.5;
-      flex: 1;
-      margin-bottom: 0.6rem;
-    }
-
-    .item .status {
-      font-size: 0.75rem;
-      padding: 0.1rem 1rem;
-      border-radius: 30px;
-      background: #efe8dc;
-      color: #5a483a;
-      align-self: flex-start;
-      border: 1px solid #d6c9b8;
-      letter-spacing: 1px;
-    }
-
-    .item .status.ready {
-      background: #dde4d0;
-      border-color: #a8b89a;
-      color: #3f543a;
-    }
-
-    .item .link {
-      margin-top: 0.5rem;
-      text-decoration: none;
-      color: #6b5543;
-      border: 1px solid #c4b4a0;
-      border-radius: 30px;
-      padding: 0.1rem 1.2rem;
-      align-self: flex-start;
-      font-size: 0.8rem;
-      background: rgba(255,250,240,0.3);
-      transition: 0.2s;
-    }
-
-    .item .link:hover {
-      background: #d6c9b8;
-      color: #2c241b;
-      border-color: #b3472a;
-    }
-
-    /* ===== 架构 ===== */
-    .structure {
-      background: #efe8dc;
-      padding: 1rem 1.8rem;
-      border-radius: 12px 4px 12px 4px;
-      margin: 1.6rem 0 1.4rem;
-      border-left: 4px solid #b3472a;
-    }
-
-    .structure h4 {
-      font-size: 1.2rem;
-      letter-spacing: 6px;
-      font-weight: normal;
-      margin-bottom: 0.4rem;
-      color: #3b2a1e;
-    }
-
-    .structure .tree {
-      font-family: '华文楷体', 'KaiTi', serif;
-      font-size: 0.9rem;
-      color: #4d3d2e;
-      padding-left: 0.8rem;
-      line-height: 1.8;
-    }
-
-    .structure .tree .dir {
-      margin-left: 1.8rem;
-    }
-
-    .structure .tree .dir::before {
-      content: "├─ ";
-      color: #8b6f58;
-    }
-
-    /* ===== 技术栈（中文） ===== */
-    .tech {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 0.6rem 1.8rem;
-      background: rgba(255,252,245,0.5);
-      padding: 0.6rem 1.5rem;
-      border-radius: 40px 6px 40px 6px;
-      border: 1px solid #d6c9b8;
-      margin: 1.2rem 0 1.2rem;
-    }
-
-    .tech span {
-      font-size: 0.85rem;
-      color: #4d3d2e;
-      letter-spacing: 2px;
-    }
-
-    .tech span::before {
-      content: "● ";
-      color: #b3472a;
-      font-size: 0.6rem;
-    }
-
-    /* ===== 愿景 ===== */
-    .vision {
-      text-align: center;
-      padding: 1rem 1.5rem;
-      border-top: 2px solid #d6c9b8;
-      border-bottom: 2px solid #d6c9b8;
-      margin: 1.4rem 0 0.6rem;
-    }
-
-    .vision h4 {
-      font-size: 1.3rem;
-      letter-spacing: 8px;
-      font-weight: normal;
-      color: #3b2a1e;
-    }
-
-    .vision .quote {
-      font-size: 1.2rem;
-      color: #6b5543;
-      letter-spacing: 3px;
-      margin-top: 0.2rem;
-    }
-
-    .vision .subquote {
-      font-size: 0.95rem;
-      color: #5a483a;
-      margin-top: 0.2rem;
-    }
-
-    /* ===== 页脚 ===== */
+    /* 页脚 — 仅文字，无线条 */
     .footer {
-      text-align: center;
-      font-size: 1.2rem;
+      margin-top: 2.5rem;
+      font-size: 1.6rem;
+      letter-spacing: 12px;
       color: #3b2a1e;
-      border-top: 1px solid #d6c9b8;
-      padding-top: 0.8rem;
-      margin-top: 1.2rem;
-      letter-spacing: 6px;
+      opacity: 0.7;
     }
 
-    /* ===== 响应式 ===== */
-    @media (max-width: 850px) {
-      .grid { grid-template-columns: repeat(2, 1fr); }
-      .scroll { padding: 2rem 1.2rem; }
-      .header h1 { font-size: 2.2rem; letter-spacing: 8px; }
+    /* 响应式 */
+    @media (max-width: 700px) {
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+      }
+      .item {
+        font-size: 1.8rem;
+        padding: 1.8rem 0.5rem;
+      }
+      .header h1 {
+        font-size: 3rem;
+        letter-spacing: 14px;
+      }
     }
 
-    @media (max-width: 500px) {
-      .grid { grid-template-columns: 1fr; }
-      .scroll::before { font-size: 0.9rem; letter-spacing: 4px; padding: 0 1.2rem; top: -12px; }
-      .header h1 { font-size: 1.8rem; }
+    @media (max-width: 450px) {
+      .grid {
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+      }
+      .item {
+        font-size: 1.6rem;
+        padding: 1.5rem 0.5rem;
+      }
+      .header h1 {
+        font-size: 2.4rem;
+        letter-spacing: 10px;
+      }
+      .footer {
+        font-size: 1.2rem;
+        letter-spacing: 8px;
+      }
     }
   </style>
 </head>
 <body>
 <div class="scroll">
 
-  <!-- 页眉 -->
+  <!-- 标题：仅铭心阁 -->
   <div class="header">
     <h1>铭心阁</h1>
-    <div class="sub">— 以古人之心 · 行今人之事 —</div>
   </div>
 
-  <!-- 阁训 -->
-  <div class="motto">
-    铭心刻骨，继往圣之绝学；格物致知，开万世之太平。
-  </div>
-
-  <!-- 四项目 -->
+  <!-- 四个版块：简帙、识辨辑、自然钟、医战 -->
   <div class="grid">
-
-    <div class="item">
-      <div class="name">简帙</div>
-      <div class="subname">— 古籍整理系统 —</div>
-      <div class="desc">校勘 · 标点 · 注释 · 版本比对，为研究者提供专业之器。</div>
-      <span class="status">◇ 开发中</span>
-      <a href="./jianzhi/" class="link">入简帙 →</a>
-    </div>
-
-    <div class="item">
-      <div class="name">识辨辑</div>
-      <div class="subname">— 古籍优选库 —</div>
-      <div class="desc">智能检索 · 版本优选 · 文献溯源，于浩繁卷帙中速取精华。</div>
-      <span class="status">◇ 开发中</span>
-      <a href="./shibianji/" class="link">入识辨辑 →</a>
-    </div>
-
-    <div class="item">
-      <div class="name">自然钟</div>
-      <div class="subname">— 时辰查看 —</div>
-      <div class="desc">十二时辰 · 子午流注 · 节气日出，顺天时以养身心。</div>
-      <span class="status ready">◆ 可用</span>
-      <a href="./ziranzhong/" class="link">入自然钟 →</a>
-    </div>
-
-    <div class="item">
-      <div class="name">医战</div>
-      <div class="subname">— 中医学习对战 —</div>
-      <div class="desc">方剂对决 · 辨证论治 · 医案推演，于趣味中锤炼医道。</div>
-      <span class="status">◇ 开发中</span>
-      <a href="./yizhan/" class="link">入医战 →</a>
-    </div>
-
+    <a href="./jianzhi/" class="item">简帙</a>
+    <a href="./shibianji/" class="item">识辨辑</a>
+    <a href="./ziranzhong/" class="item">自然钟</a>
+    <a href="./yizhan/" class="item">医战</a>
   </div>
 
-  <!-- 架构 -->
-  <div class="structure">
-    <h4>阁中架构</h4>
-    <div class="tree">
-      <div>铭心阁 /</div>
-      <div class="dir">简帙（jianzhi）— 古籍整理</div>
-      <div class="dir">识辨辑（shibianji）— 古籍优选</div>
-      <div class="dir">自然钟（ziranzhong）— 时辰查看</div>
-      <div class="dir">医战（yizhan）— 中医对战</div>
-    </div>
-  </div>
-
-  <!-- 技术栈（全中文） -->
-  <div class="tech">
-    <span>前端 · Vue 与 React</span>
-    <span>后端 · Python 与 Node</span>
-    <span>数据 · PostgreSQL 与 MongoDB</span>
-    <span>智能 · 自然语言处理</span>
-    <span>部署 · Docker 与 Nginx</span>
-  </div>
-
-  <!-- 愿景 -->
-  <div class="vision">
-    <h4>愿 景</h4>
-    <div class="quote">“让古籍活起来，让智慧传下去。”</div>
-    <div class="subquote">以技术承文脉，以匠心守初心。</div>
-  </div>
-
-  <!-- 页脚 → 仅铭心阁 -->
+  <!-- 页脚：铭心阁 -->
   <div class="footer">铭心阁</div>
 
 </div>
