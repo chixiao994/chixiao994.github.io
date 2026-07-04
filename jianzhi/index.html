@@ -50,74 +50,51 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             padding-bottom: 0.8rem;
             border-bottom: 1px solid var(--border-light);
             flex-wrap: wrap;
             gap: 0.8rem;
         }
         .top-bar .brand {
-            display: flex;
-            align-items: baseline;
-            gap: 8px;
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             font-weight: 600;
             color: var(--ink);
-            letter-spacing: 2px;
+            letter-spacing: 4px;
         }
-        .top-bar .brand .seal {
-            font-size: 1.6rem;
-            font-family: '华文篆书', '方正小篆体', '篆书', serif;
-            color: var(--zhu-red);
-            border: 2px solid var(--zhu-red);
-            border-radius: 4px;
-            padding: 0 0.3rem;
-            line-height: 1.4;
-            transform: rotate(-2deg);
-            background: rgba(139, 26, 26, 0.04);
-        }
-
-        /* ===== 面包屑 ===== */
-        .breadcrumb {
-            font-size: 0.85rem;
+        .top-bar .brand .sub {
+            font-weight: 400;
+            font-size: 0.9rem;
             color: var(--ink-light);
-            margin-bottom: 1.5rem;
-            padding: 0.4rem 0.8rem;
-            background: var(--paper);
-            border-radius: 20px;
-            display: inline-block;
-            opacity: 0.7;
-        }
-        .breadcrumb span {
-            margin: 0 4px;
+            letter-spacing: 2px;
+            opacity: 0.6;
+            margin-left: 6px;
         }
 
-        /* ===== 标题 ===== */
+        /* ===== 主标题 ===== */
         h1 {
-            font-size: 2rem;
+            font-size: 2.2rem;
             font-weight: 700;
             color: var(--ink);
-            letter-spacing: 6px;
+            letter-spacing: 8px;
             margin-bottom: 0.2rem;
         }
-        h1 .sub {
-            font-size: 1rem;
-            font-weight: 400;
-            color: var(--ink-light);
-            letter-spacing: 3px;
-            margin-left: 12px;
-            opacity: 0.6;
-        }
-        .subtitle {
-            color: var(--ink-light);
-            font-size: 0.95rem;
-            margin-bottom: 1.8rem;
+
+        /* ===== 序言 ===== */
+        .preface {
+            margin: 1.2rem 0 1.8rem 0;
+            padding: 0.8rem 0 0.8rem 1.2rem;
             border-left: 3px solid var(--zhu-red);
-            padding-left: 1rem;
-            opacity: 0.7;
+        }
+        .preface p {
+            font-size: 0.95rem;
+            color: var(--ink-light);
+            text-indent: 2em;
+            line-height: 2.2;
+            opacity: 0.8;
         }
 
-        /* ===== 四艺卡片（无图标） ===== */
+        /* ===== 四艺卡片 ===== */
         .grid-4 {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -142,9 +119,9 @@
             background: #f8f4ee;
         }
         .grid-4 .card h3 {
-            font-size: 1.05rem;
+            font-size: 1.1rem;
             color: var(--ink);
-            letter-spacing: 3px;
+            letter-spacing: 4px;
             font-weight: 600;
         }
         .grid-4 .card .desc {
@@ -154,33 +131,8 @@
             line-height: 1.6;
             opacity: 0.7;
         }
-        .grid-4 .card .badge {
-            display: inline-block;
-            margin-top: 0.6rem;
-            font-size: 0.65rem;
-            color: var(--zhu-red);
-            border: 1px solid var(--gold);
-            border-radius: 20px;
-            padding: 0.05rem 0.7rem;
-            opacity: 0.5;
-            letter-spacing: 1px;
-        }
 
-        /* ===== 简介 ===== */
-        .intro-text {
-            margin-top: 2.5rem;
-            padding: 1rem 0 0.5rem;
-            border-top: 1px solid var(--border-light);
-        }
-        .intro-text p {
-            font-size: 0.9rem;
-            color: var(--ink-light);
-            text-indent: 2em;
-            line-height: 2.2;
-            opacity: 0.8;
-        }
-
-        /* ===== 下载区（底部） ===== */
+        /* ===== 下载区 ===== */
         .download-section {
             margin-top: 2.5rem;
             padding: 1.8rem 2rem;
@@ -188,11 +140,6 @@
             border-radius: var(--radius);
             border: 1px solid var(--border-light);
             text-align: center;
-        }
-        .download-section .icon {
-            font-size: 2.2rem;
-            display: block;
-            margin-bottom: 0.2rem;
         }
         .download-section h2 {
             font-size: 1.2rem;
@@ -296,17 +243,11 @@
                 gap: 0.8rem;
             }
             h1 {
-                font-size: 1.5rem;
-                letter-spacing: 4px;
+                font-size: 1.6rem;
+                letter-spacing: 5px;
             }
-            h1 .sub {
-                display: block;
-                margin-left: 0;
-                font-size: 0.85rem;
-            }
-            .top-bar {
-                flex-direction: column;
-                align-items: flex-start;
+            .top-bar .brand {
+                font-size: 1.2rem;
             }
             .download-section {
                 padding: 1.5rem 1rem;
@@ -314,6 +255,12 @@
             .download-section .btn-group {
                 flex-direction: column;
                 align-items: center;
+            }
+            .preface {
+                padding-left: 0.8rem;
+            }
+            .preface p {
+                font-size: 0.9rem;
             }
         }
         @media (max-width: 400px) {
@@ -326,54 +273,43 @@
 <body>
 
     <div class="container">
-        <!-- ===== 顶部栏（无返回链接） ===== -->
+        <!-- ===== 顶部栏 ===== -->
         <div class="top-bar">
             <div class="brand">
-                <span class="seal">简</span>
-                简帙
-                <span style="font-weight:400; font-size:0.8rem; color:var(--ink-light); letter-spacing:1px; opacity:0.6;">· 工器谱</span>
+                简帙<span class="sub">· 工器谱</span>
             </div>
         </div>
 
-        <!-- ===== 面包屑 ===== -->
-        <div class="breadcrumb">简帙 <span>›</span> 总览</div>
+        <!-- ===== 主标题 ===== -->
+        <h1>简帙</h1>
 
-        <!-- ===== 标题 ===== -->
-        <h1>简帙 <span class="sub">工器谱 · 四艺</span></h1>
-        <div class="subtitle">字库 · 切拼 · 重排 · 阅读 —— 工器理论文集</div>
+        <!-- ===== 序言 ===== -->
+        <div class="preface">
+            <p>简帙者，集工器之理论，汇四艺之精要。字库以立其本，切拼以成其形，重排以调其气，阅读以通其神。四者相承，乃为完璧。兹录诸篇，以备览者参详。</p>
+        </div>
 
-        <!-- ===== 四艺入口（无图标） ===== -->
+        <!-- ===== 四艺入口 ===== -->
         <div class="grid-4">
             <a href="ziku/" class="card">
                 <h3>字库制作</h3>
                 <div class="desc">字体源流 · 字库建构</div>
-                <span class="badge">6 篇</span>
             </a>
             <a href="shuangye/" class="card">
                 <h3>双页切拼</h3>
                 <div class="desc">版式切割 · 拼接重组</div>
-                <span class="badge">4 篇</span>
             </a>
             <a href="zhiban/" class="card">
                 <h3>制版重排</h3>
                 <div class="desc">版面调适 · 重排原理</div>
-                <span class="badge">5 篇</span>
             </a>
             <a href="yuedu/" class="card">
                 <h3>文档阅读</h3>
                 <div class="desc">阅读法式 · 文献阐释</div>
-                <span class="badge">4 篇</span>
             </a>
         </div>
 
-        <!-- ===== 简介 ===== -->
-        <div class="intro-text">
-            <p>简帙者，集工器之理论，汇四艺之精要。字库以立其本，切拼以成其形，重排以调其气，阅读以通其神。四者相承，乃为完璧。兹录诸篇，以备览者参详。</p>
-        </div>
-
-        <!-- ===== 下载区（底部） ===== -->
+        <!-- ===== 下载区 ===== -->
         <div class="download-section">
-            <span class="icon">📦</span>
             <h2>简帙古籍整理系统</h2>
             <p>集成字库制作、双页切拼、制版重排、文档阅读四大工器，助力古籍数字化整理与学术研究。</p>
             <div class="btn-group">
@@ -384,7 +320,7 @@
         </div>
 
         <!-- ===== 底部版权 ===== -->
-        <div class="footer-note">铭心阁 简帙工器谱</div>
+        <div class="footer-note">铭心阁 · 简帙工器谱</div>
     </div>
 
     <!-- ===== 返回顶部 ===== -->
