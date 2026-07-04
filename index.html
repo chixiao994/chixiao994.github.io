@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>铭心阁</title>
   <style>
-    /* 全局重置 */
+    /* ===== 重置 ===== */
     * {
       margin: 0;
       padding: 0;
@@ -13,7 +13,7 @@
     }
 
     body {
-      background: #f5efe8;  /* 温润宣纸色 */
+      background: #f5efe8;
       color: #2c241b;
       font-family: '华文楷体', 'KaiTi', '宋体', 'SimSun', serif;
       min-height: 100vh;
@@ -23,95 +23,126 @@
       padding: 2rem 1.5rem;
     }
 
-    /* 主容器 — 无框无饰，仅留内边距与背景 */
     .scroll {
-      max-width: 880px;
+      max-width: 920px;
       width: 100%;
-      background: transparent;  /* 完全透明，让底色透出 */
+      background: transparent;
       padding: 1rem 0.5rem;
       text-align: center;
     }
 
-    /* 标题 — 干净厚重 */
+    /* ===== 第一层 · 标题 ===== */
     .header h1 {
-      font-size: 4rem;
+      font-size: 4.8rem;
       font-weight: normal;
-      letter-spacing: 20px;
-      color: #3b2a1e;
-      margin-bottom: 2.8rem;
-      line-height: 1.2;
+      letter-spacing: 24px;
+      color: #2c1f15;
+      margin-bottom: 0.6rem;
+      line-height: 1.15;
+      text-shadow: 0 2px 4px rgba(44, 31, 21, 0.06);
     }
 
-    /* 四个版块网格 — 简洁块状，无边框 */
+    /* ===== 第二层 · 序言 ===== */
+    .preface {
+      font-size: 1.05rem;
+      line-height: 2;
+      color: #6b5a4a;
+      letter-spacing: 3px;
+      margin: 0.2rem 0 2.8rem 0;
+      padding: 0 1.5rem;
+      font-weight: 300;
+      opacity: 0.8;
+    }
+
+    .preface p {
+      display: inline;
+    }
+
+    /* ===== 第三层 · 四个版块 ===== */
     .grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 2rem;
-      margin: 2rem 0 3rem;
+      gap: 1.8rem;
+      margin-top: 0.8rem;
     }
 
     .item {
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #faf6f0;   /* 极浅底色，区别于背景 */
-      padding: 2.2rem 0.5rem;
-      border-radius: 4px;    /* 微圆角，近乎直角，更显古朴 */
+      background: #f0e8de;          /* 比背景略深，形成基底 */
+      padding: 2.4rem 0.5rem;
+      border-radius: 6px;
       text-decoration: none;
       color: #3b2a1e;
-      font-size: 2.2rem;
+      font-size: 2rem;
       letter-spacing: 8px;
-      transition: background 0.25s ease, transform 0.15s ease;
-      box-shadow: none;      /* 无阴影 */
-      border: none;          /* 无边框 */
+      transition: background 0.3s ease, transform 0.2s ease,
+                  box-shadow 0.3s ease;
+      box-shadow: 0 4px 12px rgba(44, 31, 21, 0.06),
+                  inset 0 1px 0 rgba(255, 248, 240, 0.5);
+      border: none;
+      /* 微妙的立体感 */
+      transform: translateY(0);
     }
 
     .item:hover {
-      background: #e8dfd2;   /* 沉稳的浅褐 */
-      transform: translateY(-2px);
+      background: #e4d9cb;
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(44, 31, 21, 0.12),
+                  inset 0 1px 0 rgba(255, 248, 240, 0.4);
     }
 
-    /* 页脚 — 仅文字，无线条 */
-    .footer {
-      margin-top: 2.5rem;
-      font-size: 1.6rem;
-      letter-spacing: 12px;
-      color: #3b2a1e;
-      opacity: 0.7;
-    }
+    /* 四个版块之间细微的深浅变化，增加层次趣味 */
+    .item:nth-child(1) { background: #ede5d8; }
+    .item:nth-child(2) { background: #efe7db; }
+    .item:nth-child(3) { background: #ece3d6; }
+    .item:nth-child(4) { background: #eee6d9; }
 
-    /* 响应式 */
-    @media (max-width: 700px) {
+    .item:nth-child(1):hover { background: #e2d7c7; }
+    .item:nth-child(2):hover { background: #e4d9ca; }
+    .item:nth-child(3):hover { background: #e0d5c4; }
+    .item:nth-child(4):hover { background: #e3d8c8; }
+
+    /* ===== 响应式 ===== */
+    @media (max-width: 760px) {
       .grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 1.5rem;
-      }
-      .item {
-        font-size: 1.8rem;
-        padding: 1.8rem 0.5rem;
-      }
-      .header h1 {
-        font-size: 3rem;
-        letter-spacing: 14px;
-      }
-    }
-
-    @media (max-width: 450px) {
-      .grid {
-        grid-template-columns: 1fr;
         gap: 1.2rem;
       }
       .item {
-        font-size: 1.6rem;
-        padding: 1.5rem 0.5rem;
+        font-size: 1.7rem;
+        padding: 1.8rem 0.5rem;
       }
       .header h1 {
-        font-size: 2.4rem;
-        letter-spacing: 10px;
+        font-size: 3.4rem;
+        letter-spacing: 16px;
       }
-      .footer {
-        font-size: 1.2rem;
-        letter-spacing: 8px;
+      .preface {
+        font-size: 0.95rem;
+        padding: 0 0.8rem;
+        margin-bottom: 2rem;
+      }
+    }
+
+    @media (max-width: 460px) {
+      .grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      .item {
+        font-size: 1.5rem;
+        padding: 1.4rem 0.5rem;
+      }
+      .header h1 {
+        font-size: 2.6rem;
+        letter-spacing: 12px;
+      }
+      .preface {
+        font-size: 0.9rem;
+        line-height: 1.9;
+        margin-bottom: 1.6rem;
+        padding: 0 0.4rem;
       }
     }
   </style>
@@ -119,21 +150,23 @@
 <body>
 <div class="scroll">
 
-  <!-- 标题：仅铭心阁 -->
+  <!-- 第一层 · 标题 -->
   <div class="header">
     <h1>铭心阁</h1>
   </div>
 
-  <!-- 四个版块：简帙、识辨辑、自然钟、医战 -->
+  <!-- 第二层 · 序言 -->
+  <div class="preface">
+    <p>铭心阁者，聚简帙以整古籍，立识辨辑以辨源流，设自然钟以观天时，创医战以习岐黄。四部并立，愿承先贤之智，启后学之思。</p>
+  </div>
+
+  <!-- 第三层 · 四个版块 -->
   <div class="grid">
     <a href="./jianzhi/" class="item">简帙</a>
     <a href="./shibianji/" class="item">识辨辑</a>
     <a href="./ziranzhong/" class="item">自然钟</a>
     <a href="./yizhan/" class="item">医战</a>
   </div>
-
-  <!-- 页脚：铭心阁 -->
-  <div class="footer">铭心阁</div>
 
 </div>
 </body>
