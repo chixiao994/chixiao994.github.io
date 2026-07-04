@@ -281,7 +281,7 @@
 <body>
 
     <div class="container">
-        <!-- ===== 顶部栏（无印章、无返回铭心阁） ===== -->
+        <!-- ===== 顶部栏 ===== -->
         <div class="top-bar">
             <div class="brand">
                 简帙<span class="sub">· 工器谱</span>
@@ -292,12 +292,12 @@
         <div class="page-title" id="seriesTitle">制版重排 <span class="sub">系列</span></div>
         <div class="subtitle" id="seriesSub">版面调适 · 重排原理 · 共 <span id="articleCount">0</span> 篇</div>
 
-        <!-- ===== 文章列表（由 JS 动态生成） ===== -->
+        <!-- ===== 文章列表 ===== -->
         <ul class="catalog-list" id="catalogList">
             <!-- JS 渲染 -->
         </ul>
 
-        <!-- ===== 工具下载（无图标） ===== -->
+        <!-- ===== 工具下载 ===== -->
         <div class="tool-download">
             <div class="info">
                 <strong id="toolName">制版重排</strong> 工具下载
@@ -324,11 +324,7 @@
                 name: '制版重排',
                 subtitle: '版面调适 · 重排原理',
                 articles: [
-                    { id: '01-制版之道', title: '制版之道：从容与调和', desc: '总纲 · 制版理念' },
-                    { id: '02-字号与行距', title: '字号与行距：阅读的节奏', desc: '字号 · 行距 · 舒适度' },
-                    { id: '03-字距与字重', title: '字距与字重：空间的平衡', desc: '字距 · 字重 · 灰度' },
-                    { id: '04-版式对比', title: '版式对比：中西排版之异', desc: '中西 · 横竖 · 差异' },
-                    { id: '05-重排实践', title: '重排实践：经典文本再造', desc: '案例 · 再造 · 阐释' }
+                    { id: '1.落笔虚拟', title: '落笔虚拟：数字时代的接力者', desc: '从道论到创造的自我翻转' }
                 ]
             };
 
@@ -366,7 +362,7 @@
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
 
-            console.log('📋 目录页已加载，共 ' + seriesData.articles.length + ' 篇文章');
+            console.log('📋 制版重排目录页已加载，共 ' + seriesData.articles.length + ' 篇文章');
             console.log('💡 在 seriesData.articles 数组中增删条目，列表自动更新');
         })();
     </script>
