@@ -20,7 +20,7 @@
             --zhu-red-light: #b33a3a;
             --gold: #c9a96e;
             --border-light: #e8dfd6;
-            --radius: 6px;
+            --radius: 8px;
             --shadow: 0 2px 16px rgba(44, 24, 16, 0.08);
             --transition: 0.25s ease;
         }
@@ -87,125 +87,12 @@
             opacity: 0.8;
         }
 
-        /* ===== 独立下载区（带框，无图标，文字不加粗） ===== */
-        .download-section {
-            margin: 0 0 1.2rem 0;
-            padding: 1.2rem 1.5rem;
-            background: var(--paper);
-            border-radius: var(--radius);
-            border: 1px solid var(--border-light);
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-            justify-content: space-between;
-        }
-        .download-section .info {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-        }
-        .download-section .info .label {
-            font-size: 0.9rem;
-            color: var(--ink);
-            font-weight: 400;
-        }
-        .download-section .info .label strong {
-            color: var(--zhu-red);
-            font-weight: 600;
-        }
-        .download-section .info .version {
-            font-size: 0.75rem;
-            color: var(--ink-light);
-            opacity: 0.4;
-            margin-left: 0.2rem;
-        }
-        .download-section .btn-group {
-            display: flex;
-            gap: 0.8rem;
-            flex-wrap: wrap;
-        }
-        .download-section .btn {
-            display: inline-block;
-            background: var(--zhu-red);
-            color: #fff;
-            padding: 0.4rem 1.6rem;
-            border-radius: 40px;
-            text-decoration: none;
-            font-size: 0.85rem;
-            border: 1px solid var(--zhu-red);
-            transition: var(--transition);
-            letter-spacing: 1px;
-        }
-        .download-section .btn:hover {
-            background: var(--zhu-red-light);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(139, 26, 26, 0.15);
-        }
-        @media (max-width: 600px) {
-            .download-section {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 0.8rem;
-                padding: 1rem 1rem;
-            }
-            .download-section .info {
-                justify-content: center;
-            }
-            .download-section .btn-group {
-                justify-content: center;
-            }
-        }
-
-        /* ===== 主程序卡片（标题居中，描述左对齐，无篇数） ===== */
-        .main-card {
-            display: block;
-            background: var(--paper);
-            border-radius: var(--radius);
-            padding: 1.8rem 2rem 1.5rem;
-            margin: 0 0 2.5rem 0;
-            border: 1px solid var(--border-light);
-            transition: var(--transition);
-            text-decoration: none;
-            color: var(--ink);
-            position: relative;
-        }
-        .main-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 6px 24px rgba(44, 24, 16, 0.08);
-            border-color: var(--gold);
-            background: #f8f4ee;
-        }
-        .main-card .card-header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            text-align: center;
-        }
-        .main-card .card-header h2 {
-            font-size: 1.2rem;
-            color: var(--zhu-red);
-            letter-spacing: 3px;
-            border: none;
-            margin: 0;
-        }
-        .main-card .card-desc {
-            font-size: 0.9rem;
-            color: var(--ink-light);
-            margin-top: 0.3rem;
-            line-height: 1.8;
-            opacity: 0.7;
-            text-align: left;
-        }
-
         /* ===== 四艺卡片（无篇数徽标） ===== */
         .grid-4 {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 1.2rem;
-            margin: 0.5rem 0 0.5rem;
+            margin: 0.5rem 0 1.8rem 0;
         }
         .grid-4 .card {
             background: var(--paper);
@@ -238,11 +125,113 @@
             opacity: 0.7;
         }
 
-        /* ===== 分隔线 ===== */
-        .divider {
-            margin: 0 0 1.2rem 0;
+        /* ===== 合并后的系统大卡片 ===== */
+        .system-card {
+            background: var(--paper);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-light);
+            padding: 1.8rem 2rem 1.5rem;
+            margin: 1.8rem 0 0.5rem 0;
+            transition: var(--transition);
+        }
+        .system-card:hover {
+            box-shadow: 0 6px 24px rgba(44, 24, 16, 0.08);
+            border-color: var(--gold);
+            background: #f8f4ee;
+        }
+
+        /* 卡片标题（居中） */
+        .system-card .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            text-align: center;
+        }
+        .system-card .card-header h2 {
+            font-size: 1.2rem;
+            color: var(--zhu-red);
+            letter-spacing: 3px;
+            border: none;
+            margin: 0;
+        }
+
+        /* 卡片描述（左对齐） */
+        .system-card .card-desc {
+            font-size: 0.9rem;
+            color: var(--ink-light);
+            margin-top: 0.3rem;
+            line-height: 1.8;
+            opacity: 0.7;
+            text-align: left;
+        }
+
+        /* 卡片内的下载区（无图标，文字不加粗，按钮统一样式） */
+        .system-card .download-section {
+            margin-top: 1.2rem;
+            padding-top: 1.2rem;
             border-top: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: space-between;
+        }
+        .system-card .download-section .info {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .system-card .download-section .info .label {
+            font-size: 0.9rem;
+            color: var(--ink);
+            font-weight: 400;
+        }
+        .system-card .download-section .info .label strong {
+            color: var(--zhu-red);
+            font-weight: 600;
+        }
+        .system-card .download-section .info .version {
+            font-size: 0.75rem;
+            color: var(--ink-light);
             opacity: 0.4;
+            margin-left: 0.2rem;
+        }
+        .system-card .download-section .btn-group {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+        .system-card .download-section .btn {
+            display: inline-block;
+            background: var(--zhu-red);
+            color: #fff;
+            padding: 0.4rem 1.6rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            border: 1px solid var(--zhu-red);
+            transition: var(--transition);
+            letter-spacing: 1px;
+        }
+        .system-card .download-section .btn:hover {
+            background: var(--zhu-red-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(139, 26, 26, 0.15);
+        }
+        @media (max-width: 600px) {
+            .system-card .download-section {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.8rem;
+            }
+            .system-card .download-section .info {
+                justify-content: center;
+            }
+            .system-card .download-section .btn-group {
+                justify-content: center;
+            }
         }
 
         /* ===== 底部版权 ===== */
@@ -294,18 +283,11 @@
             .top-bar .brand {
                 font-size: 1.2rem;
             }
-            .main-card {
+            .system-card {
                 padding: 1.2rem 1rem;
-            }
-            .main-card .card-header {
-                flex-direction: column;
-                align-items: center;
             }
             .preface p {
                 font-size: 0.9rem;
-            }
-            .download-section {
-                padding: 1rem 1rem;
             }
         }
         @media (max-width: 400px) {
@@ -318,7 +300,7 @@
 <body>
 
     <div class="container">
-        <!-- ===== 顶部栏（居中，黑体加粗） ===== -->
+        <!-- ===== 顶部栏（居中，黑体加粗，样式不变） ===== -->
         <div class="top-bar">
             <div class="brand">
                 简帙<span class="sub">· 工器谱</span>
@@ -329,31 +311,6 @@
         <div class="preface">
             <p>简帙者，集工器之理论，汇四艺之精要。字库以立其本，切拼以成其形，重排以调其气，阅读以通其神。四者相承，乃为完璧。兹录诸篇，以备览者参详。</p>
         </div>
-
-        <!-- ===== 独立下载区（无图标，文字不加粗，按钮统一样式） ===== -->
-        <div class="download-section">
-            <div class="info">
-                <span class="label"><strong>简帙古籍整理系统</strong> 下载</span>
-                <span class="version">v2.1 · 2026年6月</span>
-            </div>
-            <div class="btn-group">
-                <a href="https://pan.baidu.com/s/1HuW0NXGxccT-LhJ9cse60Q?pwd=hqrt" target="_blank" class="btn" rel="noopener noreferrer">百度网盘</a>
-                <a href="https://pan.quark.cn/s/acd54713f4d5" target="_blank" class="btn" rel="noopener noreferrer">夸克网盘</a>
-            </div>
-        </div>
-
-        <!-- ===== 简帙古籍整理系统卡片（无篇数，描述左对齐） ===== -->
-        <a href="jianzhi/" class="main-card" id="mainCard">
-            <div class="card-header">
-                <h2>简帙古籍整理系统</h2>
-            </div>
-            <div class="card-desc">
-                集成字库制作、双页切拼、制版重排、文档阅读四大工器，助力古籍数字化整理与学术研究。
-            </div>
-        </a>
-
-        <!-- ===== 分隔线（系统卡片与子卡片分开） ===== -->
-        <div class="divider"></div>
 
         <!-- ===== 四艺入口（无篇数徽标） ===== -->
         <div class="grid-4">
@@ -373,6 +330,29 @@
                 <h3>文档阅读</h3>
                 <div class="desc">阅读法式 · 文献研究</div>
             </a>
+        </div>
+
+        <!-- ===== 系统大卡片（包含简介 + 下载，放在子卡片之后） ===== -->
+        <div class="system-card">
+            <!-- 标题居中 -->
+            <div class="card-header">
+                <h2>简帙古籍整理系统</h2>
+            </div>
+            <!-- 描述左对齐 -->
+            <div class="card-desc">
+                集成字库制作、双页切拼、制版重排、文档阅读四大工器，助力古籍数字化整理与学术研究。
+            </div>
+            <!-- 下载区（放在卡片底部） -->
+            <div class="download-section">
+                <div class="info">
+                    <span class="label"><strong>简帙古籍整理系统</strong> 下载</span>
+                    <span class="version">v2.1 · 2026年6月</span>
+                </div>
+                <div class="btn-group">
+                    <a href="https://pan.baidu.com/s/1HuW0NXGxccT-LhJ9cse60Q?pwd=hqrt" target="_blank" class="btn" rel="noopener noreferrer">百度网盘</a>
+                    <a href="https://pan.quark.cn/s/acd54713f4d5" target="_blank" class="btn" rel="noopener noreferrer">夸克网盘</a>
+                </div>
+            </div>
         </div>
 
         <!-- ===== 底部版权 ===== -->
