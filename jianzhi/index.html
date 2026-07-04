@@ -12,16 +12,16 @@
             box-sizing: border-box;
         }
         :root {
-            --primary: #2c6e2f;
-            --primary-light: #4a8a4d;
-            --primary-dark: #1a4a1c;
-            --bg-light: #f9fafb;
-            --card-bg: #ffffff;
-            --border-color: #eaecef;
-            --text-dark: #2c3e2c;
-            --text-muted: #8a9b8a;
-            --radius: 8px;
-            --shadow: 0 2px 12px rgba(44, 46, 44, 0.06);
+            --paper: #f5f0e8;
+            --paper-white: #fcf9f5;
+            --ink: #2c1810;
+            --ink-light: #5a3f36;
+            --zhu-red: #8b1a1a;
+            --zhu-red-light: #b33a3a;
+            --gold: #c9a96e;
+            --border-light: #e8dfd6;
+            --radius: 6px;
+            --shadow: 0 2px 16px rgba(44, 24, 16, 0.08);
             --transition: 0.25s ease;
         }
         html {
@@ -29,8 +29,8 @@
         }
         body {
             font-family: "Noto Serif SC", "思源宋体", "Source Han Serif SC", "华文宋体", serif;
-            background: var(--bg-light);
-            color: var(--text-dark);
+            background: var(--paper);
+            color: var(--ink);
             line-height: 1.8;
             padding: 2rem 1rem;
             min-height: 100vh;
@@ -38,11 +38,11 @@
         .container {
             max-width: 960px;
             margin: 0 auto;
-            background: var(--card-bg);
+            background: var(--paper-white);
             padding: 2rem 2.5rem 3rem;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--border-light);
         }
 
         /* ===== 顶部 ===== */
@@ -52,7 +52,7 @@
             justify-content: space-between;
             margin-bottom: 2rem;
             padding-bottom: 0.8rem;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-light);
             flex-wrap: wrap;
             gap: 0.8rem;
         }
@@ -62,41 +62,42 @@
             gap: 8px;
             font-size: 1.2rem;
             font-weight: 600;
-            color: var(--primary-dark);
+            color: var(--ink);
             letter-spacing: 2px;
         }
         .top-bar .brand .seal {
             font-size: 1.6rem;
             font-family: '华文篆书', '方正小篆体', '篆书', serif;
-            color: var(--primary);
-            border: 2px solid var(--primary);
+            color: var(--zhu-red);
+            border: 2px solid var(--zhu-red);
             border-radius: 4px;
             padding: 0 0.3rem;
             line-height: 1.4;
             transform: rotate(-2deg);
-            background: rgba(44, 110, 47, 0.04);
+            background: rgba(139, 26, 26, 0.04);
         }
         .top-bar .home-link {
             font-size: 0.9rem;
-            color: var(--primary);
+            color: var(--ink-light);
             text-decoration: none;
-            border-bottom: 1px solid #c8d6c8;
+            border-bottom: 1px solid var(--border-light);
             padding-bottom: 2px;
         }
         .top-bar .home-link:hover {
-            color: var(--primary-dark);
-            border-bottom-color: var(--primary);
+            color: var(--zhu-red);
+            border-bottom-color: var(--zhu-red);
         }
 
         /* ===== 面包屑 ===== */
         .breadcrumb {
             font-size: 0.85rem;
-            color: var(--text-muted);
+            color: var(--ink-light);
             margin-bottom: 1.5rem;
             padding: 0.4rem 0.8rem;
-            background: var(--bg-light);
+            background: var(--paper);
             border-radius: 20px;
             display: inline-block;
+            opacity: 0.7;
         }
         .breadcrumb span {
             margin: 0 4px;
@@ -106,91 +107,24 @@
         h1 {
             font-size: 2rem;
             font-weight: 700;
-            color: var(--primary-dark);
-            letter-spacing: 4px;
+            color: var(--ink);
+            letter-spacing: 6px;
             margin-bottom: 0.2rem;
         }
         h1 .sub {
             font-size: 1rem;
             font-weight: 400;
-            color: var(--text-muted);
-            letter-spacing: 2px;
+            color: var(--ink-light);
+            letter-spacing: 3px;
             margin-left: 12px;
+            opacity: 0.6;
         }
         .subtitle {
-            color: var(--text-muted);
+            color: var(--ink-light);
             font-size: 0.95rem;
             margin-bottom: 1.8rem;
-            border-left: 3px solid var(--primary);
+            border-left: 3px solid var(--zhu-red);
             padding-left: 1rem;
-            opacity: 0.8;
-        }
-
-        /* ===== 下载卡片（主页专用） ===== */
-        .download-hero {
-            background: linear-gradient(135deg, #f0f5f0 0%, #e8efe8 100%);
-            border-radius: var(--radius);
-            padding: 2rem 2rem 1.8rem;
-            margin: 1.5rem 0 2rem;
-            border: 1px solid var(--primary-light);
-            text-align: center;
-            box-shadow: 0 2px 12px rgba(44, 110, 47, 0.06);
-        }
-        .download-hero .icon {
-            font-size: 3rem;
-            display: block;
-            margin-bottom: 0.2rem;
-        }
-        .download-hero h2 {
-            border: none;
-            margin: 0.2rem 0 0.4rem;
-            font-size: 1.4rem;
-            color: var(--primary-dark);
-        }
-        .download-hero p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            max-width: 600px;
-            margin: 0 auto 1rem;
-            line-height: 1.8;
-        }
-        .download-hero .btn-group {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        .download-hero .btn {
-            display: inline-block;
-            background: var(--primary);
-            color: #fff;
-            padding: 0.6rem 2rem;
-            border-radius: 40px;
-            text-decoration: none;
-            font-size: 0.95rem;
-            font-weight: 500;
-            border: 1px solid var(--primary);
-            transition: var(--transition);
-            box-shadow: 0 2px 8px rgba(44, 110, 47, 0.10);
-        }
-        .download-hero .btn:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(44, 110, 47, 0.15);
-        }
-        .download-hero .btn-outline {
-            background: transparent;
-            color: var(--primary);
-            border-color: var(--primary);
-        }
-        .download-hero .btn-outline:hover {
-            background: var(--primary);
-            color: #fff;
-        }
-        .download-hero .meta {
-            margin-top: 0.8rem;
-            font-size: 0.8rem;
-            color: var(--text-muted);
             opacity: 0.7;
         }
 
@@ -202,47 +136,126 @@
             margin: 1.5rem 0 0.5rem;
         }
         .grid-4 .card {
-            background: var(--bg-light);
+            background: var(--paper);
             border-radius: var(--radius);
-            padding: 1.5rem 1rem 1.2rem;
+            padding: 1.8rem 1rem 1.5rem;
             text-align: center;
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--border-light);
             transition: var(--transition);
             text-decoration: none;
-            color: var(--text-dark);
+            color: var(--ink);
             display: block;
         }
         .grid-4 .card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 6px 20px rgba(44, 110, 47, 0.08);
-            border-color: var(--primary-light);
-            background: #f5f8f5;
-        }
-        .grid-4 .card .icon {
-            font-size: 2.4rem;
-            display: block;
-            margin-bottom: 0.4rem;
+            box-shadow: 0 6px 24px rgba(44, 24, 16, 0.06);
+            border-color: var(--gold);
+            background: #f8f4ee;
         }
         .grid-4 .card h3 {
-            font-size: 1rem;
-            color: var(--primary-dark);
-            letter-spacing: 2px;
+            font-size: 1.05rem;
+            color: var(--ink);
+            letter-spacing: 3px;
             font-weight: 600;
         }
         .grid-4 .card .desc {
             font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: 0.2rem;
-            line-height: 1.5;
+            color: var(--ink-light);
+            margin-top: 0.3rem;
+            line-height: 1.6;
+            opacity: 0.7;
         }
         .grid-4 .card .badge {
             display: inline-block;
-            margin-top: 0.5rem;
+            margin-top: 0.6rem;
             font-size: 0.65rem;
-            color: var(--primary);
-            border: 1px solid var(--primary);
+            color: var(--zhu-red);
+            border: 1px solid var(--gold);
             border-radius: 20px;
             padding: 0.05rem 0.7rem;
+            opacity: 0.5;
+            letter-spacing: 1px;
+        }
+
+        /* ===== 简介 ===== */
+        .intro-text {
+            margin-top: 2.5rem;
+            padding: 1rem 0 0.5rem;
+            border-top: 1px solid var(--border-light);
+        }
+        .intro-text p {
+            font-size: 0.9rem;
+            color: var(--ink-light);
+            text-indent: 2em;
+            line-height: 2.2;
+            opacity: 0.8;
+        }
+
+        /* ===== 下载区（底部） ===== */
+        .download-section {
+            margin-top: 2.5rem;
+            padding: 1.8rem 2rem;
+            background: var(--paper);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-light);
+            text-align: center;
+        }
+        .download-section .icon {
+            font-size: 2.2rem;
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+        .download-section h2 {
+            font-size: 1.2rem;
+            color: var(--ink);
+            letter-spacing: 3px;
+            margin-bottom: 0.3rem;
+            border: none;
+        }
+        .download-section p {
+            color: var(--ink-light);
+            font-size: 0.9rem;
+            max-width: 500px;
+            margin: 0 auto 1rem;
+            line-height: 1.8;
+            opacity: 0.7;
+        }
+        .download-section .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .download-section .btn {
+            display: inline-block;
+            background: var(--zhu-red);
+            color: #fff;
+            padding: 0.5rem 2rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            border: 1px solid var(--zhu-red);
+            transition: var(--transition);
+            letter-spacing: 1px;
+        }
+        .download-section .btn:hover {
+            background: var(--zhu-red-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(139, 26, 26, 0.15);
+        }
+        .download-section .btn-outline {
+            background: transparent;
+            color: var(--zhu-red);
+            border-color: var(--zhu-red);
+        }
+        .download-section .btn-outline:hover {
+            background: var(--zhu-red);
+            color: #fff;
+        }
+        .download-section .meta {
+            margin-top: 0.8rem;
+            font-size: 0.75rem;
+            color: var(--ink-light);
             opacity: 0.5;
             letter-spacing: 1px;
         }
@@ -252,10 +265,11 @@
             margin-top: 2.5rem;
             font-size: 0.8rem;
             text-align: center;
-            color: var(--text-muted);
-            border-top: 1px solid var(--border-color);
+            color: var(--ink-light);
+            border-top: 1px solid var(--border-light);
             padding-top: 1.2rem;
             letter-spacing: 1px;
+            opacity: 0.5;
         }
 
         /* ===== 返回顶部 ===== */
@@ -266,22 +280,22 @@
             width: 44px;
             height: 44px;
             border-radius: 50%;
-            background: rgba(44, 110, 47, 0.08);
-            border: 1px solid rgba(44, 110, 47, 0.15);
-            color: var(--primary);
-            font-size: 1.6rem;
+            background: rgba(44, 24, 16, 0.04);
+            border: 1px solid rgba(44, 24, 16, 0.10);
+            color: var(--ink-light);
+            font-size: 1.4rem;
             line-height: 44px;
             text-align: center;
             text-decoration: none;
             transition: var(--transition);
             backdrop-filter: blur(4px);
-            box-shadow: 0 2px 12px rgba(44, 46, 44, 0.06);
+            box-shadow: 0 2px 12px rgba(44, 24, 16, 0.04);
             font-family: serif;
         }
         .back-to-top-ball:hover {
-            background: rgba(44, 110, 47, 0.15);
+            background: rgba(44, 24, 16, 0.08);
             transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(44, 110, 47, 0.10);
+            color: var(--zhu-red);
         }
 
         @media (max-width: 600px) {
@@ -294,6 +308,7 @@
             }
             h1 {
                 font-size: 1.5rem;
+                letter-spacing: 4px;
             }
             h1 .sub {
                 display: block;
@@ -304,10 +319,10 @@
                 flex-direction: column;
                 align-items: flex-start;
             }
-            .download-hero {
+            .download-section {
                 padding: 1.5rem 1rem;
             }
-            .download-hero .btn-group {
+            .download-section .btn-group {
                 flex-direction: column;
                 align-items: center;
             }
@@ -327,7 +342,7 @@
             <div class="brand">
                 <span class="seal">简</span>
                 简帙
-                <span style="font-weight:400; font-size:0.8rem; color:var(--text-muted); letter-spacing:1px;">· 工器谱</span>
+                <span style="font-weight:400; font-size:0.8rem; color:var(--ink-light); letter-spacing:1px; opacity:0.6;">· 工器谱</span>
             </div>
             <a href="#" class="home-link" id="homeLink">← 铭心阁</a>
         </div>
@@ -339,8 +354,37 @@
         <h1>简帙 <span class="sub">工器谱 · 四艺</span></h1>
         <div class="subtitle">字库 · 切拼 · 重排 · 阅读 —— 工器理论文集</div>
 
-        <!-- ===== 下载区 ===== -->
-        <div class="download-hero">
+        <!-- ===== 四艺入口（无图标） ===== -->
+        <div class="grid-4">
+            <a href="ziku/" class="card">
+                <h3>字库制作</h3>
+                <div class="desc">字体源流 · 字库建构</div>
+                <span class="badge">6 篇</span>
+            </a>
+            <a href="shuangye/" class="card">
+                <h3>双页切拼</h3>
+                <div class="desc">版式切割 · 拼接重组</div>
+                <span class="badge">4 篇</span>
+            </a>
+            <a href="zhiban/" class="card">
+                <h3>制版重排</h3>
+                <div class="desc">版面调适 · 重排原理</div>
+                <span class="badge">5 篇</span>
+            </a>
+            <a href="yuedu/" class="card">
+                <h3>文档阅读</h3>
+                <div class="desc">阅读法式 · 文献阐释</div>
+                <span class="badge">4 篇</span>
+            </a>
+        </div>
+
+        <!-- ===== 简介 ===== -->
+        <div class="intro-text">
+            <p>简帙者，集工器之理论，汇四艺之精要。字库以立其本，切拼以成其形，重排以调其气，阅读以通其神。四者相承，乃为完璧。兹录诸篇，以备览者参详。</p>
+        </div>
+
+        <!-- ===== 下载区（底部） ===== -->
+        <div class="download-section">
             <span class="icon">📦</span>
             <h2>简帙古籍整理系统</h2>
             <p>集成字库制作、双页切拼、制版重排、文档阅读四大工器，助力古籍数字化整理与学术研究。</p>
@@ -349,42 +393,6 @@
                 <a href="https://pan.baidu.com/s/xxxxxxxxxxxxxxxx" target="_blank" class="btn btn-outline" rel="noopener noreferrer">📥 百度网盘</a>
             </div>
             <div class="meta">当前版本 v2.1 · 更新于 2026年6月</div>
-        </div>
-
-        <!-- ===== 四艺入口 ===== -->
-        <div class="grid-4">
-            <a href="ziku/" class="card">
-                <span class="icon">🖋</span>
-                <h3>字库制作</h3>
-                <div class="desc">字体源流 · 字库建构</div>
-                <span class="badge">6 篇</span>
-            </a>
-            <a href="shuangye/" class="card">
-                <span class="icon">📄</span>
-                <h3>双页切拼</h3>
-                <div class="desc">版式切割 · 拼接重组</div>
-                <span class="badge">4 篇</span>
-            </a>
-            <a href="zhiban/" class="card">
-                <span class="icon">📐</span>
-                <h3>制版重排</h3>
-                <div class="desc">版面调适 · 重排原理</div>
-                <span class="badge">5 篇</span>
-            </a>
-            <a href="yuedu/" class="card">
-                <span class="icon">📖</span>
-                <h3>文档阅读</h3>
-                <div class="desc">阅读法式 · 文献阐释</div>
-                <span class="badge">4 篇</span>
-            </a>
-        </div>
-
-        <!-- ===== 简介 ===== -->
-        <div style="margin-top: 2.5rem; padding: 1rem 0 0.5rem; border-top: 1px solid var(--border-color);">
-            <p style="font-size:0.9rem; color:var(--text-muted); text-indent:2em; line-height:2;">
-                简帙者，集工器之理论，汇四艺之精要。字库以立其本，切拼以成其形，
-                重排以调其气，阅读以通其神。四者相承，乃为完璧。兹录诸篇，以备览者参详。
-            </p>
         </div>
 
         <!-- ===== 底部版权 ===== -->
