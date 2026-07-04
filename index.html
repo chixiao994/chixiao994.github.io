@@ -41,12 +41,15 @@
       line-height: 1.15;
       text-shadow: 0 2px 4px rgba(44, 31, 21, 0.06);
       /* 
-        篆体 → 黑体系列（Windows雅黑/黑体，macOS苹方/黑体） → 楷体 → 宋体 
-        确保在无篆体时优先显示黑体，而非直接跳到楷体
+        篆体优先 → 各类黑体（覆盖iOS/Android/Windows/macOS） → 楷体 → 宋体
       */
       font-family: '华文篆书', '方正小篆体', 'STZhongsong', '汉仪篆书', '篆体',
-                   'Microsoft YaHei', 'SimHei', 'PingFang SC', 'Heiti SC', 'STHeiti',
-                   '华文楷体', 'KaiTi', '宋体', serif;
+                   'PingFang SC', 'Heiti SC', 'STHeiti',          /* iOS & macOS */
+                   'Microsoft YaHei', 'SimHei',                  /* Windows */
+                   'Roboto', 'Noto Sans CJK SC', 'Noto Sans',   /* Android & 通用 */
+                   '-apple-system', 'BlinkMacSystemFont', 'system-ui', /* 系统默认 */
+                   'sans-serif',                                 /* 最终无衬线 */
+                   '华文楷体', 'KaiTi', '宋体', serif;            /* 最后兜底 */
     }
 
     /* ===== 第二层 · 序言 ===== */
@@ -59,11 +62,11 @@
       padding: 0 1.5rem;
       font-weight: 300;
       opacity: 0.8;
-      text-align: left;      /* 左对齐便于首行缩进生效 */
+      text-align: left;
     }
 
     .preface p {
-      text-indent: 2em;      /* 首行缩进2字符 */
+      text-indent: 2em;
       margin: 0;
     }
 
@@ -93,7 +96,7 @@
       border: none;
       transform: translateY(0);
       /* 
-        优先隶书 → 若无则用楷体 → 宋体 
+        隶书优先 → 楷体 → 宋体 
         楷体在手机和电脑上普遍存在，作为可靠回退
       */
       font-family: '华文隶书', '方正隶书', '汉仪隶书', 'STLiti', '隶书',
@@ -163,7 +166,7 @@
 <body>
 <div class="scroll">
 
-  <!-- 第一层 · 标题（篆体 → 黑体 → 楷体） -->
+  <!-- 第一层 · 标题（篆体 → 各种黑体 → 楷体） -->
   <div class="header">
     <h1>铭心阁</h1>
   </div>
