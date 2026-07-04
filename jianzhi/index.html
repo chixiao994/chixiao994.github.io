@@ -76,17 +76,6 @@
             transform: rotate(-2deg);
             background: rgba(139, 26, 26, 0.04);
         }
-        .top-bar .home-link {
-            font-size: 0.9rem;
-            color: var(--ink-light);
-            text-decoration: none;
-            border-bottom: 1px solid var(--border-light);
-            padding-bottom: 2px;
-        }
-        .top-bar .home-link:hover {
-            color: var(--zhu-red);
-            border-bottom-color: var(--zhu-red);
-        }
 
         /* ===== 面包屑 ===== */
         .breadcrumb {
@@ -337,14 +326,13 @@
 <body>
 
     <div class="container">
-        <!-- ===== 顶部栏 ===== -->
+        <!-- ===== 顶部栏（无返回链接） ===== -->
         <div class="top-bar">
             <div class="brand">
                 <span class="seal">简</span>
                 简帙
                 <span style="font-weight:400; font-size:0.8rem; color:var(--ink-light); letter-spacing:1px; opacity:0.6;">· 工器谱</span>
             </div>
-            <a href="#" class="home-link" id="homeLink">← 铭心阁</a>
         </div>
 
         <!-- ===== 面包屑 ===== -->
@@ -396,7 +384,7 @@
         </div>
 
         <!-- ===== 底部版权 ===== -->
-        <div class="footer-note">铭心阁 · 简帙工器谱 · 古籍解读与知识重构</div>
+        <div class="footer-note">铭心阁 简帙工器谱</div>
     </div>
 
     <!-- ===== 返回顶部 ===== -->
@@ -404,10 +392,6 @@
 
     <script>
         document.getElementById('backToTop').addEventListener('click', function(e) {
-            e.preventDefault();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-        document.getElementById('homeLink').addEventListener('click', function(e) {
             e.preventDefault();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
