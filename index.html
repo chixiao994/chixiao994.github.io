@@ -113,7 +113,7 @@
     .item:nth-child(3):hover { background: #e0d5c4; }
     .item:nth-child(4):hover { background: #e3d8c8; }
 
-    /* ===== 响应式：手机端精准适配 ===== */
+    /* ===== 响应式 ===== */
     @media (max-width: 760px) {
       .grid {
         grid-template-columns: repeat(2, 1fr);
@@ -134,6 +134,7 @@
       }
     }
 
+    /* ===== 手机端：边距减小，三行排满 ===== */
     @media (max-width: 460px) {
       .grid {
         grid-template-columns: 1fr;
@@ -148,18 +149,13 @@
         letter-spacing: 12px;
       }
 
-      /* 
-        手机序言：调整内边距、字号与字间距，使文字恰好三行并排满。
-        启用两端对齐，自动调整字间距，视觉整齐。
-        可根据实际手机宽度微调 padding 和 font-size。
-      */
       .preface {
-        font-size: 1rem;           /* 略微增大，减少行数 */
-        letter-spacing: 0.05em;    /* 字间距适应，配合两端对齐 */
-        padding: 0 2.2rem;         /* 左右留白增大，压缩可用宽度 */
+        font-size: 0.95rem;          /* 略微减小，配合边距 */
+        letter-spacing: 0.06em;      /* 微调字距，使三行恰好排满 */
+        padding: 0 1.2rem;           /* 边距从 2.2rem 减小到 1.2rem */
         margin-bottom: 1.6rem;
-        text-align: justify;       /* 两端对齐，每行均匀填满 */
-        text-justify: inter-ideograph; /* 中文两端对齐优化 */
+        text-align: justify;
+        text-justify: inter-ideograph;
       }
     }
   </style>
