@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>版面理论 · 简帙古籍整理系统 · 简帙</title>
+    <style>
+        /* ===== 全局 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --paper: #f5f0e8;
+            --paper-white: #fcf9f5;
+            --ink: #2c1810;
+            --ink-light: #5a3f36;
+            --zhu-red: #8b1a1a;
+            --zhu-red-light: #b33a3a;
+            --gold: #c9a96e;
+            --border-light: #e8dfd6;
+            --radius: 6px;
+            --shadow: 0 2px 16px rgba(44, 24, 16, 0.08);
+            --transition: 0.25s ease;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: "Noto Serif SC", "思源宋体", "Source Han Serif SC", "华文宋体", serif;
+            background: var(--paper);
+            color: var(--ink);
+            line-height: 1.8;
+            padding: 2rem 1rem;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: var(--paper-white);
+            padding: 2rem 2.5rem 3rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-light);
+        }
+
+        /* ===== 顶部 ===== */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border-light);
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .top-bar .brand {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--ink);
+            letter-spacing: 4px;
+        }
+        .top-bar .brand .sub {
+            font-weight: 400;
+            font-size: 0.9rem;
+            color: var(--ink-light);
+            letter-spacing: 2px;
+            opacity: 0.6;
+            margin-left: 6px;
+        }
+
+        /* ===== 面包屑 ===== */
+        .breadcrumb {
+            font-size: 0.85rem;
+            color: var(--ink-light);
+            margin-bottom: 1.5rem;
+            padding: 0.4rem 0.8rem;
+            background: var(--paper);
+            border-radius: 20px;
+            display: inline-block;
+            opacity: 0.7;
+        }
+        .breadcrumb a {
+            color: var(--ink-light);
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: var(--zhu-red);
+            text-decoration: underline;
+        }
+        .breadcrumb span {
+            margin: 0 4px;
+        }
+
+        /* ===== 标题 ===== */
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 0.2rem;
+            flex-wrap: wrap;
+        }
+        .article-meta .series-tag {
+            font-size: 0.85rem;
+            color: var(--ink-light);
+            background: var(--paper);
+            padding: 0.1rem 0.8rem;
+            border-radius: 12px;
+            opacity: 0.7;
+        }
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--ink);
+            letter-spacing: 4px;
+            margin-bottom: 0.2rem;
+            line-height: 1.4;
+        }
+        .subtitle {
+            color: var(--ink-light);
+            font-size: 0.95rem;
+            margin-bottom: 1.8rem;
+            border-left: 3px solid var(--zhu-red);
+            padding-left: 1rem;
+            opacity: 0.7;
+        }
+
+        /* ===== 章内目录 ===== */
+        .toc {
+            background: var(--paper);
+            border-left: 4px solid var(--zhu-red);
+            padding: 0.8rem 1.2rem;
+            margin: 1.2rem 0 1.8rem;
+            border-radius: var(--radius);
+        }
+        .toc h3 {
+            font-size: 1rem;
+            margin: 0 0 0.4rem 0;
+            color: var(--ink);
+            letter-spacing: 2px;
+        }
+        .toc ul {
+            margin: 0;
+            padding-left: 1.2rem;
+        }
+        .toc li {
+            margin: 0.2rem 0;
+        }
+        .toc a {
+            text-decoration: none;
+            color: var(--ink);
+            border-bottom: 1px dotted var(--border-light);
+            transition: 0.2s;
+        }
+        .toc a:hover {
+            border-bottom-style: solid;
+            color: var(--zhu-red);
+            border-bottom-color: var(--zhu-red);
+        }
+        .toc ul ul {
+            padding-left: 1.5rem;
+        }
+
+        /* ===== 正文 ===== */
+        .article-body p {
+            text-indent: 2em;
+            margin-bottom: 1rem;
+            line-height: 2.2;
+        }
+        .article-body h2 {
+            font-size: 1.4rem;
+            color: var(--ink);
+            margin: 2rem 0 1rem 0;
+            padding-bottom: 0.3rem;
+            border-bottom: 2px solid var(--border-light);
+            letter-spacing: 3px;
+        }
+        .article-body h3 {
+            font-size: 1.1rem;
+            color: var(--ink);
+            margin-top: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .article-body h4 {
+            font-size: 1rem;
+            color: var(--ink);
+            margin-top: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            opacity: 0.8;
+        }
+        .article-body strong {
+            color: var(--zhu-red);
+            font-weight: 600;
+        }
+        .article-body ul {
+            padding-left: 2rem;
+            margin: 0.5rem 0 1rem;
+        }
+        .article-body ul li {
+            margin-bottom: 0.3rem;
+            list-style-type: disc;
+        }
+        .article-body ul ul li {
+            list-style-type: circle;
+        }
+        .article-body .no-indent {
+            text-indent: 0;
+        }
+        .quote-block {
+            display: block;
+            margin: 1.2rem 0;
+            padding: 0.8rem 1.2rem;
+            font-style: italic;
+            color: var(--ink);
+            background: var(--paper);
+            border-radius: var(--radius);
+            border-left: 3px solid var(--gold);
+            line-height: 2.2;
+            text-align: left;
+            font-size: 1rem;
+            letter-spacing: 0.04em;
+        }
+        .inline-quote {
+            color: var(--ink);
+            font-style: italic;
+            background: var(--paper);
+            padding: 0.1rem 0.4rem;
+            border-radius: 3px;
+            white-space: nowrap;
+        }
+
+        /* ===== 表格 ===== */
+        .table-wrap {
+            overflow-x: auto;
+            margin: 1rem 0 1.2rem;
+        }
+        .table-wrap table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            background: var(--paper);
+            border-radius: var(--radius);
+        }
+        .table-wrap table th {
+            padding: 0.5rem 0.8rem;
+            text-align: left;
+            border-right: 1px solid var(--border-light);
+            background: var(--paper);
+            border-bottom: 2px solid var(--border-light);
+            font-weight: 600;
+        }
+        .table-wrap table td {
+            padding: 0.4rem 0.8rem;
+            border-right: 1px solid var(--border-light);
+            border-bottom: 1px solid var(--border-light);
+        }
+        .table-wrap table tr:last-child td {
+            border-bottom: none;
+        }
+        .table-wrap table th:last-child,
+        .table-wrap table td:last-child {
+            border-right: none;
+        }
+
+        /* ===== 单篇文章下载 ===== */
+        .article-download {
+            margin-top: 2rem;
+            padding: 1rem 1.2rem;
+            background: var(--paper);
+            border-radius: var(--radius);
+            border-left: 4px solid var(--zhu-red);
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: space-between;
+        }
+        .article-download .info {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.9rem;
+            color: var(--ink);
+        }
+        .article-download .btn-group {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+        .article-download .btn-sm {
+            display: inline-block;
+            background: var(--zhu-red);
+            color: #fff;
+            padding: 0.3rem 1.2rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            border: 1px solid var(--zhu-red);
+            transition: var(--transition);
+            letter-spacing: 0.5px;
+        }
+        .article-download .btn-sm:hover {
+            background: var(--zhu-red-light);
+            transform: translateY(-1px);
+        }
+        .article-download .btn-sm-outline {
+            background: transparent;
+            color: var(--zhu-red);
+            border-color: var(--zhu-red);
+        }
+        .article-download .btn-sm-outline:hover {
+            background: var(--zhu-red);
+            color: #fff;
+        }
+
+        /* ===== 系列底部导航 ===== */
+        .series-nav {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2.5rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid var(--border-light);
+            flex-wrap: wrap;
+        }
+        .series-nav a {
+            display: inline-block;
+            background: var(--paper);
+            color: var(--ink);
+            padding: 0.4rem 1.2rem;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            border: 1px solid var(--border-light);
+            transition: 0.2s;
+        }
+        .series-nav a:hover {
+            background: #f0ebe2;
+            border-color: var(--gold);
+            color: var(--zhu-red);
+        }
+        .series-nav .prev {
+            margin-right: auto;
+        }
+        .series-nav .next {
+            margin-left: auto;
+        }
+        .series-nav a.disabled {
+            cursor: default;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        .series-nav a.index-link {
+            background: var(--zhu-red);
+            color: #fff;
+            border-color: var(--zhu-red);
+        }
+        .series-nav a.index-link:hover {
+            background: var(--zhu-red-light);
+            color: #fff;
+        }
+        @media (max-width: 600px) {
+            .series-nav {
+                gap: 0.8rem;
+            }
+            .series-nav .prev,
+            .series-nav .next {
+                margin: 0;
+            }
+            .series-nav a {
+                font-size: 0.8rem;
+                padding: 0.3rem 0.8rem;
+            }
+        }
+
+        /* ===== 底部版权 ===== */
+        .footer-note {
+            margin-top: 2.5rem;
+            font-size: 0.8rem;
+            text-align: center;
+            color: var(--ink-light);
+            border-top: 1px solid var(--border-light);
+            padding-top: 1.2rem;
+            letter-spacing: 1px;
+            opacity: 0.5;
+        }
+
+        /* ===== 返回顶部 ===== */
+        .back-to-top-ball {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(44, 24, 16, 0.04);
+            border: 1px solid rgba(44, 24, 16, 0.10);
+            color: var(--ink-light);
+            font-size: 1.4rem;
+            line-height: 44px;
+            text-align: center;
+            text-decoration: none;
+            transition: var(--transition);
+            backdrop-filter: blur(4px);
+            box-shadow: 0 2px 12px rgba(44, 24, 16, 0.04);
+            font-family: serif;
+        }
+        .back-to-top-ball:hover {
+            background: rgba(44, 24, 16, 0.08);
+            transform: translateY(-2px);
+            color: var(--zhu-red);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1.2rem 1rem 2rem;
+            }
+            h1 {
+                font-size: 1.5rem;
+                letter-spacing: 3px;
+            }
+            .top-bar .brand {
+                font-size: 1.2rem;
+            }
+            .article-download {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.8rem;
+            }
+            .article-download .btn-group {
+                justify-content: center;
+            }
+            .quote-block {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.9rem;
+                border-left-width: 2px;
+            }
+            .toc ul ul {
+                padding-left: 1rem;
+            }
+            .article-body ul {
+                padding-left: 1.2rem;
+            }
+            .table-wrap table {
+                font-size: 0.8rem;
+            }
+            .table-wrap table th,
+            .table-wrap table td {
+                padding: 0.3rem 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- ===== 顶部栏 ===== -->
+        <div class="top-bar">
+            <div class="brand">
+                简帙<span class="sub">· 工器谱</span>
+            </div>
+        </div>
+
+        <!-- ===== 面包屑 ===== -->
+        <div class="breadcrumb">
+            <a href="../index.html">简帙</a> <span>›</span>
+            <a href="./index.html">简帙古籍整理系统</a> <span>›</span>
+            版面理论
+        </div>
+
+        <!-- ===== 标题 ===== -->
+        <div class="article-meta">
+            <span class="series-tag">简帙古籍整理系统 · 第 2 篇</span>
+        </div>
+        <h1>版面理论</h1>
+        <div class="subtitle">古籍实体、虚体与拟体的核心定义</div>
+
+        <!-- ===== 章内目录 ===== -->
+        <nav class="toc" aria-label="章节目录">
+            <h3>目 录</h3>
+            <ul>
+                <li><a href="#preface">序言：三体论</a></li>
+                <li><a href="#ch1">第一章 基础概念</a>
+                    <ul>
+                        <li><a href="#ch1-1">1.1 三体本源</a></li>
+                        <li><a href="#ch1-2">1.2 层次划分</a></li>
+                    </ul>
+                </li>
+                <li><a href="#ch2">第二章 实体层——物理存在</a>
+                    <ul>
+                        <li><a href="#ch2-1">2.1 版框与内容</a></li>
+                        <li><a href="#ch2-2">2.2 常规范围</a></li>
+                        <li><a href="#ch2-3">2.3 核心定位</a></li>
+                        <li><a href="#ch2-4">2.4 实面体系</a></li>
+                        <li><a href="#ch2-5">2.5 扫描模式</a></li>
+                    </ul>
+                </li>
+                <li><a href="#ch3">第三章 拟体层——数字存在</a>
+                    <ul>
+                        <li><a href="#ch3-1">3.1 拟体本源</a></li>
+                        <li><a href="#ch3-2">3.2 拟面体系</a></li>
+                        <li><a href="#ch3-3">3.3 拟面处理</a></li>
+                        <li><a href="#ch3-4">3.4 拟面用途</a></li>
+                        <li><a href="#ch3-5">3.5 拟体生实体</a></li>
+                    </ul>
+                </li>
+                <li><a href="#ch4">第四章 虚实相缀——结构的层叠与递归</a>
+                    <ul>
+                        <li><a href="#ch4-1">4.1 缀合原理</a></li>
+                        <li><a href="#ch4-2">4.2 册的层级</a></li>
+                        <li><a href="#ch4-3">4.3 虚体的意象化</a></li>
+                        <li><a href="#ch4-4">4.4 虚体的表现形式</a></li>
+                    </ul>
+                </li>
+                <li><a href="#ch5">第五章 拟体组织与操作</a>
+                    <ul>
+                        <li><a href="#ch5-1">5.1 拟体的文档化</a></li>
+                        <li><a href="#ch5-2">5.2 拟面的合成原则</a></li>
+                        <li><a href="#ch5-3">5.3 类蝴蝶装的优化</a></li>
+                        <li><a href="#ch5-4">5.4 拟刻：从半拟面到拟面</a></li>
+                        <li><a href="#ch5-5">5.5 传承的悖论</a></li>
+                    </ul>
+                </li>
+                <li><a href="#ch6">第六章 拟体的终极优势</a></li>
+                <li><a href="#ch7">第七章 书籍的放射——从读到变</a></li>
+                <li><a href="#ch8">第八章 天朗——天地复位</a></li>
+                <li><a href="#summary">总结：三体缀合，万变归宗</a></li>
+            </ul>
+        </nav>
+
+        <!-- ===== 正文 ===== -->
+        <div class="article-body">
+
+            <!-- ===== 序言 ===== -->
+            <h2 id="preface">序言：三体论</h2>
+
+            <p>古籍的存在形态，可归纳为三个层次：<strong>实体</strong>（物理存在）、<strong>虚体</strong>（认知存在）、<strong>拟体</strong>（数字存在）。三者各有其源、各有其层、各有其用。本理论以“版面”为原点，以“层”为结构，以“缀合”为方法，旨在为古籍的传承、研究与数字化提供一套自洽、无歧义的核心定义。</p>
+
+            <!-- ===== 第一章 ===== -->
+            <h2 id="ch1">第一章 基础概念</h2>
+
+            <h3 id="ch1-1">1.1 三体本源</h3>
+
+            <p class="quote-block">“古籍的实体，来自于雕版，古籍的拟体，来自于扫描和模拟重排，古籍的虚体，来自于意念。”</p>
+
+            <ul>
+                <li><strong>实体：</strong>物理载体，源于雕版印刷。</li>
+                <li><strong>拟体：</strong>数字载体，源于扫描或模拟排印。</li>
+                <li><strong>虚体：</strong>认知载体，源于人的意念与意象连缀。</li>
+            </ul>
+
+            <h3 id="ch1-2">1.2 层次划分</h3>
+
+            <p class="quote-block">“实体版面有两个层次，第一层是雕和印，第二层是订，这两层版面会发生极大变化，后续所有可能混乱的命名正来在于此。”</p>
+
+            <p class="quote-block">“我们首先要正名，就是要明确处于什么层次，我们称为印面和订面。”</p>
+
+            <ul>
+                <li><strong>第一层（雕印层）：印面</strong>——雕版印刷的原初版面。</li>
+                <li><strong>第二层（订层）：订面</strong>——装订后形成的物理单面。</li>
+            </ul>
+
+            <p class="quote-block">“拟体的版面同样有两个层次，第一个是直接扫描自印面，第二个是直接扫描自订面，模拟排印就是模拟的这两个次层。”</p>
+
+            <ul>
+                <li><strong>拟体第一层：</strong>直接扫描自印面的拟面。</li>
+                <li><strong>拟体第二层：</strong>直接扫描自订面的拟面。</li>
+                <li><strong>模拟排印：</strong>在数字空间中模拟这两个层次的形成过程。</li>
+            </ul>
+
+            <!-- ===== 第二章 ===== -->
+            <h2 id="ch2">第二章 实体层——物理存在</h2>
+
+            <h3 id="ch2-1">2.1 版框与内容</h3>
+
+            <p class="quote-block">“版框是古籍的第一载体约束，文字是古籍的内容，一个自然完整印面有完整的版框和完整的内容，一个完整的订面有两个不完整版框和各自填充的内容。”</p>
+
+            <ul>
+                <li><strong>版框：</strong>第一载体约束，定义版面空间边界。</li>
+                <li><strong>内容：</strong>版框内的文字。</li>
+                <li><strong>印面：</strong>完整版框 + 完整内容。</li>
+                <li><strong>订面：</strong>两个不完整版框 + 各自内容。</li>
+            </ul>
+
+            <h3 id="ch2-2">2.2 常规范围</h3>
+
+            <p class="quote-block">“古籍的常规版式是版框约束，经折装、旋风装、白纸手抄、字画等不属于常规古籍。”</p>
+
+            <ul>
+                <li>常规古籍以版框为界定标准。</li>
+                <li>非常规形态（经折装、旋风装、手抄、字画）暂不纳入本理论范畴。</li>
+            </ul>
+
+            <h3 id="ch2-3">2.3 核心定位</h3>
+
+            <p class="quote-block">“中缝一词不再使用，对印面，我们用印刷中心，对于订面我们用装订位置。”</p>
+
+            <ul>
+                <li><strong>印刷中心：</strong>印面的结构中心区域（传统“版心”）。</li>
+                <li><strong>装订位置：</strong>订面的物理折叠、固定位置。</li>
+            </ul>
+
+            <h3 id="ch2-4">2.4 实面体系</h3>
+
+            <p class="quote-block">“一个实面，包括一个完整版框或两个半版框内容面，我们称为一个实面。”</p>
+
+            <ul>
+                <li><strong>实面：</strong>物理单元的总称。</li>
+            </ul>
+
+            <p class="quote-block">“一个印面只有一种形式，就是整实面，一个订面有两种形式，蝴蝶装是整实面，锁线装是合实面。”</p>
+
+            <ul>
+                <li><strong>整实面：</strong>包含一个完整版框的物理单元。
+                    <ul>
+                        <li>印面是整实面。</li>
+                        <li>蝴蝶装翻开的一面是整实面。</li>
+                        <li>锁线装一叶的正反面构成整实面。</li>
+                    </ul>
+                </li>
+                <li><strong>合实面：</strong>由两个半实面拼接而成的物理单元。
+                    <ul>
+                        <li>锁线装摊开时，来自两个不同整实面的半实面视觉拼接。</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <p class="quote-block">“合实面包括两个半实面，合拟面包括两个半拟面，合实面不是整实面，合拟面不是整拟面，不同整实面的半面组合称为合实面，不同拟面的半面组合称为合拟面。”</p>
+
+            <ul>
+                <li><strong>半实面：</strong>包含半个版框的物理局部。</li>
+                <li><strong>合实面的条件：</strong>必须来自不同整实面的半面组合。</li>
+            </ul>
+
+            <p class="quote-block">“合实面只能来自两个不同的版框内容实面，合拟面只能来自两个不同的版框内容的拟面。”</p>
+
+            <ul>
+                <li>合实面的本质是<strong>异源拼接</strong>。</li>
+            </ul>
+
+            <p class="quote-block">“锁线装来自正反面的两半构成的是整实面，蝴蝶装翻开一面是整实面。”</p>
+
+            <ul>
+                <li>锁线装的一叶（正反两面）在物理上是一张纸，属于整实面。</li>
+                <li>蝴蝶装翻开后显示的完整版框，属于整实面。</li>
+            </ul>
+
+            <p class="quote-block">“半面的主要用途在于阅读和操作。”</p>
+
+            <ul>
+                <li><strong>半面（半实面/半拟面）的定位：</strong>操作单元，服务于阅读和数字化处理。</li>
+            </ul>
+
+            <p class="quote-block">“整实面的装订实体或类整实面的合拟面的装订实体，作为我们的研究对象，其它不具有典型性不作为研究对象。”</p>
+
+            <ul>
+                <li><strong>研究对象：</strong>
+                    <ul>
+                        <li>整实面的装订实体（原生）。</li>
+                        <li>类整实面的合拟面的装订实体（再生）。</li>
+                    </ul>
+                </li>
+                <li><strong>非研究对象：</strong>非整实面的装订实体（如合实面直接装订）。</li>
+            </ul>
+
+            <h3 id="ch2-5">2.5 扫描模式</h3>
+
+            <p class="quote-block">“一般而言，古籍会有两种扫描模式，只扫半实面（只拍半边），扫一个来自不同版框内容的合实面（直接把书翻开两边一起拍进去，这个是占据绝对主导地位的，少有人会用手机一页页拍），极少出现扫一个整实面（蝴蝶装很少，拆散锁线装扫描显然不可取）。”</p>
+
+            <ul>
+                <li><strong>主流扫描模式：</strong>合实面扫描（翻开书，左右两页一起拍）。</li>
+                <li><strong>次要模式：</strong>半实面扫描（单页拍）。</li>
+                <li><strong>罕见模式：</strong>整实面扫描（拆书或蝴蝶装）。</li>
+            </ul>
+
+            <!-- ===== 第三章 ===== -->
+            <h2 id="ch3">第三章 拟体层——数字存在</h2>
+
+            <h3 id="ch3-1">3.1 拟体本源</h3>
+
+            <p class="quote-block">“对于拟体，它虽然继承自印面或订面，但由于载体发生明显变迁，描述不能直接迁移，这是命名混乱的第二个源头。”</p>
+
+            <ul>
+                <li>拟体继承自实体，但载体已从纸张变为像素。</li>
+                <li>物理描述不可直接迁移，需要建立独立的拟体描述体系。</li>
+            </ul>
+
+            <h3 id="ch3-2">3.2 拟面体系</h3>
+
+            <p class="quote-block">“拟面也有两种典型模式，包括一个完整版框和内容面的我们称为整拟面，包括两个半版框的我们称为合拟面。”</p>
+
+            <ul>
+                <li><strong>整拟面：</strong>包含一个完整版框内容的数字拟面。</li>
+                <li><strong>合拟面：</strong>包含两个半版框的数字拟面。</li>
+            </ul>
+
+            <p class="quote-block">“合实面包括两个半实面，合拟面包括两个半拟面，合实面不是整实面，合拟面不是整拟面，不同整实面的半面组合称为合实面，不同拟面的半面组合称为合拟面。”</p>
+
+            <ul>
+                <li><strong>半拟面：</strong>包含半个版框的数字拟面。</li>
+                <li><strong>合拟面的条件：</strong>必须来自不同拟面的半面组合。</li>
+            </ul>
+
+            <p class="quote-block">“合拟面只能来自两个不同的版框内容的拟面。”</p>
+
+            <ul>
+                <li>合拟面是<strong>异源拼接</strong>的数字拟面。</li>
+            </ul>
+
+            <h3 id="ch3-3">3.3 拟面处理</h3>
+
+            <p class="quote-block">“拟面处理通常有两种模式，一是剔除背景翻页口堆层或其他干扰，还原成半拟面；二是通过一定的手段得到整拟面，如裁切、拼补、平移、旋转、缩放、虚排等。”</p>
+
+            <ul>
+                <li><strong>模式一（还原）：</strong>从合拟面或带干扰的拟面中，提取干净的半拟面。</li>
+                <li><strong>模式二（重构）：</strong>通过数字操作，将半拟面组合或重构为整拟面。</li>
+            </ul>
+
+            <p class="quote-block">“半拟面的处理手段，通常有裁切、变形、旋转、调色、挖补。”</p>
+
+            <ul>
+                <li><strong>裁切：</strong>去除背景干扰。</li>
+                <li><strong>变形：</strong>校正几何畸变。</li>
+                <li><strong>旋转：</strong>调整方向。</li>
+                <li><strong>调色：</strong>统一色调，增强清晰度。</li>
+                <li><strong>挖补：</strong>修复破损、污渍。</li>
+            </ul>
+
+            <h3 id="ch3-4">3.4 拟面用途</h3>
+
+            <p class="quote-block">“半拟面的主要用途是用于手机阅读和操作形成整拟面，整拟面的主要用途是用于虚拟出版（古籍传承）。”</p>
+
+            <ul>
+                <li><strong>半拟面：</strong>手机阅读 + 操作单元（为形成整拟面服务）。</li>
+                <li><strong>整拟面：</strong>虚拟出版 + 古籍传承。</li>
+            </ul>
+
+            <h3 id="ch3-5">3.5 拟体生实体</h3>
+
+            <p class="quote-block">“对于古籍传承的出版实体，它既可以完全由整实面装订而成，也可以由整拟面打印成整实面装订而成。”</p>
+
+            <ul>
+                <li><strong>传承实体的两种来源：</strong>
+                    <ul>
+                        <li>原生整实面装订。</li>
+                        <li>整拟面打印成整实面再装订。</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <p class="quote-block">“非整实面的装订实体，不作为我们的研究对象，因为它不具有典型性。”</p>
+
+            <ul>
+                <li>排除非整实面的装订形态（合实面装订等）。但类整实面的合拟面的装订实体属于研究对象。</li>
+            </ul>
+
+            <!-- ===== 第四章 ===== -->
+            <h2 id="ch4">第四章 虚实相缀——结构的层叠与递归</h2>
+
+            <h3 id="ch4-1">4.1 缀合原理</h3>
+
+            <p class="quote-block">“实体是由整实面与合实面相缀而成，是个整实面是一个版框内容，当版框装了文字，它必然与下一面不同，上一面与下一面各分一半在一个视觉单元上拼接（锁线装）或者在一个物理实体上拼接（真正的蝴蝶装要求两张纸各一半完全背对背严丝合缝的粘成一体，在精美图册、儿童读物中最常见），两个实面不会必然形成一本书，而是依赖于合实面的存在。”</p>
+
+            <ul>
+                <li>整实面提供内容，合实面提供连接。</li>
+                <li>合实面有两种形式：
+                    <ul>
+                        <li><strong>锁线装：</strong>视觉拼接（两个不同整实面的半面在视觉上拼合成一个单元）。</li>
+                        <li><strong>真正蝴蝶装：</strong>物理拼接（两张纸各一半全幅粘合）。</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <p class="quote-block">“锁线装的定义是绝对自洽的，当来自两个不同整实面的半实面，模拟成一个整实面时，它就是锁线装摊平时的状态，它只是视觉上拼接，所以是合实面，他们不是来自同一个版框。”</p>
+
+            <ul>
+                <li>锁线装摊开时，左右两页来自不同整实面的半面。</li>
+                <li>视觉上拼接成“整”，但本质是合实面。</li>
+            </ul>
+
+            <p class="quote-block">“蝴蝶装就是真正的蝴蝶装，一切只是点粘书脊的推论都是错误的，是来自于对古人的不尊重，也是不符合常理和阅读翻页顺序的，古人纳鞋都知道浆糊要一层层粘满，订书难道蠢到不全部粘满吗？”</p>
+
+            <ul>
+                <li><strong>真正蝴蝶装：</strong>两张纸各半，背对背全幅粘合。</li>
+                <li>点粘书脊是错误推论。</li>
+            </ul>
+
+            <h3 id="ch4-2">4.2 册的层级</h3>
+
+            <p class="quote-block">“所以整实面与合实面相缀而成实体。实体以册为形，而度某书以几册论之。”</p>
+
+            <ul>
+                <li><strong>实体：</strong>由整实面与合实面相缀而成。</li>
+                <li><strong>册：</strong>实体的外在形态，是古籍的计量单位。</li>
+            </ul>
+
+            <p class="quote-block">“而册册之间以虚实面缀之，此虚实面是物理之虚面，由此而观之，整实面与合实面相缀而成实体，实体与虚体相缀而成更大的实体。而再观扫描或虚拟排印之拟面，是它能再次印制成实面的根本所在。”</p>
+
+            <ul>
+                <li>册与册的连接：通过虚体（物理虚面）缀合。</li>
+                <li>宏观结构：实面缀成册，册与册缀成更大的实体。</li>
+                <li><strong>拟体的价值：</strong>可逆性——拟面可以再次印制为实面。</li>
+            </ul>
+
+            <h3 id="ch4-3">4.3 虚体的意象化</h3>
+
+            <p class="quote-block">“虚体是意象化，为什么一本书有几册时写了第一册第二册第三册，就会自然连缀，这不是他们真的订在一起，而是靠虚体连接成更大的实体。”</p>
+
+            <ul>
+                <li><strong>虚体：</strong>认知中的意象连缀，而非物理连接。</li>
+                <li>编号（第一册、第二册）是虚体的表现形式。</li>
+            </ul>
+
+            <p class="quote-block">“书册形成了一个实体，无数同版实体构成一个更大的实体，所有版本又形成更大的实体。扫描这一动作，恰好就是意象化的具现，想复制实体于是就发明和利用工具把它具现出来，这儿更深一层的意思是一本书不只有册与册的关系，还有本体与无数个相同本体构成更大本体的关系。”</p>
+
+            <ul>
+                <li>层级扩展：册 → 书 → 同版集合 → 所有版本集合。</li>
+                <li><strong>扫描：</strong>意象化具现的手段——将复制意象转化为数字实体。</li>
+                <li><strong>本体：</strong>原初形态；<strong>相同本体：</strong>通过复制产生的副本。二者共同构成“更大的本体”。</li>
+            </ul>
+
+            <p class="quote-block">“实体由无数个相似同体通过意象这个虚体连缀构成，其中的个体一般可以由几本相贯的子实体通过子虚体连缀而成，也就是整实面与合实面成实体，实体与虚体形成新实体，新实体与新虚体构成新新实体，以至于无穷，想缀到哪层就到哪层。”</p>
+
+            <ul>
+                <li><strong>递归原则：</strong>实体 + 虚体 = 新实体，可无限递归。</li>
+                <li><strong>层级控制：</strong>想缀到哪层就到哪层，取决于研究目标。</li>
+            </ul>
+
+            <h3 id="ch4-4">4.4 虚体的表现形式</h3>
+
+            <p class="quote-block">“虚体一般表现为卷、册、典、版等形式。”</p>
+
+            <ul>
+                <li><strong>卷：</strong>内容或逻辑划分单位。</li>
+                <li><strong>册：</strong>物理聚集单位。</li>
+                <li><strong>典：</strong>文化或目录学单位。</li>
+                <li><strong>版：</strong>版本概念。</li>
+            </ul>
+
+            <p class="quote-block">“这儿的版虽然指版本，但它与版框内容是同构的，为什么？因为只有相同版框构内容建成的实体才能称为一版。”</p>
+
+            <ul>
+                <li>版本与版框同构。</li>
+                <li>版框一致 = 版本一致。</li>
+                <li>版框是版本的可视化“指纹”。</li>
+            </ul>
+
+            <!-- ===== 第五章 ===== -->
+            <h2 id="ch5">第五章 拟体组织与操作</h2>
+
+            <h3 id="ch5-1">5.1 拟体的文档化</h3>
+
+            <p class="quote-block">“拟体同样遵循拟面到拟体再到更大拟体的过程，但又不完全相同。在实际应用中，拟面多以半拟面与人交互，半拟面之间顺序相连成文档，以阅读器展现，而文档一般以pdf图像形式或纯文字无约束形式，但后者在古籍传承中不是典型，包括到今天也不是依靠点校本传承古籍，因为它信息失真太多。”</p>
+
+            <ul>
+                <li><strong>拟体的交互单位：</strong>半拟面。</li>
+                <li><strong>文档：</strong>半拟面顺序相连形成（如PDF）。</li>
+                <li><strong>非典型形式：</strong>纯文字（点校本），信息失真大，不适用于古籍传承。</li>
+            </ul>
+
+            <p class="quote-block">“拟体的主要存在形式为文档（单张图片未连成文档也不典型，因为阅读性差），而文档通过文件名的排列形成更大拟体，更可以通过文件夹名的排列形成更更大拟体。”</p>
+
+            <ul>
+                <li><strong>最小存在形式：</strong>文档（PDF/多页图像文件）。</li>
+                <li><strong>更大拟体：</strong>文档通过文件名排序聚合。</li>
+                <li><strong>更更大拟体：</strong>文件夹通过文件夹名排序聚合。</li>
+            </ul>
+
+            <h3 id="ch5-2">5.2 拟面的合成原则</h3>
+
+            <p class="quote-block">“半拟面虽是操作单元，但我们如果意图介入拟体生实体，则必须根据装订形式形成合拟面或整拟面。”</p>
+
+            <ul>
+                <li>半拟面是操作单元，但拟体生实体必须形成整拟面或合拟面。</li>
+            </ul>
+
+            <p class="quote-block">“实面的合，往往是邻近的合，而半拟面的合，则是取决于欲成实体的模样，比如多叠小册锁线精装，此时的合是首尾合，而如果是直接双面打印钉书钉钉起来的合是依次的合，还有各种模式，都以欲成实体反推而定。”</p>
+
+            <ul>
+                <li><strong>实体合：</strong>物理限制——邻近的合。</li>
+                <li><strong>拟体合：</strong>数字自由——欲成实体反推而定。</li>
+            </ul>
+
+            <h3 id="ch5-3">5.3 类蝴蝶装的优化</h3>
+
+            <p class="quote-block">“同样的，生产锁线装是当前古籍普遍的复制形式，但我认为锁线装是用户体验的倒退（不能摊平、视觉割裂、前后跳跃），而类蝴蝶装才是真正符合用户体验的，可以摊平，视觉完整，前后相贯。”</p>
+
+            <ul>
+                <li><strong>锁线装缺陷：</strong>不能摊平、视觉割裂、前后跳跃。</li>
+                <li><strong>类蝴蝶装优势：</strong>可摊平、视觉完整、前后相贯。</li>
+            </ul>
+
+            <p class="quote-block">“类蝴蝶装不是通过粘胶实现，而是锁线精装的方式，把不同半拟面拼接，用打小册子的方式，锁线精装并不是什么高深技术，而是无数个小册子的组合，最后加个包背。”</p>
+
+            <ul>
+                <li><strong>类蝴蝶装机制：</strong>分册锁线精装 + 包背拼接。</li>
+                <li>不是粘胶蝴蝶装，而是分册锁线组合。</li>
+            </ul>
+
+            <p class="quote-block">“现代常见的字典词典等大部头书籍就是采用此方式，当然也适用于普通书籍，比如很多稍微上点档次的小说出版、需要反复翻阅的资料等。”</p>
+
+            <ul>
+                <li>类蝴蝶装已被现代出版广泛验证，技术成熟。</li>
+            </ul>
+
+            <h3 id="ch5-4">5.4 拟刻：从半拟面到拟面</h3>
+
+            <p class="quote-block">“从半拟面到拟体的过程，这是具有一定挑战性的。半拟面前面已经定义过了，它的操作有裁切、旋转、缩放、变形、调色、挖补。拟面的操作有拼合、旋转、缩放、变形、调色、挖补、拟刻。我们更进一步，对拟刻做详细定义，拟刻形式有二，一是完全复制掩模，二是借用它本以显形。”</p>
+
+            <ul>
+                <li><strong>半拟面操作：</strong>裁切、旋转、缩放、变形、调色、挖补。</li>
+                <li><strong>拟面操作：</strong>拼合、旋转、缩放、变形、调色、挖补、拟刻。</li>
+                <li><strong>拟刻两种形式：</strong>
+                    <ul>
+                        <li><strong>影本：</strong>完全复制掩模。</li>
+                        <li><strong>排本：</strong>借用它本以显形。</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <p class="quote-block">“第一种是影本，第二种是排本。”</p>
+
+            <ul>
+                <li><strong>影本：</strong>核心传承路径，忠实复刻原版框与内容。</li>
+                <li><strong>排本：</strong>非典型传承路径，借它本补全。</li>
+            </ul>
+
+            <p class="quote-block">“排本也是古籍传承中的非典型形制（字体的参差、文字的疏忽、版式的不美观），影本是整个古籍传承的核心路线。”</p>
+
+            <ul>
+                <li><strong>影本：</strong>核心，追求“与原版一致”。</li>
+                <li><strong>排本：</strong>辅助，用于残损补全，但非主流。</li>
+            </ul>
+
+            <h3 id="ch5-5">5.5 传承的悖论</h3>
+
+            <p class="quote-block">“这儿有个很有意思的现象，后人不断推出某某绝对精校版，并且惊为天人，但是往往湮灭于时间的长河中，而那些不试图替代经典的默默无闻的雕刻本复影本，往往得以流传。”</p>
+
+            <ul>
+                <li><strong>精校版：</strong>试图替代经典 → 湮灭。</li>
+                <li><strong>复影本：</strong>不替代经典，只忠实呈现 → 流传。</li>
+                <li><strong>传承本质：</strong>不是“改进”，而是“延续”。</li>
+            </ul>
+
+            <!-- ===== 第六章 ===== -->
+            <h2 id="ch6">第六章 拟体的终极优势</h2>
+
+            <p class="quote-block">“作为拟体，它天然具有的优势是可以图文并存，底图与透明文字层的共一，既可阅也可查。”</p>
+
+            <ul>
+                <li><strong>底图层：</strong>原版视觉信息（影本）——可阅。</li>
+                <li><strong>透明文字层：</strong>可检索、可交互文本——可查。</li>
+                <li><strong>图文并存：</strong>形智兼备，优于纯图像或纯文本。</li>
+            </ul>
+
+            <!-- ===== 第七章 ===== -->
+            <h2 id="ch7">第七章 书籍的放射——从读到变</h2>
+
+            <p class="quote-block">“一本书它不单单只是一本书，如果是这样世界可能真的只有一本书，书是可以被推向更大的实体的，而它内蕴的每个能力释放出来就形成以它为中心的丰富多彩的世界，从读传刻用到变思新物。”</p>
+
+            <ul>
+                <li><strong>书的放射：</strong>从“读”（阅读）到“传”（保存）到“刻”（复刻）到“用”（应用），再到“变”（变形）到“思”（思考）到“新物”（创造）。</li>
+                <li>一本书可辐射出一个以它为中心的知识世界。</li>
+            </ul>
+
+            <p class="quote-block">“当书版中的字被一个个雕刻或拟刻出来，这本书就成了演书的道场。”</p>
+
+            <ul>
+                <li><strong>演书的道场：</strong>当书版中的字被（拟）雕刻出来，这本书便成为认知与创造的空间。</li>
+            </ul>
+
+            <!-- ===== 第八章 ===== -->
+            <h2 id="ch8">第八章 天朗——天地复位</h2>
+
+            <p class="quote-block">“当我们出面对一个极为具体的运用，切除翻页堆叠边缘时，层叠区域是在印刷中心，按理说印刷中心在中间怎么会形成层叠，这恰好是锁线装这个傻逼发明，把原本在内的印刷中心硬生生干到了外，这就是倒反天罡天地易位，于是天的刚健变成了天地否，他被污染了，与无数的印刷中心杂合成了浊天，而我们的目标就是让天朗，还世界以本原。”</p>
+
+            <ul>
+                <li><strong>锁线装的本质：</strong>倒反天罡，天地易位。</li>
+                <li><strong>浊天：</strong>印刷中心被外折，与无数页堆叠杂合，被污染。</li>
+                <li><strong>天朗：</strong>从浊天中提取纯净印刷中心，让天朗朗，还世界以本原。</li>
+            </ul>
+
+            <p class="quote-block">“此时不需要判断左右，哪儿有层叠就切哪儿，层叠必然是印刷中心，从层叠看图，会发现离层叠很远的另一侧是原始的版框竖线，对整体对比度进行增加，深黑堆叠块即为需切除的堆叠，也可以重构出完整版框面从而更容易寻找到印刷中心。”</p>
+
+            <ul>
+                <li><strong>天朗操作的核心法则：</strong>
+                    <ul>
+                        <li><strong>不判断左右：</strong>层叠位置 = 印刷中心位置。</li>
+                        <li><strong>对侧识别：</strong>远离层叠的另一侧是原始版框竖线。</li>
+                        <li><strong>对比增强：</strong>突出深黑堆叠块，即为需切除的层叠。</li>
+                        <li><strong>重构完整版框：</strong>更容易定位印刷中心。</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <!-- ===== 总结 ===== -->
+            <h2 id="summary">总结：三体缀合，万变归宗</h2>
+
+            <p>本理论体系以实体、拟体、虚体三体为基础，以印面、订面、实面、拟面、半面为单元，以版框为约束，以缀合为方法，以影本为核心，以天朗为手段，建立起一套从物理到认知再到数字的完整递归框架。</p>
+
+            <p>其核心要义可概括为：</p>
+
+            <p style="text-align:center; font-size:1.05rem; margin:1rem 0; letter-spacing:2px; color:var(--zhu-red);">
+                <strong>版框是版本的指纹，影本是传承的基石，天朗是复位的手段，虚体是连缀的纽带。</strong>
+            </p>
+
+            <p style="text-align:center; font-size:1.05rem; margin:0.5rem 0 1.5rem; letter-spacing:2px; color:var(--zhu-red);">
+                <strong>实体不可拆，拟体可反复，虚体可无穷。</strong>
+            </p>
+
+            <p style="margin-top:1.2rem; color:var(--ink-light); opacity:0.6; letter-spacing:2px;">一本书不被读到老，而是被演到道。</p>
+
+        </div>
+
+
+
+        <!-- ===== 系列底部导航 ===== -->
+        <div class="series-nav">
+            <a href="1.道论.html" class="prev">‹ 道论</a>
+            <a href="./index.html" class="index-link">返回目录</a>
+            <a href="3.拟纸显真.html" class="next">拟纸显真 ›</a>
+        </div>
+
+        <!-- ===== 底部版权 ===== -->
+        <div class="footer-note">铭心阁 · 简帙工器谱</div>
+    </div>
+
+    <!-- ===== 返回顶部 ===== -->
+    <a href="#" id="backToTop" class="back-to-top-ball" aria-label="返回顶部">^</a>
+
+    <script>
+        document.getElementById('backToTop').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+
+</body>
+</html>
