@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>字库制作 · 简帙 · 铭心阁</title>
+    <style>
+        /* ===== 全局 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --primary: #2c6e2f;
+            --primary-light: #4a8a4d;
+            --primary-dark: #1a4a1c;
+            --bg-light: #f9fafb;
+            --card-bg: #ffffff;
+            --border-color: #eaecef;
+            --text-dark: #2c3e2c;
+            --text-muted: #8a9b8a;
+            --radius: 8px;
+            --shadow: 0 2px 12px rgba(44, 46, 44, 0.06);
+            --transition: 0.25s ease;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: "Noto Serif SC", "思源宋体", "Source Han Serif SC", "华文宋体", serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.8;
+            padding: 2rem 1rem;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 2rem 2.5rem 3rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        /* ===== 顶部 ===== */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .top-bar .brand {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            letter-spacing: 2px;
+        }
+        .top-bar .brand .seal {
+            font-size: 1.6rem;
+            font-family: '华文篆书', '方正小篆体', '篆书', serif;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            border-radius: 4px;
+            padding: 0 0.3rem;
+            line-height: 1.4;
+            transform: rotate(-2deg);
+            background: rgba(44, 110, 47, 0.04);
+        }
+        .top-bar .home-link {
+            font-size: 0.9rem;
+            color: var(--primary);
+            text-decoration: none;
+            border-bottom: 1px solid #c8d6c8;
+            padding-bottom: 2px;
+        }
+        .top-bar .home-link:hover {
+            color: var(--primary-dark);
+            border-bottom-color: var(--primary);
+        }
+
+        /* ===== 面包屑 ===== */
+        .breadcrumb {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            padding: 0.4rem 0.8rem;
+            background: var(--bg-light);
+            border-radius: 20px;
+            display: inline-block;
+        }
+        .breadcrumb a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        .breadcrumb span {
+            margin: 0 4px;
+        }
+
+        /* ===== 标题 ===== */
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            letter-spacing: 4px;
+            margin-bottom: 0.2rem;
+        }
+        h1 .sub {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            margin-left: 12px;
+        }
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 1.8rem;
+            border-left: 3px solid var(--primary);
+            padding-left: 1rem;
+            opacity: 0.8;
+        }
+
+        /* ===== 目录列表 ===== */
+        .catalog-list {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0 1.5rem;
+        }
+        .catalog-list li {
+            padding: 0.5rem 0.8rem;
+            border-bottom: 1px solid #f0f2f0;
+            display: flex;
+            align-items: baseline;
+            gap: 0.8rem;
+            transition: var(--transition);
+            border-radius: 4px;
+        }
+        .catalog-list li:hover {
+            background: #f6f8f6;
+        }
+        .catalog-list li:last-child {
+            border-bottom: none;
+        }
+        .catalog-list .index {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            min-width: 2.4rem;
+            font-feature-settings: "tnum";
+            font-variant-numeric: tabular-nums;
+        }
+        .catalog-list a {
+            color: var(--primary);
+            text-decoration: none;
+            border-bottom: 1px dotted #c8d6c8;
+            transition: 0.2s;
+            flex: 1;
+        }
+        .catalog-list a:hover {
+            border-bottom-style: solid;
+            color: var(--primary-dark);
+        }
+        .catalog-list .desc {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-left: auto;
+            white-space: nowrap;
+        }
+        @media (max-width: 600px) {
+            .catalog-list li {
+                flex-wrap: wrap;
+                gap: 0.2rem;
+                padding: 0.6rem 0.4rem;
+            }
+            .catalog-list .desc {
+                margin-left: 0;
+                width: 100%;
+                padding-left: 2.4rem;
+                white-space: normal;
+            }
+        }
+
+        /* ===== 工具下载（系列目录） ===== */
+        .tool-download {
+            margin: 1.8rem 0 0.5rem;
+            padding: 1rem 1.2rem;
+            background: var(--bg-light);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: space-between;
+        }
+        .tool-download .info {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.9rem;
+            color: var(--text-dark);
+        }
+        .tool-download .info .icon {
+            font-size: 1.4rem;
+        }
+        .tool-download .btn-group {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+        .tool-download .btn-sm {
+            display: inline-block;
+            background: var(--primary);
+            color: #fff;
+            padding: 0.3rem 1.2rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            border: 1px solid var(--primary);
+            transition: var(--transition);
+        }
+        .tool-download .btn-sm:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+        .tool-download .btn-sm-outline {
+            background: transparent;
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+        .tool-download .btn-sm-outline:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+        @media (max-width: 480px) {
+            .tool-download {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.8rem;
+            }
+            .tool-download .btn-group {
+                justify-content: center;
+            }
+        }
+
+        /* ===== 底部版权 ===== */
+        .footer-note {
+            margin-top: 2.5rem;
+            font-size: 0.8rem;
+            text-align: center;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            padding-top: 1.2rem;
+            letter-spacing: 1px;
+        }
+
+        /* ===== 返回顶部 ===== */
+        .back-to-top-ball {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(44, 110, 47, 0.08);
+            border: 1px solid rgba(44, 110, 47, 0.15);
+            color: var(--primary);
+            font-size: 1.6rem;
+            line-height: 44px;
+            text-align: center;
+            text-decoration: none;
+            transition: var(--transition);
+            backdrop-filter: blur(4px);
+            box-shadow: 0 2px 12px rgba(44, 46, 44, 0.06);
+            font-family: serif;
+        }
+        .back-to-top-ball:hover {
+            background: rgba(44, 110, 47, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(44, 110, 47, 0.10);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1.2rem 1rem 2rem;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+            h1 .sub {
+                display: block;
+                margin-left: 0;
+                font-size: 0.85rem;
+            }
+            .top-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- ===== 顶部栏 ===== -->
+        <div class="top-bar">
+            <div class="brand">
+                <span class="seal">简</span>
+                简帙
+                <span style="font-weight:400; font-size:0.8rem; color:var(--text-muted); letter-spacing:1px;">· 工器谱</span>
+            </div>
+            <a href="../" class="home-link">← 铭心阁</a>
+        </div>
+
+        <!-- ===== 面包屑 ===== -->
+        <div class="breadcrumb">
+            <a href="../">简帙</a> <span>›</span> 字库制作
+        </div>
+
+        <!-- ===== 标题 ===== -->
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:0.2rem;">
+            <span style="font-size:2rem;">🖋</span>
+            <h1 style="margin-bottom:0;">字库制作 <span class="sub">系列</span></h1>
+        </div>
+        <div class="subtitle">字体源流 · 字库建构 · 共 6 篇</div>
+
+        <!-- ===== 文章列表 ===== -->
+        <ul class="catalog-list">
+            <li><span class="index">01</span><a href="01-字库概论.html">字库概论：从刻版到数字</a><span class="desc">总纲 · 字库的演变</span></li>
+            <li><span class="index">02</span><a href="02-宋体源流.html">宋体源流：雕版与印刷字体</a><span class="desc">宋体 · 仿宋 · 楷体</span></li>
+            <li><span class="index">03</span><a href="03-楷法精要.html">楷法精要：手写与刻本的融合</a><span class="desc">楷体 · 行楷 · 书写性</span></li>
+            <li><span class="index">04</span><a href="04-字库建构.html">字库建构：选字与排布之法</a><span class="desc">字表 · 字重 · 字距</span></li>
+            <li><span class="index">05</span><a href="05-数字字体.html">数字字体：从轮廓到渲染</a><span class="desc">矢量 · 栅格 · 渲染</span></li>
+            <li><span class="index">06</span><a href="06-字库审美.html">字库审美：风格与实用性</a><span class="desc">审美 · 识别 · 阅读</span></li>
+        </ul>
+
+        <!-- ===== 工具下载 ===== -->
+        <div class="tool-download">
+            <div class="info">
+                <span class="icon">🖋</span>
+                <span><strong>字库制作</strong> 工具下载</span>
+            </div>
+            <div class="btn-group">
+                <a href="https://pan.quark.cn/s/xxxxxxxx" target="_blank" class="btn-sm" rel="noopener noreferrer">夸克网盘</a>
+                <a href="https://pan.baidu.com/s/xxxxxxxxxxxxxxxx" target="_blank" class="btn-sm btn-sm-outline" rel="noopener noreferrer">百度网盘</a>
+            </div>
+        </div>
+
+        <!-- ===== 返回总览 ===== -->
+        <div style="margin-top:0.8rem; font-size:0.85rem; color:var(--text-muted);">
+            <a href="../" style="color:var(--primary); text-decoration:none; border-bottom:1px dotted #c8d6c8;">← 返回总览</a>
+        </div>
+
+        <!-- ===== 底部版权 ===== -->
+        <div class="footer-note">铭心阁 · 简帙工器谱 · 古籍解读与知识重构</div>
+    </div>
+
+    <!-- ===== 返回顶部 ===== -->
+    <a href="#" id="backToTop" class="back-to-top-ball" aria-label="返回顶部">^</a>
+
+    <script>
+        document.getElementById('backToTop').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+
+</body>
+</html>
