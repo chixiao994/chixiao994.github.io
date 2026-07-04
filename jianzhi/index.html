@@ -45,7 +45,7 @@
             border: 1px solid var(--border-light);
         }
 
-        /* ===== 顶部（居中） ===== */
+        /* ===== 顶部（居中，黑体加粗） ===== */
         .top-bar {
             display: flex;
             align-items: center;
@@ -58,10 +58,11 @@
         }
         .top-bar .brand {
             font-size: 1.4rem;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--ink);
             letter-spacing: 4px;
             text-align: center;
+            font-family: "Noto Sans SC", "微软雅黑", "PingFang SC", sans-serif;
         }
         .top-bar .brand .sub {
             font-weight: 400;
@@ -70,6 +71,7 @@
             letter-spacing: 2px;
             opacity: 0.6;
             margin-left: 6px;
+            font-family: "Noto Serif SC", "思源宋体", serif;
         }
 
         /* ===== 序言 ===== */
@@ -85,7 +87,7 @@
             opacity: 0.8;
         }
 
-        /* ===== 独立下载区（带框，无图标） ===== */
+        /* ===== 独立下载区（带框，无图标，文字不加粗） ===== */
         .download-section {
             margin: 0 0 1.2rem 0;
             padding: 1.2rem 1.5rem;
@@ -106,9 +108,11 @@
         .download-section .info .label {
             font-size: 0.9rem;
             color: var(--ink);
+            font-weight: 400;
         }
         .download-section .info .label strong {
             color: var(--zhu-red);
+            font-weight: 600;
         }
         .download-section .info .version {
             font-size: 0.75rem;
@@ -138,15 +142,6 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 16px rgba(139, 26, 26, 0.15);
         }
-        .download-section .btn-outline {
-            background: transparent;
-            color: var(--zhu-red);
-            border-color: var(--zhu-red);
-        }
-        .download-section .btn-outline:hover {
-            background: var(--zhu-red);
-            color: #fff;
-        }
         @media (max-width: 600px) {
             .download-section {
                 flex-direction: column;
@@ -162,13 +157,13 @@
             }
         }
 
-        /* ===== 主程序卡片（标题居中） ===== */
+        /* ===== 主程序卡片（标题居中，描述左对齐，无篇数） ===== */
         .main-card {
             display: block;
             background: var(--paper);
             border-radius: var(--radius);
             padding: 1.8rem 2rem 1.5rem;
-            margin: 0 0 1.5rem 0;
+            margin: 0 0 2.5rem 0;
             border: 1px solid var(--border-light);
             transition: var(--transition);
             text-decoration: none;
@@ -196,22 +191,13 @@
             border: none;
             margin: 0;
         }
-        .main-card .card-header .badge {
-            font-size: 0.7rem;
-            color: var(--zhu-red);
-            border: 1px solid var(--gold);
-            border-radius: 20px;
-            padding: 0.05rem 0.7rem;
-            opacity: 0.5;
-            letter-spacing: 1px;
-        }
         .main-card .card-desc {
             font-size: 0.9rem;
             color: var(--ink-light);
             margin-top: 0.3rem;
             line-height: 1.8;
             opacity: 0.7;
-            text-align: center;
+            text-align: left;
         }
 
         /* ===== 四艺卡片（无篇数徽标） ===== */
@@ -250,6 +236,13 @@
             margin-top: 0.3rem;
             line-height: 1.6;
             opacity: 0.7;
+        }
+
+        /* ===== 分隔线 ===== */
+        .divider {
+            margin: 0 0 1.2rem 0;
+            border-top: 1px solid var(--border-light);
+            opacity: 0.4;
         }
 
         /* ===== 底部版权 ===== */
@@ -325,7 +318,7 @@
 <body>
 
     <div class="container">
-        <!-- ===== 顶部栏（居中） ===== -->
+        <!-- ===== 顶部栏（居中，黑体加粗） ===== -->
         <div class="top-bar">
             <div class="brand">
                 简帙<span class="sub">· 工器谱</span>
@@ -337,7 +330,7 @@
             <p>简帙者，集工器之理论，汇四艺之精要。字库以立其本，切拼以成其形，重排以调其气，阅读以通其神。四者相承，乃为完璧。兹录诸篇，以备览者参详。</p>
         </div>
 
-        <!-- ===== 独立下载区（带框，无图标，位于卡片上方） ===== -->
+        <!-- ===== 独立下载区（无图标，文字不加粗，按钮统一样式） ===== -->
         <div class="download-section">
             <div class="info">
                 <span class="label"><strong>简帙古籍整理系统</strong> 下载</span>
@@ -345,20 +338,22 @@
             </div>
             <div class="btn-group">
                 <a href="https://pan.baidu.com/s/1HuW0NXGxccT-LhJ9cse60Q?pwd=hqrt" target="_blank" class="btn" rel="noopener noreferrer">百度网盘</a>
-                <a href="https://pan.quark.cn/s/acd54713f4d5" target="_blank" class="btn btn-outline" rel="noopener noreferrer">夸克网盘</a>
+                <a href="https://pan.quark.cn/s/acd54713f4d5" target="_blank" class="btn" rel="noopener noreferrer">夸克网盘</a>
             </div>
         </div>
 
-        <!-- ===== 简帙古籍整理系统（主程序卡片，标题居中） ===== -->
+        <!-- ===== 简帙古籍整理系统卡片（无篇数，描述左对齐） ===== -->
         <a href="jianzhi/" class="main-card" id="mainCard">
             <div class="card-header">
                 <h2>简帙古籍整理系统</h2>
-                <span class="badge">3 篇</span>
             </div>
             <div class="card-desc">
                 集成字库制作、双页切拼、制版重排、文档阅读四大工器，助力古籍数字化整理与学术研究。
             </div>
         </a>
+
+        <!-- ===== 分隔线（系统卡片与子卡片分开） ===== -->
+        <div class="divider"></div>
 
         <!-- ===== 四艺入口（无篇数徽标） ===== -->
         <div class="grid-4">
