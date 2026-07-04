@@ -40,6 +40,8 @@
       margin-bottom: 0.6rem;
       line-height: 1.15;
       text-shadow: 0 2px 4px rgba(44, 31, 21, 0.06);
+      /* 篆体：优先使用系统篆书字体，若无则回退至楷体、宋体 */
+      font-family: '华文篆书', '方正小篆体', 'STZhongsong', '汉仪篆书', '篆体', '华文楷体', 'KaiTi', '宋体', serif;
     }
 
     /* ===== 第二层 · 序言 ===== */
@@ -83,6 +85,7 @@
                   inset 0 1px 0 rgba(255, 248, 240, 0.5);
       border: none;
       transform: translateY(0);
+      font-family: '华文楷体', 'KaiTi', '宋体', serif;
     }
 
     .item:hover {
@@ -148,7 +151,7 @@
 <body>
 <div class="scroll">
 
-  <!-- 第一层 · 标题 -->
+  <!-- 第一层 · 标题（篆体） -->
   <div class="header">
     <h1>铭心阁</h1>
   </div>
