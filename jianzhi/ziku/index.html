@@ -12,16 +12,16 @@
             box-sizing: border-box;
         }
         :root {
-            --primary: #2c6e2f;
-            --primary-light: #4a8a4d;
-            --primary-dark: #1a4a1c;
-            --bg-light: #f9fafb;
-            --card-bg: #ffffff;
-            --border-color: #eaecef;
-            --text-dark: #2c3e2c;
-            --text-muted: #8a9b8a;
-            --radius: 8px;
-            --shadow: 0 2px 12px rgba(44, 46, 44, 0.06);
+            --paper: #f5f0e8;
+            --paper-white: #fcf9f5;
+            --ink: #2c1810;
+            --ink-light: #5a3f36;
+            --zhu-red: #8b1a1a;
+            --zhu-red-light: #b33a3a;
+            --gold: #c9a96e;
+            --border-light: #e8dfd6;
+            --radius: 6px;
+            --shadow: 0 2px 16px rgba(44, 24, 16, 0.08);
             --transition: 0.25s ease;
         }
         html {
@@ -29,8 +29,8 @@
         }
         body {
             font-family: "Noto Serif SC", "思源宋体", "Source Han Serif SC", "华文宋体", serif;
-            background: var(--bg-light);
-            color: var(--text-dark);
+            background: var(--paper);
+            color: var(--ink);
             line-height: 1.8;
             padding: 2rem 1rem;
             min-height: 100vh;
@@ -38,11 +38,11 @@
         .container {
             max-width: 960px;
             margin: 0 auto;
-            background: var(--card-bg);
+            background: var(--paper-white);
             padding: 2rem 2.5rem 3rem;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--border-light);
         }
 
         /* ===== 顶部 ===== */
@@ -52,7 +52,7 @@
             justify-content: space-between;
             margin-bottom: 2rem;
             padding-bottom: 0.8rem;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-light);
             flex-wrap: wrap;
             gap: 0.8rem;
         }
@@ -62,47 +62,49 @@
             gap: 8px;
             font-size: 1.2rem;
             font-weight: 600;
-            color: var(--primary-dark);
+            color: var(--ink);
             letter-spacing: 2px;
         }
         .top-bar .brand .seal {
             font-size: 1.6rem;
             font-family: '华文篆书', '方正小篆体', '篆书', serif;
-            color: var(--primary);
-            border: 2px solid var(--primary);
+            color: var(--zhu-red);
+            border: 2px solid var(--zhu-red);
             border-radius: 4px;
             padding: 0 0.3rem;
             line-height: 1.4;
             transform: rotate(-2deg);
-            background: rgba(44, 110, 47, 0.04);
+            background: rgba(139, 26, 26, 0.04);
         }
         .top-bar .home-link {
             font-size: 0.9rem;
-            color: var(--primary);
+            color: var(--ink-light);
             text-decoration: none;
-            border-bottom: 1px solid #c8d6c8;
+            border-bottom: 1px solid var(--border-light);
             padding-bottom: 2px;
         }
         .top-bar .home-link:hover {
-            color: var(--primary-dark);
-            border-bottom-color: var(--primary);
+            color: var(--zhu-red);
+            border-bottom-color: var(--zhu-red);
         }
 
         /* ===== 面包屑 ===== */
         .breadcrumb {
             font-size: 0.85rem;
-            color: var(--text-muted);
+            color: var(--ink-light);
             margin-bottom: 1.5rem;
             padding: 0.4rem 0.8rem;
-            background: var(--bg-light);
+            background: var(--paper);
             border-radius: 20px;
             display: inline-block;
+            opacity: 0.7;
         }
         .breadcrumb a {
-            color: var(--primary);
+            color: var(--ink-light);
             text-decoration: none;
         }
         .breadcrumb a:hover {
+            color: var(--zhu-red);
             text-decoration: underline;
         }
         .breadcrumb span {
@@ -113,24 +115,25 @@
         h1 {
             font-size: 2rem;
             font-weight: 700;
-            color: var(--primary-dark);
-            letter-spacing: 4px;
+            color: var(--ink);
+            letter-spacing: 6px;
             margin-bottom: 0.2rem;
         }
         h1 .sub {
             font-size: 1rem;
             font-weight: 400;
-            color: var(--text-muted);
-            letter-spacing: 2px;
+            color: var(--ink-light);
+            letter-spacing: 3px;
             margin-left: 12px;
+            opacity: 0.6;
         }
         .subtitle {
-            color: var(--text-muted);
+            color: var(--ink-light);
             font-size: 0.95rem;
             margin-bottom: 1.8rem;
-            border-left: 3px solid var(--primary);
+            border-left: 3px solid var(--zhu-red);
             padding-left: 1rem;
-            opacity: 0.8;
+            opacity: 0.7;
         }
 
         /* ===== 目录列表 ===== */
@@ -141,7 +144,7 @@
         }
         .catalog-list li {
             padding: 0.5rem 0.8rem;
-            border-bottom: 1px solid #f0f2f0;
+            border-bottom: 1px solid var(--border-light);
             display: flex;
             align-items: baseline;
             gap: 0.8rem;
@@ -149,34 +152,37 @@
             border-radius: 4px;
         }
         .catalog-list li:hover {
-            background: #f6f8f6;
+            background: rgba(245, 240, 232, 0.4);
         }
         .catalog-list li:last-child {
             border-bottom: none;
         }
         .catalog-list .index {
-            color: var(--text-muted);
+            color: var(--ink-light);
             font-size: 0.8rem;
             min-width: 2.4rem;
             font-feature-settings: "tnum";
             font-variant-numeric: tabular-nums;
+            opacity: 0.6;
         }
         .catalog-list a {
-            color: var(--primary);
+            color: var(--ink);
             text-decoration: none;
-            border-bottom: 1px dotted #c8d6c8;
+            border-bottom: 1px dotted var(--border-light);
             transition: 0.2s;
             flex: 1;
         }
         .catalog-list a:hover {
             border-bottom-style: solid;
-            color: var(--primary-dark);
+            color: var(--zhu-red);
+            border-bottom-color: var(--zhu-red);
         }
         .catalog-list .desc {
-            color: var(--text-muted);
+            color: var(--ink-light);
             font-size: 0.8rem;
             margin-left: auto;
             white-space: nowrap;
+            opacity: 0.6;
         }
         @media (max-width: 600px) {
             .catalog-list li {
@@ -192,13 +198,13 @@
             }
         }
 
-        /* ===== 工具下载（系列目录） ===== */
+        /* ===== 工具下载 ===== */
         .tool-download {
             margin: 1.8rem 0 0.5rem;
             padding: 1rem 1.2rem;
-            background: var(--bg-light);
+            background: var(--paper);
             border-radius: var(--radius);
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--border-light);
             display: flex;
             align-items: center;
             flex-wrap: wrap;
@@ -210,10 +216,10 @@
             align-items: center;
             gap: 0.6rem;
             font-size: 0.9rem;
-            color: var(--text-dark);
+            color: var(--ink);
         }
         .tool-download .info .icon {
-            font-size: 1.4rem;
+            font-size: 1.2rem;
         }
         .tool-download .btn-group {
             display: flex;
@@ -222,26 +228,27 @@
         }
         .tool-download .btn-sm {
             display: inline-block;
-            background: var(--primary);
+            background: var(--zhu-red);
             color: #fff;
             padding: 0.3rem 1.2rem;
             border-radius: 40px;
             text-decoration: none;
             font-size: 0.8rem;
-            border: 1px solid var(--primary);
+            border: 1px solid var(--zhu-red);
             transition: var(--transition);
+            letter-spacing: 0.5px;
         }
         .tool-download .btn-sm:hover {
-            background: var(--primary-dark);
+            background: var(--zhu-red-light);
             transform: translateY(-1px);
         }
         .tool-download .btn-sm-outline {
             background: transparent;
-            color: var(--primary);
-            border-color: var(--primary);
+            color: var(--zhu-red);
+            border-color: var(--zhu-red);
         }
         .tool-download .btn-sm-outline:hover {
-            background: var(--primary);
+            background: var(--zhu-red);
             color: #fff;
         }
         @media (max-width: 480px) {
@@ -255,15 +262,29 @@
             }
         }
 
-        /* ===== 底部版权 ===== */
+        /* ===== 底部 ===== */
+        .back-link {
+            margin-top: 0.8rem;
+            font-size: 0.85rem;
+            color: var(--ink-light);
+        }
+        .back-link a {
+            color: var(--zhu-red);
+            text-decoration: none;
+            border-bottom: 1px dotted var(--border-light);
+        }
+        .back-link a:hover {
+            border-bottom-style: solid;
+        }
         .footer-note {
             margin-top: 2.5rem;
             font-size: 0.8rem;
             text-align: center;
-            color: var(--text-muted);
-            border-top: 1px solid var(--border-color);
+            color: var(--ink-light);
+            border-top: 1px solid var(--border-light);
             padding-top: 1.2rem;
             letter-spacing: 1px;
+            opacity: 0.5;
         }
 
         /* ===== 返回顶部 ===== */
@@ -274,22 +295,22 @@
             width: 44px;
             height: 44px;
             border-radius: 50%;
-            background: rgba(44, 110, 47, 0.08);
-            border: 1px solid rgba(44, 110, 47, 0.15);
-            color: var(--primary);
-            font-size: 1.6rem;
+            background: rgba(44, 24, 16, 0.04);
+            border: 1px solid rgba(44, 24, 16, 0.10);
+            color: var(--ink-light);
+            font-size: 1.4rem;
             line-height: 44px;
             text-align: center;
             text-decoration: none;
             transition: var(--transition);
             backdrop-filter: blur(4px);
-            box-shadow: 0 2px 12px rgba(44, 46, 44, 0.06);
+            box-shadow: 0 2px 12px rgba(44, 24, 16, 0.04);
             font-family: serif;
         }
         .back-to-top-ball:hover {
-            background: rgba(44, 110, 47, 0.15);
+            background: rgba(44, 24, 16, 0.08);
             transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(44, 110, 47, 0.10);
+            color: var(--zhu-red);
         }
 
         @media (max-width: 600px) {
@@ -298,6 +319,7 @@
             }
             h1 {
                 font-size: 1.5rem;
+                letter-spacing: 4px;
             }
             h1 .sub {
                 display: block;
@@ -319,7 +341,7 @@
             <div class="brand">
                 <span class="seal">简</span>
                 简帙
-                <span style="font-weight:400; font-size:0.8rem; color:var(--text-muted); letter-spacing:1px;">· 工器谱</span>
+                <span style="font-weight:400; font-size:0.8rem; color:var(--ink-light); letter-spacing:1px; opacity:0.6;">· 工器谱</span>
             </div>
             <a href="../" class="home-link">← 铭心阁</a>
         </div>
@@ -330,10 +352,7 @@
         </div>
 
         <!-- ===== 标题 ===== -->
-        <div style="display:flex; align-items:center; gap:12px; margin-bottom:0.2rem;">
-            <span style="font-size:2rem;">🖋</span>
-            <h1 style="margin-bottom:0;">字库制作 <span class="sub">系列</span></h1>
-        </div>
+        <h1>字库制作 <span class="sub">系列</span></h1>
         <div class="subtitle">字体源流 · 字库建构 · 共 6 篇</div>
 
         <!-- ===== 文章列表 ===== -->
@@ -359,8 +378,8 @@
         </div>
 
         <!-- ===== 返回总览 ===== -->
-        <div style="margin-top:0.8rem; font-size:0.85rem; color:var(--text-muted);">
-            <a href="../" style="color:var(--primary); text-decoration:none; border-bottom:1px dotted #c8d6c8;">← 返回总览</a>
+        <div class="back-link">
+            <a href="../">← 返回总览</a>
         </div>
 
         <!-- ===== 底部版权 ===== -->
