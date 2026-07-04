@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>分合之道 · 双页切拼 · 简帙</title>
+    <style>
+        /* ===== 全局 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --paper: #f5f0e8;
+            --paper-white: #fcf9f5;
+            --ink: #2c1810;
+            --ink-light: #5a3f36;
+            --zhu-red: #8b1a1a;
+            --zhu-red-light: #b33a3a;
+            --gold: #c9a96e;
+            --border-light: #e8dfd6;
+            --radius: 6px;
+            --shadow: 0 2px 16px rgba(44, 24, 16, 0.08);
+            --transition: 0.25s ease;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: "Noto Serif SC", "思源宋体", "Source Han Serif SC", "华文宋体", serif;
+            background: var(--paper);
+            color: var(--ink);
+            line-height: 1.8;
+            padding: 2rem 1rem;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: var(--paper-white);
+            padding: 2rem 2.5rem 3rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-light);
+        }
+
+        /* ===== 顶部（无印章、无返回） ===== */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border-light);
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .top-bar .brand {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--ink);
+            letter-spacing: 4px;
+        }
+        .top-bar .brand .sub {
+            font-weight: 400;
+            font-size: 0.9rem;
+            color: var(--ink-light);
+            letter-spacing: 2px;
+            opacity: 0.6;
+            margin-left: 6px;
+        }
+
+        /* ===== 面包屑 ===== */
+        .breadcrumb {
+            font-size: 0.85rem;
+            color: var(--ink-light);
+            margin-bottom: 1.5rem;
+            padding: 0.4rem 0.8rem;
+            background: var(--paper);
+            border-radius: 20px;
+            display: inline-block;
+            opacity: 0.7;
+        }
+        .breadcrumb a {
+            color: var(--ink-light);
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: var(--zhu-red);
+            text-decoration: underline;
+        }
+        .breadcrumb span {
+            margin: 0 4px;
+        }
+
+        /* ===== 标题 ===== */
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 0.2rem;
+            flex-wrap: wrap;
+        }
+        .article-meta .series-tag {
+            font-size: 0.85rem;
+            color: var(--ink-light);
+            background: var(--paper);
+            padding: 0.1rem 0.8rem;
+            border-radius: 12px;
+            opacity: 0.7;
+        }
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--ink);
+            letter-spacing: 4px;
+            margin-bottom: 0.2rem;
+            line-height: 1.4;
+        }
+        .subtitle {
+            color: var(--ink-light);
+            font-size: 0.95rem;
+            margin-bottom: 1.8rem;
+            border-left: 3px solid var(--zhu-red);
+            padding-left: 1rem;
+            opacity: 0.7;
+        }
+
+        /* ===== 章内目录 ===== */
+        .toc {
+            background: var(--paper);
+            border-left: 4px solid var(--zhu-red);
+            padding: 0.8rem 1.2rem;
+            margin: 1.2rem 0 1.8rem;
+            border-radius: var(--radius);
+        }
+        .toc h3 {
+            font-size: 1rem;
+            margin: 0 0 0.4rem 0;
+            color: var(--ink);
+            letter-spacing: 2px;
+        }
+        .toc ul {
+            margin: 0;
+            padding-left: 1.2rem;
+        }
+        .toc li {
+            margin: 0.2rem 0;
+        }
+        .toc a {
+            text-decoration: none;
+            color: var(--ink);
+            border-bottom: 1px dotted var(--border-light);
+            transition: 0.2s;
+        }
+        .toc a:hover {
+            border-bottom-style: solid;
+            color: var(--zhu-red);
+            border-bottom-color: var(--zhu-red);
+        }
+        .toc ul ul {
+            padding-left: 1.5rem;
+        }
+
+        /* ===== 正文 ===== */
+        .article-body p {
+            text-indent: 2em;
+            margin-bottom: 1rem;
+            line-height: 2.2;
+        }
+        .article-body h2 {
+            font-size: 1.4rem;
+            color: var(--ink);
+            margin: 2rem 0 1rem 0;
+            padding-bottom: 0.3rem;
+            border-bottom: 2px solid var(--border-light);
+            letter-spacing: 3px;
+        }
+        .article-body h3 {
+            font-size: 1.1rem;
+            color: var(--ink);
+            margin-top: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .article-body h4 {
+            font-size: 1rem;
+            color: var(--ink);
+            margin-top: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            opacity: 0.8;
+        }
+        .article-body strong {
+            color: var(--zhu-red);
+            font-weight: 600;
+        }
+        .quote-block {
+            display: block;
+            margin: 1.2rem 0;
+            padding: 0.8rem 1.2rem;
+            font-style: italic;
+            color: var(--ink);
+            background: var(--paper);
+            border-radius: var(--radius);
+            border-left: 3px solid var(--gold);
+            line-height: 2.2;
+            text-align: center;
+            font-size: 1.05rem;
+            letter-spacing: 0.04em;
+        }
+        .inline-quote {
+            color: var(--ink);
+            font-style: italic;
+            background: var(--paper);
+            padding: 0.1rem 0.4rem;
+            border-radius: 3px;
+            white-space: nowrap;
+        }
+
+        /* ===== 单篇文章下载 ===== */
+        .article-download {
+            margin-top: 2rem;
+            padding: 1rem 1.2rem;
+            background: var(--paper);
+            border-radius: var(--radius);
+            border-left: 4px solid var(--zhu-red);
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: space-between;
+        }
+        .article-download .info {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.9rem;
+            color: var(--ink);
+        }
+        .article-download .btn-group {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+        .article-download .btn-sm {
+            display: inline-block;
+            background: var(--zhu-red);
+            color: #fff;
+            padding: 0.3rem 1.2rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            border: 1px solid var(--zhu-red);
+            transition: var(--transition);
+            letter-spacing: 0.5px;
+        }
+        .article-download .btn-sm:hover {
+            background: var(--zhu-red-light);
+            transform: translateY(-1px);
+        }
+        .article-download .btn-sm-outline {
+            background: transparent;
+            color: var(--zhu-red);
+            border-color: var(--zhu-red);
+        }
+        .article-download .btn-sm-outline:hover {
+            background: var(--zhu-red);
+            color: #fff;
+        }
+
+        /* ===== 系列底部导航 ===== */
+        .series-nav {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2.5rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid var(--border-light);
+            flex-wrap: wrap;
+        }
+        .series-nav a {
+            display: inline-block;
+            background: var(--paper);
+            color: var(--ink);
+            padding: 0.4rem 1.2rem;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            border: 1px solid var(--border-light);
+            transition: 0.2s;
+        }
+        .series-nav a:hover {
+            background: #f0ebe2;
+            border-color: var(--gold);
+            color: var(--zhu-red);
+        }
+        .series-nav .prev {
+            margin-right: auto;
+        }
+        .series-nav .next {
+            margin-left: auto;
+        }
+        .series-nav a.disabled {
+            cursor: default;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        .series-nav a.index-link {
+            background: var(--zhu-red);
+            color: #fff;
+            border-color: var(--zhu-red);
+        }
+        .series-nav a.index-link:hover {
+            background: var(--zhu-red-light);
+            color: #fff;
+        }
+        @media (max-width: 600px) {
+            .series-nav {
+                gap: 0.8rem;
+            }
+            .series-nav .prev,
+            .series-nav .next {
+                margin: 0;
+            }
+            .series-nav a {
+                font-size: 0.8rem;
+                padding: 0.3rem 0.8rem;
+            }
+        }
+
+        /* ===== 底部版权 ===== */
+        .footer-note {
+            margin-top: 2.5rem;
+            font-size: 0.8rem;
+            text-align: center;
+            color: var(--ink-light);
+            border-top: 1px solid var(--border-light);
+            padding-top: 1.2rem;
+            letter-spacing: 1px;
+            opacity: 0.5;
+        }
+
+        /* ===== 返回顶部 ===== */
+        .back-to-top-ball {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(44, 24, 16, 0.04);
+            border: 1px solid rgba(44, 24, 16, 0.10);
+            color: var(--ink-light);
+            font-size: 1.4rem;
+            line-height: 44px;
+            text-align: center;
+            text-decoration: none;
+            transition: var(--transition);
+            backdrop-filter: blur(4px);
+            box-shadow: 0 2px 12px rgba(44, 24, 16, 0.04);
+            font-family: serif;
+        }
+        .back-to-top-ball:hover {
+            background: rgba(44, 24, 16, 0.08);
+            transform: translateY(-2px);
+            color: var(--zhu-red);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1.2rem 1rem 2rem;
+            }
+            h1 {
+                font-size: 1.5rem;
+                letter-spacing: 3px;
+            }
+            .top-bar .brand {
+                font-size: 1.2rem;
+            }
+            .article-download {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.8rem;
+            }
+            .article-download .btn-group {
+                justify-content: center;
+            }
+            .quote-block {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.95rem;
+                border-left-width: 2px;
+            }
+            .toc ul ul {
+                padding-left: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- ===== 顶部栏（无印章、无返回） ===== -->
+        <div class="top-bar">
+            <div class="brand">
+                简帙<span class="sub">· 工器谱</span>
+            </div>
+        </div>
+
+        <!-- ===== 面包屑 ===== -->
+        <div class="breadcrumb">
+            <a href="../../">简帙</a> <span>›</span>
+            <a href="../">双页切拼</a> <span>›</span>
+            分合之道
+        </div>
+
+        <!-- ===== 标题 ===== -->
+        <div class="article-meta">
+            <span class="series-tag">双页切拼 · 第 1 篇</span>
+        </div>
+        <h1>分合之道：古籍数字拼合的本体论与方法论</h1>
+        <div class="subtitle">——自“画布分离式拼合工具”而悟入</div>
+
+        <!-- ===== 章内目录 ===== -->
+        <nav class="toc" aria-label="章节目录">
+            <h3>目 录</h3>
+            <ul>
+                <li><a href="#juan1">卷一 · 道枢</a></li>
+                <li><a href="#juan2">卷二 · 本体</a></li>
+                <li><a href="#juan3">卷三 · 三轴九维</a></li>
+                <li><a href="#juan4">卷四 · 法门</a>
+                    <ul>
+                        <li><a href="#fa1">第一重：虚实之判</a></li>
+                        <li><a href="#fa2">第二重：单双之变</a></li>
+                        <li><a href="#fa3">第三重：逆向之用</a></li>
+                        <li><a href="#fa4">第四重：时空之剖</a></li>
+                        <li><a href="#fa5">第五重：坐标之衡</a></li>
+                        <li><a href="#fa6">第六重：标准之绳</a></li>
+                        <li><a href="#fa7">第七重：序次之散</a></li>
+                        <li><a href="#fa8">第八重：形制之化</a></li>
+                    </ul>
+                </li>
+                <li><a href="#juan5">卷五 · 归元</a></li>
+                <li><a href="#juan6">卷六 · 心印</a></li>
+            </ul>
+        </nav>
+
+        <!-- ===== 正文 ===== -->
+        <div class="article-body">
+
+            <!-- ===== 卷一 ===== -->
+            <h2 id="juan1">卷一 · 道枢</h2>
+
+            <p>万物并作，吾以观复。夫物芸芸，各复归其根。</p>
+
+            <p>一部古籍的流传，是跨越千载的“分”：书页离散于岁月，边角残损于虫蠹，版框错位于流转。而我们的数字拼合，便是逆流而上的“合”——将离散之碎片，在数字世界中重聚其形，复归其神。</p>
+
+            <p>然合非强加。强合者，貌合而神离。真正的合，必以分为基。以分为法，以合为宗；因分而能合，因合而见分。分与合，非互斥之两端，而是同一过程中互为表里的两种节律——如呼吸之吐纳，如阴阳之消长，如昼夜之交替。</p>
+
+            <p>由此，我们建立了一套完整的古籍数字拼合方法体系。其要义不在繁复之技，而在简约之道——通过对“分”的精妙运用，达成“合”的至高境界。此心法非为炫技，实乃求道。</p>
+
+            <!-- ===== 卷二 ===== -->
+            <h2 id="juan2">卷二 · 本体</h2>
+
+            <p>欲明分合之道，必先识古籍之本。</p>
+
+            <p>一部古籍，从本体论观之，乃是三层结构的统一体：<strong>形制为体，意象为魂，修用为衣</strong>。</p>
+
+            <p><strong>形制者，载体也。</strong>纸墨之质，页序之列，装帧之式。此为古籍的物质存在，是“分”的首要对象——如何将一部书拆解为可独立处理的单元，又如何将这些单元重新组合为新的阅读形态。形制为体，体之不存，书将焉附？</p>
+
+            <p><strong>意象者，精神也。</strong>非徒像素之堆砌，乃文字所承载之思想、版式所蕴含之气韵、墨色所传递之情感。此乃古籍的灵魂所在，是“合”的终极追求——如何让离散的页面意象完整呈现，让读者得以直面古人精神。意象为魂，魂之不彰，书何以传？</p>
+
+            <p><strong>修用者，补益也。</strong>水渍之痕，虫蛀之洞，印章之迹。此为古籍的时间印记，亦是阅读之障。修用的智慧，在于如何处理这些痕迹——既不能损伤意象之真性，又需为阅读提供便利。修用为衣，衣之不整，书何以观？</p>
+
+            <p class="quote-block">形制为体，以立其骨；意象为魂，以充其神；修用为衣，以美其容。体立则书可存，魂充则书可传，衣整则书可观。三者和合，方成一部完整之书。分合之道，便是贯通此三者、使之和谐统一的根本心法。</p>
+
+            <!-- ===== 卷三 ===== -->
+            <h2 id="juan3">卷三 · 三轴九维</h2>
+
+            <p>形制为体，意象为魂，修用为衣。此三者之所以能够成立、能够流传、能够为人所用，全赖三层关系之维系。我们将其归纳为三轴九维。</p>
+
+            <h3>一曰“融”——本体之轴</h3>
+            <p>形制、意象、修用三者相融，构成古籍的完整存在。</p>
+            <ul style="padding-left:2rem; margin-bottom:1rem;">
+                <li><strong>形制为体：</strong>纸墨之质，页序之列，装帧之式。体之不存，书将焉附？</li>
+                <li><strong>意象为魂：</strong>文字之思想，版式之气韵，墨色之情感。魂之不彰，书何以传？</li>
+                <li><strong>修用为衣：</strong>水渍之痕，虫蛀之洞，印章之迹。衣之不整，书何以观？</li>
+            </ul>
+            <p>体立则骨正，魂充则神全，衣整则容美。三者和合，方成一部完整之书。</p>
+
+            <h3>二曰“传”——流传之轴</h3>
+            <p>原本、修改、复本，是古籍在时间中存在的三种形态。</p>
+            <ul style="padding-left:2rem; margin-bottom:1rem;">
+                <li><strong>原本为真：</strong>未经改动的原始扫描，承载着全部的历史信息，是我们操作的“实”之根基。</li>
+                <li><strong>修改为用：</strong>在原本之上进行的变换——位移、缩放、旋转、裁切。皆是数学层面的坐标映射，不触及原图意象本身。</li>
+                <li><strong>复本为果：</strong>标准化后的输出，可以是单页、双页对开、类蝶装册，随需赋形，各尽其用。</li>
+            </ul>
+            <p>真而不改，改而不损，复而不离其宗。此乃流传之道。</p>
+
+            <h3>三曰“会”——意义之轴</h3>
+            <p>阅读、领会、传播，是古籍在人类精神世界中实现其价值的过程。</p>
+            <ul style="padding-left:2rem; margin-bottom:1rem;">
+                <li><strong>阅读为入：</strong>文字入眼，版式入心。拼合后的古籍，首先要便于阅读，中缝不偏，版框齐整。</li>
+                <li><strong>领会为通：</strong>贯通文义，领悟精神。当意象得以完整呈现，读者方能穿越时空，与古人精神相接。</li>
+                <li><strong>传播为出：</strong>化一为多，流布四方。单页、对开、分册，不同的输出形制服务于不同的传播场景。</li>
+            </ul>
+            <p>入而通之，通而出之，出而复入。此乃会通之道。</p>
+
+            <p style="margin-top:1rem;">三三得九，九九归一。融、传、会三轴，将形制之体、意象之魂、修用之衣三者贯通，形成了古籍从“存在”到“流传”再到“意义”的完整生命链条。而我们的分合之道，正是这一生命链条的数字实现。</p>
+
+            <!-- ===== 卷四 ===== -->
+            <h2 id="juan4">卷四 · 法门</h2>
+
+            <p>三轴已立，九维已明，今当以八重分合之法，逐一贯通三轴九维。此八重法门，按操作之层次，可分为三境：操作空间之“分”，对应“融”轴，奠定形制之体、意象之魂、修用之衣的独立；工作流程之“分”，对应“传”轴，贯通原本、修改、复本之过程；目标形制之“分”，对应“会”轴，实现单页、双页、错页之产出。</p>
+
+            <!-- 第一重 -->
+            <h3 id="fa1">第一重：虚实之判（融轴 · 意象之魂）</h3>
+
+            <p>此为八重法门之根基，亦是对“融”轴中意象之魂与形制之体关系之解决。</p>
+
+            <p>拼合之始，将混沌一体之“操作”进行最根本的剖分。</p>
+
+            <ul style="padding-left:2rem; margin-bottom:1rem;">
+                <li><strong>意象为“实”：</strong>它是古籍的灵魂所在——文字的思想、版式的气韵、墨色的情感。我们对它持绝对敬意——永不修改其分毫像素。缩放、位移、旋转，皆是数学层面的坐标映射，不触及意象本身的分辨率与质量。真性不二，本来面目。</li>
+                <li><strong>画布为“虚”：</strong>它是纯粹的精神框架，界定边界、承载标尺的虚空。不存储意象内容，却为意象的呈现提供全部法则。</li>
+            </ul>
+
+            <p class="quote-block">道之所在：意象因其“实”而永葆真性；画布因其“虚”而获得定义一切的无限自由。虚以御实，实以填虚。虚实相生，各安其守。</p>
+
+            <p>此“分”直接对应“传”轴中“原本”之地位——原本不可动，动者唯虚。一切操作皆在画布层完成，意象始终如如不动。魂之守真，乃全书之命脉。</p>
+
+            <h4>技术实现</h4>
+            <p><strong>“虚”之构建：</strong>画布被定义为一个纯净的 QGraphicsScene 场景，其上可叠加任意 QGraphicsItem 图形元素。参考框线（红色虚线）通过 QGraphicsRectItem 创建，遮盖层（纯色矩形块）通过 QPainter 直接绘制在 QImage 上。此等元素皆为画布层的原生对象，拥有独立的 Z 值层级（setZValue），可随时删除或重绘，与图像毫无牵连。</p>
+            <p><strong>“实”之守护：</strong>原始页面（PDF或图片）仅通过 pypdfium2.render 或 Pillow Image.resize 进行数学变换。核心在于，我们从不将变换结果写回原始文件，而是实时渲染到一个独立的 QImage 对象上。此对象是临时的、内存中的，每次参数改变即重新生成，原始图像始终只读。</p>
+            <p><strong>虚实相生：</strong>最终显示时，将渲染好的 QImage 转换为 QPixmap，设置到 QGraphicsPixmapItem 上。场景中的框线和遮盖层便自然浮于图像之上。操作图像时，只改变其变换矩阵参数，触发 request_render_current 重新生成预览图像并刷新画布，而画布层元素不受任何影响。虚以御实，实以填虚，在此得到最直观的技术呈现。</p>
+
+            <!-- 第二重 -->
+            <h3 id="fa2">第二重：单双之变（会轴 · 单页→双页）</h3>
+
+            <p>此为“会”轴中“阅读”形态的关键实现，亦是我们反直觉思维的精髓所在。</p>
+
+            <p>面对“将两个独立单页拼为一开”的任务，常人之思是先将双页分割开再左右对置。我们反其道而行之。</p>
+
+            <ul style="padding-left:2rem; margin-bottom:1rem;">
+                <li><strong>先合：</strong>将原始文档复制一份，使意象成双。复制序列之首位插入空白页。孤立的意象一，有了空白意象零与之相配；意象二与意象一相配，以此类推。</li>
+                <li><strong>后分：</strong>将整体画布中分，左页裁其半，右页裁其半。左页于左半区内示其右侧，右页于右半区内示其左侧。二部在中线自然对接，中缝立现。</li>
+            </ul>
+
+            <p class="quote-block">道之所在：合为分之本，分为合之形。不增一物，不损一毫，仅凭一套算法，便实现了从单页到双页的完美跃迁。化繁为简，不在于切割问题，而在于重新定义问题。此乃分合之道在算法设计上最为精妙的体现。体之重构，乃魂之重现。</p>
+
+            <h4>技术实现</h4>
+            <p><strong>“先合”之技：</strong>我们不物理复制PDF页面，而是在内存中构建一个逻辑页面序列。开启“滚动拼接”时，程序在原始页面列表 base 前插入一个索引 -1（代表空白页），然后构建映射对：seq = [-1] + base，pairs = [(seq[i], seq[i-1]) for i in range(1, len(seq))]。于是，原本孤立的页面1在复制序列中有了页面0（空白）与之相配；页面2与页面1相配。此一举，内存占用为零，却使每一“对”都蕴含了相邻两页的完整信息。</p>
+            <p><strong>“后分”之技：</strong>在渲染双页对开时，左右页各自由图像边距百分比控制裁剪。当用户勾选双拼时，程序自动将图像边距设为左右各50%。左页仅保留其右半内容（左侧被裁），右页仅保留其左半内容（右侧被裁），在中线自然对接，中缝立现。裁剪通过 QRect 区域复制实现：left_crop = QRect(img_lm_px, img_tm_px, orig_lw_px - img_lm_px, orig_lh_px - img_tm_px - img_bm_px)。</p>
+
+            <!-- 第三重 -->
+            <h3 id="fa3">第三重：逆向之用（会轴 · 双页→单页）</h3>
+
+            <p>此为“单双之变”的逆向运用，亦是算法统一性的最佳证明。</p>
+
+            <p>常有已影印之筒子页整版，需分割为左右单页以便独立处理或重新拼合。常规做法是编写专门的分割工具。而我们发现，分割即是拼接的逆向，完全复用同一套算法。</p>
+
+            <ul style="padding-left:2rem; margin-bottom:1rem;">
+                <li><strong>自为配：</strong>将筒子页整版输入后，令其与自身配对——左页取原图，右页亦取原图。画面虽同，但裁切各异。</li>
+                <li><strong>序从常：</strong>配对顺序采用普通顺序（先右后左），即 pairs = [(base[i+1], base[i])]。此保证右页在左，左页在右，与正常拼接的视觉一致。</li>
+                <li><strong>中分裁：</strong>将画布中分，左页裁其半，右页裁其半。左子画布裁去原图左半，保留右半；右子画布裁去原图右半，保留左半。</li>
+                <li><strong>分而出：</strong>输出时选择“分割输出”模式，左右子画布各自独立输出为一个单页。于是，筒子页整版一分为二，左半成右单页，右半成左单页。</li>
+            </ul>
+
+            <p class="quote-block">道之所在：此法的精妙，在于以合为分，以分为合。拼接的算法未改，裁切的逻辑未变，所变者唯输入之源与输出之形。一套算法，正向可合二为一，逆向可一分为二，正反相通，体用不二。</p>
+
+            <h4>技术实现</h4>
+            <p><strong>自配逻辑：</strong>用户勾选“整版分单”后，程序在构建页面对时检测到该模式，自动将每个页面索引同时填入左右页位置：pairs = [(idx, idx) for idx in base]。内存中，左右页指向同一个原始页面对象，但拥有独立的变换参数和裁剪设置。</p>
+            <p><strong>裁切分离：</strong>整版分单模式下，画布左右边距自动设为 -50%（即各裁去一半）。同时中缝重叠设为左右各 50%。左页右边缘右移至中线以右，右页左边缘左移至中线以左。于是，左子画布显示的是原页面的右半内容，右子画布显示的是原页面的左半内容。二者各占半区，互不重叠。</p>
+            <p><strong>单页输出：</strong>在“分割输出”模式下，左子画布的内容（原右半）作为一个独立PDF页面输出，右子画布的内容（原左半）作为另一个独立PDF页面输出。两个输出页面皆可后续独立处理，与普通单页无异。合时裁半以拼接，分时裁半以割离——同一把刀，正反两用。</p>
+
+            <!-- 第四重 -->
+            <h3 id="fa4">第四重：时空之剖（融轴 · 形制之体）</h3>
+
+            <p>此为对“融”轴中形制之体层面之解决。双页之“合”已成，然需为左右意象划定各自的“封地”。我们将大画布从中轴线一分为二，创生左、右两个子画布。</p>
+
+            <ul style="padding-left:2rem; margin-bottom:1rem;">
+                <li>左页入左界，右页入右界。二者拥有独立的坐标系与裁剪边界。</li>
+                <li>左页意象随位移溢过中线，则被左子画布之右边界自然裁剪；右页同理。</li>
+            </ul>
+
+            <p class="quote-block">道之所在：此一“分”，为左右意象划定了疆域。二部在各自治下可自由移动，互不侵扰。中缝之严丝合缝，非费心对齐之果，乃各自守界之自然产物。分疆而治，方能无缝相合。体之正位，乃阅读之基。</p>
+
+            <h4>技术实现</h4>
+            <p><strong>子画布构建：</strong>在合成预览图 try_compose 时，我们创建两个独立的 QImage 对象 left_section 和 right_section，宽度严格等于左半区宽度和右半区宽度（基于全局基准尺寸 canvas_base_w 和画布边距百分比计算）。这两个子画布是物理隔离的，各自拥有独立的白底。</p>
+            <p><strong>独立变换：</strong>左页的缩放、旋转、位移参数（ldx, ldy, ls, lst, la）仅应用于左子画布内的图像粘贴位置计算。其粘贴坐标为 target_x = left_section_w - scaled_w + ldx + l_ov，target_y = canvas_top_px + (base_h_px - scaled_h) / 2.0 - ldy。右页同理，其粘贴坐标为 target_x = rdx - r_ov，target_y = canvas_top_px + (base_h_px - scaled_h) / 2.0 - rdy。注意此处 l_ov 与 r_ov 为中缝重叠参数，允许左右页向中线方向微调。</p>
+            <p><strong>自动裁剪：</strong>由于 QPainter 的 drawImage 操作本身受限于目标图像的尺寸，任何超出左子画布右边界或右子画布左边界的内容，都会被 Qt 自动丢弃。这无需任何额外计算，便实现了中缝的像素级精确裁剪。这正是子画布分割的精妙之处——边界即裁剪。</p>
+            <p><strong>最终拼合：</strong>两个子画布通过 QPainter 绘制到最终的大画布 composite 上：painter.drawImage(0, 0, left_section) 和 painter.drawImage(left_section_w, 0, right_section)。左子画布占据左侧，右子画布占据右侧，中线处天然严丝合缝。导出时采用相同策略，先创建左右子画布临时PDF页面，再拼合或分别输出。</p>
+
+            <!-- 第五重 -->
+            <h3 id="fa5">第五重：坐标之衡（交互层）</h3>
+
+            <p>此为交互设计中最隐秘、也最见功力的心法。</p>
+
+            <p>我们的工具涉及三套截然不同的坐标系：PDF坐标（原点左下，y向上）、Qt图像坐标（原点左上，y向下）、屏幕视口坐标（原点左上，且随缩放漂移）。若强求统一，必有一方扭曲。我们的解法，是不统一坐标系，而统一“意图”。</p>
+
+            <ul style="padding-left:2rem; margin-bottom:1rem;">
+                <li><strong>反向映射：</strong>当用户在屏幕上拖拽图像时，系统并不直接按屏幕坐标移动图像。而是实时捕捉鼠标指针的视觉位移，将其反向映射到图像所在的实际坐标系中，再计算出图像应当移动的精确数值。</li>
+                <li><strong>意图统一：</strong>无论内核是何种坐标系，用户眼中所见、手下所感，始终是同一方向：向上拖，图像向上；向左移，图像向左。此“跟手感”的达成，非因坐标之统一，而因操作指向与视觉反馈达至完美一致。</li>
+            </ul>
+
+            <p class="quote-block">道之所在：不动而动，以静制动。我们不改变任何坐标系的本性（静），却以一层巧妙的映射（动），让所有坐标系皆服从于用户的直觉。乱生于内而统一于外。此乃分合之道在交互层面最为精微的运用。</p>
+
+            <h4>技术实现</h4>
+            <p><strong>多重坐标的挑战：</strong>视口坐标（鼠标事件的 event.position()）、场景坐标（view.mapToScene()）、图像像素坐标（QImage）、PDF点坐标（pypdf，原点左下，y向上）。此四者方向、原点各异。</p>
+            <p><strong>反向映射管道：</strong>交互时，通过以下管道层层转化，最终统一为一致的视觉效果：</p>
+            <ul style="padding-left:2rem; margin-bottom:1rem;">
+                <li>view.mapToScene(event.position().toPoint())：将视口坐标转换为场景坐标（像素）。此函数包含了视图缩放（zoom_level）和视口偏移等全部转换逻辑，是坐标统一的枢纽。</li>
+                <li>场景坐标转拖拽偏移：delta = event.position() - self.drag_start_point，然后 offs[side] = (old_dx + delta.x() * 0.1, old_dy - delta.y() * 0.1)。注意 dy 取反，这便是“向上拖拽，图像向上”的根本所在。键盘移动直接使用 dy += step，逻辑一致。</li>
+                <li>缩放中心定位：滚轮缩放时，系统获取当前鼠标位置的场景坐标 scene_pos，执行缩放后调用 view.centerOn(scene_pos)，使鼠标所指的图像点始终保持在视口中心，实现了以光标为中心的缩放体验。</li>
+            </ul>
+
+            <!-- 第六重 -->
+            <h3 id="fa6">第六重：标准之绳（传轴 · 修改→复本）</h3>
+
+            <p>此为“传”轴中从“修改”到“复本”的关键环节，解决“复本”如何统一的问题。我们在画布之上，再立一独立、浮于万物之上的参考框线。</p>
+
+            <ul style="padding-left:2rem; margin-bottom:1rem;">
+                <li>此红色虚线，不与任何意象绑定，唯代表心中之“标准版框”。</li>
+                <li>可自由调整其尺寸与位置（水平、垂直偏移），然后将各自独立的左右意象，通过缩放与横缩，分别向此标准对齐。</li>
+            </ul>
+
+            <p class="quote-block">道之所在：框线为“一”，悬而不动之绝对标准；意象为“万”，千姿百态之变动之物。以“一”统“万”，以“虚”绳“实”。正是这条虚拟的线，让所有离散之意象寻得了统一的归宿。体之统一，乃魂之归所。</p>
+
+            <h4>技术实现</h4>
+            <p><strong>场景坐标存储：</strong>参考框线的位置和尺寸以场景像素坐标存储。用户拖拽绘制时，通过 view.mapToScene() 获取场景坐标，计算出矩形宽高和中心点，填入输入框。手动修改输入框时，直接更新场景中的 QGraphicsRectItem。这使得框线完全独立于具体图像尺寸。</p>
+            <p><strong>动态绘制：</strong>每次启用或参数改变，draw_ref_rect 方法会创建一个新的 QGraphicsRectItem，设置红色虚线画笔（QPen(QColor("red"), DashLine)）和 Z 值（setZValue(100)），确保框线永远浮于所有图像和遮盖之上。</p>
+            <p><strong>拖拽编辑：</strong>启用且未锁定时，在预览区拖拽绘制新矩形，释放后自动更新参数输入框并重绘。锁定后不响应拖拽，避免误操作。右键恢复视图功能不影响框线状态。</p>
+            <p><strong>层级管理：</strong>框线通过 setZValue(100) 置于所有图形元素之上，确保虚线永远可见，不被其他元素遮挡。</p>
+
+            <!-- 第七重 -->
+            <h3 id="fa7">第七重：序次之散（传轴 · 原本→修改）</h3>
+
+            <p>前三重解决了单页内部之“融”——体已正、魂已守、衣已整。今当面对整部著作的庞大体量，解决“传”轴中从“原本”到“修改”的过程。我们的策略是化整为零，将一卷拆解为一对又一对独立之“页面对”。</p>
+
+            <ul style="padding-left:2rem; margin-bottom:1rem;">
+                <li>数百页之PDF或整个文件夹之图片，被分解为独立的单元。</li>
+                <li>每对页面皆拥有独立的位移、缩放、裁切、遮盖数据，可按任意顺序处理，自由跳转。</li>
+            </ul>
+
+            <p class="quote-block">道之所在：此看似将整体拆散，实则为最高效之“合”铺路。可从中间任一页始，可单独调整任一对而不扰全局。最终，所有独立之操作数据汇入一个JSON项目文件，成统一之“合”集。流程上散为游击，数据上聚为整军。分合之间，游刃有余。</p>
+
+            <h4>技术实现</h4>
+            <p><strong>状态分离：</strong>每一对页面的所有操作参数（位移、缩放、旋转、横缩、遮盖列表、框线位置、中线重叠等）都存储在以页面索引 pair_idx 为键的字典中，如 self.offsets[pair_idx] = {'left': (ldx, ldy), 'right': (rdx, rdy)}，self.scales、self.stretches、self.rotations 等同理。这些字典彼此独立，互不干扰。</p>
+            <p><strong>JSON序列化：</strong>点击“保存项目”时，save_project 方法将这些字典进行深度拷贝，并序列化为一个 JSON 文件。所有值均转换为可读的纯文本格式（浮点数、列表），与 pdf_path、canvas_base_w、全局重叠等配置一并存储。</p>
+            <p><strong>状态恢复：</strong>加载项目时，JSON被解析，所有字典被恢复。切换页面时，update_controls 方法直接从当前页对的字典中读取位移、缩放等值，并刷新UI控件的显示。这实现了“独立处理每一对，但全局状态统一保存”的灵活工作流。</p>
+
+            <!-- 第八重 -->
+            <h3 id="fa8">第八重：形制之化（会轴 · 双页→错页）</h3>
+
+            <p>此为“会”轴中“传播”形态的最高实现。标准化完成之后，每一意象皆已成为独立、可自由组合之单元。它们不再受限于最初的卷册次序，而获得装帧的自由。</p>
+
+            <ul style="padding-left:2rem; margin-bottom:1rem;">
+                <li><strong>单页独立：</strong>每页皆可单独输出为标准化的单页，尺寸统一，版框齐整。此为一切后续重组之原子基础。</li>
+                <li><strong>双页对开：</strong>相邻两页左右拼合，成完整筒子页对开。此为我们最为熟悉的古籍阅读形态。</li>
+                <li><strong>类蝶装错页拼合：</strong>更为精妙者，可将标准化后的意象，按照古籍锁线精装之配页法则重新组合。例如一十六页之小册，拼合顺序非1-2、3-4，而是1-16、2-15、3-14……8-9。首尾相衔，向心而合，每开两页之页码和恒为十七。凡四之倍数——十二、二十、二十四——皆循此法。如此拼成之小册，折页后中缝向外，书叶翻动如蝶翼展翅，既保护了珍贵的版心接缝，又实现了跨页的完整阅读。同时，将大部头古籍分为若干此类小册，以锁线装订，彻底解决厚册难翻、易损之千古难题。</li>
+            </ul>
+
+            <p class="quote-block">道之所在：标准化为“分”，将全书之意象拆解为等质之原子；装帧为“合”，让意象按任意次序重新组合，产生千姿百态之阅读形态。页码之序为分，装订之序为合，首尾相衔，向心而聚，使知识之载体本身也成为道的印证。体之万化，乃魂之远播。</p>
+
+            <h4>技术实现</h4>
+            <p><strong>标准化原子：</strong>通过“分割输出”模式（basic_assemble_pages 中 mode == "split"），每一页经变换（缩放、旋转、横缩、框线对齐）后，被渲染为一个尺寸统一（基于全局基准尺寸）、版框齐整的独立PDF页面。此页面即为“原子”。</p>
+            <p><strong>配页算法：</strong>用户指定册子页数（如16页），程序按 (1,16), (2,15), (3,14)... 的规则，计算出一个新的页面对序列 butterfly_pairs。此算法可概括为：对于总页数 N，第 i 对（从1开始）的左右页索引分别为 i 和 N - i + 1。</p>
+            <p><strong>重组渲染：</strong>程序遍历 butterfly_pairs，将每对中的两个“原子”页面（已是标准化后的单页PDF），按照与普通双页拼接完全相同的子画布逻辑，粘贴到一个新的对开画布上。因为所有原子已标准化，此过程无需再调整，直接渲染即可。</p>
+            <p><strong>分册输出：</strong>循环以上过程，自动将一部巨著输出为多个连续的锁线小册子PDF。此一举，将“分合之道”从单页内部的形制处理，拓展到了整部著作的装帧重构，使工具的能力从“修复”提升到了“创造”。</p>
+
+            <!-- ===== 卷五 ===== -->
+            <h2 id="juan5">卷五 · 归元</h2>
+
+            <p>八重分合已毕，三轴九维已贯通。今当归于一心，统摄万法。</p>
+
+            <p><strong>操作空间之“分”</strong>，以虚实之判、时空之剖、补益之慈三重法门，将意象之魂、形制之体、修用之衣三者各自独立，奠定了“融”轴之基。此为体之分。</p>
+
+            <p><strong>工作流程之“分”</strong>，以序次之散、标准之绳二重法门，将整卷化整为零，又将零散归于统一，贯通了原本、修改、复本之过程。此为传之分。</p>
+
+            <p><strong>目标形制之“分”</strong>，以单双之变、逆向之用、形制之化三重法门，将单一页码序列转化为多种阅读形态，实现了单页、双页、错页的自由组合，更以一法而通正反——合可拼双页，分可割整版。此为会之分。</p>
+
+            <p>体分则各正其位，传分则各安其序，会分则各尽其用。</p>
+
+            <p>然而，分之尽头，恰是合之峰顶：</p>
+
+            <ul style="padding-left:2rem; margin-bottom:1rem;">
+                <li><strong>体之合：</strong>虚实相融于画布，左右相合于中线，瑕瑜相安于图层。形制为体，意象为魂，修用为衣，三者和合。</li>
+                <li><strong>传之合：</strong>操作数据汇于一文，标准框线统于一线。原本、修改、复本，一脉相承。</li>
+                <li><strong>会之合：</strong>单页、双页、错页，同出一源，随需化现。阅读、领会、传播，三用圆成。</li>
+            </ul>
+
+            <p class="quote-block">三而一，一而三。分之毕也，合之至也。</p>
+
+            <!-- ===== 卷六 ===== -->
+            <h2 id="juan6">卷六 · 心印</h2>
+
+            <p>此一套心法，非为炫技，实乃求道。</p>
+
+            <p>古籍拼合，形而下者，是意象之拼接；形而上者，是文化之延续。我们的工具之所以能化繁为简、以简驭繁，不在于掌握了多少复杂算法，而在于悟透了“分”与“合”这一对根本范畴。</p>
+
+            <p><strong>能分，故能守其真；能合，故能归其全。能逆，故能通其变。</strong></p>
+
+            <p>以此心法驾驭工具，则无论面对何种古籍、何种残损、何种形制，皆可应对自如。从流程之始——读取文件，到操作之中——拼合修改，再到产出之终——保存文档；从画布之虚，到意象之实，再到遮盖之慈；从单页之基，到双页之观，再到错页之妙；从合二为一之拼接，到一分为二之分割——无一不是分合之道的生动演绎。</p>
+
+            <p>分合之道，是这件工具的灵魂。它不仅是功能的总纲，更是一种方法论：任何复杂的拼合，皆可通过巧妙地“分”，来达成更高层次的“合”；任何既成的合体，亦可循此道而“分”，归于本来面目。分合之间，正反相成，这便是我们能够超越凡品，成为“神兵利器”的最深层奥秘。</p>
+
+            <p style="margin-top:1.2rem;">观其分，则层层拆解，脉络清晰，各有所司；<br>
+            观其合，则浑然一体，天衣无缝。形制以立骨，意象以充神，修用以美形。三者和合，真性不失，精神永存。</p>
+
+            <p style="margin-top:1.2rem; text-align:right; color:var(--ink-light); opacity:0.6; letter-spacing:2px;">此分合之道，愿与天下同道共参。</p>
+
+        </div>
+
+        <!-- ===== 单篇文章下载 ===== -->
+        <div class="article-download">
+            <div class="info">
+                <span>📄</span>
+                <span><strong>下载本文</strong> · PDF / EPUB 版本</span>
+            </div>
+            <div class="btn-group">
+                <a href="#" class="btn-sm" target="_blank">下载 PDF</a>
+                <a href="#" class="btn-sm btn-sm-outline" target="_blank">下载 EPUB</a>
+            </div>
+        </div>
+
+        <!-- ===== 系列底部导航 ===== -->
+        <div class="series-nav">
+            <a href="javascript:void(0)" class="prev disabled">上一篇</a>
+            <a href="../" class="index-link">返回目录</a>
+            <a href="02-切割原理.html" class="next">切割原理 ›</a>
+        </div>
+
+        <!-- ===== 底部版权 ===== -->
+        <div class="footer-note">铭心阁 · 简帙工器谱</div>
+    </div>
+
+    <!-- ===== 返回顶部 ===== -->
+    <a href="#" id="backToTop" class="back-to-top-ball" aria-label="返回顶部">^</a>
+
+    <script>
+        document.getElementById('backToTop').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+
+</body>
+</html>
