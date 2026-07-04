@@ -45,7 +45,7 @@
             border: 1px solid var(--border-light);
         }
 
-        /* ===== 顶部（居中，黑体加粗） ===== */
+        /* ===== 顶部（居中，统一样式） ===== */
         .top-bar {
             display: flex;
             align-items: center;
@@ -65,13 +65,13 @@
             font-family: "Noto Sans SC", "微软雅黑", "PingFang SC", sans-serif;
         }
         .top-bar .brand .sub {
-            font-weight: 400;
-            font-size: 0.9rem;
-            color: var(--ink-light);
-            letter-spacing: 2px;
-            opacity: 0.6;
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: var(--ink);
+            letter-spacing: 4px;
+            font-family: "Noto Sans SC", "微软雅黑", "PingFang SC", sans-serif;
             margin-left: 6px;
-            font-family: "Noto Serif SC", "思源宋体", serif;
+            opacity: 1;
         }
 
         /* ===== 序言 ===== */
@@ -125,23 +125,26 @@
             opacity: 0.7;
         }
 
-        /* ===== 合并后的系统大卡片 ===== */
-        .system-card {
+        /* ===== 系统大卡片（可点击） ===== */
+        .system-card-link {
+            display: block;
             background: var(--paper);
             border-radius: var(--radius);
             border: 1px solid var(--border-light);
             padding: 1.8rem 2rem 1.5rem;
             margin: 1.8rem 0 0.5rem 0;
             transition: var(--transition);
+            text-decoration: none;
+            color: inherit;
         }
-        .system-card:hover {
+        .system-card-link:hover {
             box-shadow: 0 6px 24px rgba(44, 24, 16, 0.08);
             border-color: var(--gold);
             background: #f8f4ee;
         }
 
         /* 卡片标题（居中） */
-        .system-card .card-header {
+        .system-card-link .card-header {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -149,7 +152,7 @@
             gap: 0.5rem;
             text-align: center;
         }
-        .system-card .card-header h2 {
+        .system-card-link .card-header h2 {
             font-size: 1.2rem;
             color: var(--zhu-red);
             letter-spacing: 3px;
@@ -158,7 +161,7 @@
         }
 
         /* 卡片描述（左对齐） */
-        .system-card .card-desc {
+        .system-card-link .card-desc {
             font-size: 0.9rem;
             color: var(--ink-light);
             margin-top: 0.3rem;
@@ -167,8 +170,8 @@
             text-align: left;
         }
 
-        /* 卡片内的下载区（无图标，文字不加粗，按钮统一样式） */
-        .system-card .download-section {
+        /* 卡片内的下载区 */
+        .system-card-link .download-section {
             margin-top: 1.2rem;
             padding-top: 1.2rem;
             border-top: 1px solid var(--border-light);
@@ -178,32 +181,32 @@
             gap: 1rem;
             justify-content: space-between;
         }
-        .system-card .download-section .info {
+        .system-card-link .download-section .info {
             display: flex;
             align-items: center;
             gap: 0.6rem;
         }
-        .system-card .download-section .info .label {
+        .system-card-link .download-section .info .label {
             font-size: 0.9rem;
             color: var(--ink);
             font-weight: 400;
         }
-        .system-card .download-section .info .label strong {
+        .system-card-link .download-section .info .label strong {
             color: var(--zhu-red);
             font-weight: 600;
         }
-        .system-card .download-section .info .version {
+        .system-card-link .download-section .info .version {
             font-size: 0.75rem;
             color: var(--ink-light);
             opacity: 0.4;
             margin-left: 0.2rem;
         }
-        .system-card .download-section .btn-group {
+        .system-card-link .download-section .btn-group {
             display: flex;
             gap: 0.8rem;
             flex-wrap: wrap;
         }
-        .system-card .download-section .btn {
+        .system-card-link .download-section .btn {
             display: inline-block;
             background: var(--zhu-red);
             color: #fff;
@@ -215,21 +218,28 @@
             transition: var(--transition);
             letter-spacing: 1px;
         }
-        .system-card .download-section .btn:hover {
+        .system-card-link .download-section .btn:hover {
             background: var(--zhu-red-light);
             transform: translateY(-2px);
             box-shadow: 0 4px 16px rgba(139, 26, 26, 0.15);
         }
+
+        /* 阻止下载按钮触发卡片点击 */
+        .system-card-link .download-section .btn-group {
+            position: relative;
+            z-index: 2;
+        }
+
         @media (max-width: 600px) {
-            .system-card .download-section {
+            .system-card-link .download-section {
                 flex-direction: column;
                 align-items: stretch;
                 gap: 0.8rem;
             }
-            .system-card .download-section .info {
+            .system-card-link .download-section .info {
                 justify-content: center;
             }
-            .system-card .download-section .btn-group {
+            .system-card-link .download-section .btn-group {
                 justify-content: center;
             }
         }
@@ -283,7 +293,10 @@
             .top-bar .brand {
                 font-size: 1.2rem;
             }
-            .system-card {
+            .top-bar .brand .sub {
+                font-size: 1.2rem;
+            }
+            .system-card-link {
                 padding: 1.2rem 1rem;
             }
             .preface p {
@@ -300,7 +313,7 @@
 <body>
 
     <div class="container">
-        <!-- ===== 顶部栏（居中，黑体加粗，样式不变） ===== -->
+        <!-- ===== 顶部栏（统一样式） ===== -->
         <div class="top-bar">
             <div class="brand">
                 简帙<span class="sub">· 工器谱</span>
@@ -312,7 +325,7 @@
             <p>简帙者，集工器之理论，汇四艺之精要。字库以立其本，切拼以成其形，重排以调其气，阅读以通其神。四者相承，乃为完璧。兹录诸篇，以备览者参详。</p>
         </div>
 
-        <!-- ===== 四艺入口（无篇数徽标） ===== -->
+        <!-- ===== 四艺入口 ===== -->
         <div class="grid-4">
             <a href="ziku/" class="card">
                 <h3>字库制作</h3>
@@ -332,13 +345,11 @@
             </a>
         </div>
 
-        <!-- ===== 系统大卡片（包含简介 + 下载，放在子卡片之后） ===== -->
-        <div class="system-card">
-            <!-- 标题居中 -->
+        <!-- ===== 系统大卡片（可点击，跳转至 jianzhi/） ===== -->
+        <a href="jianzhi/" class="system-card-link" id="mainCard">
             <div class="card-header">
                 <h2>简帙古籍整理系统</h2>
             </div>
-            <!-- 描述左对齐 -->
             <div class="card-desc">
                 集成字库制作、双页切拼、制版重排、文档阅读四大工器，助力古籍数字化整理与学术研究。
             </div>
@@ -353,7 +364,7 @@
                     <a href="https://pan.quark.cn/s/acd54713f4d5" target="_blank" class="btn" rel="noopener noreferrer">夸克网盘</a>
                 </div>
             </div>
-        </div>
+        </a>
 
         <!-- ===== 底部版权 ===== -->
         <div class="footer-note">铭心阁 · 简帙工器谱</div>
