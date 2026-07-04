@@ -45,7 +45,7 @@
             border: 1px solid var(--border-light);
         }
 
-        /* ===== 顶部（无印章、无返回） ===== */
+        /* ===== 顶部 ===== */
         .top-bar {
             display: flex;
             align-items: center;
@@ -158,7 +158,7 @@
             }
         }
 
-        /* ===== 工具下载（无图标） ===== */
+        /* ===== 工具下载 ===== */
         .tool-download {
             margin: 1.8rem 0 0.5rem;
             padding: 1rem 1.2rem;
@@ -281,7 +281,7 @@
 <body>
 
     <div class="container">
-        <!-- ===== 顶部栏（无印章、无返回铭心阁） ===== -->
+        <!-- ===== 顶部栏 ===== -->
         <div class="top-bar">
             <div class="brand">
                 简帙<span class="sub">· 工器谱</span>
@@ -292,12 +292,12 @@
         <div class="page-title" id="seriesTitle">双页切拼 <span class="sub">系列</span></div>
         <div class="subtitle" id="seriesSub">版式切割 · 拼接重组 · 共 <span id="articleCount">0</span> 篇</div>
 
-        <!-- ===== 文章列表（由 JS 动态生成） ===== -->
+        <!-- ===== 文章列表 ===== -->
         <ul class="catalog-list" id="catalogList">
             <!-- JS 渲染 -->
         </ul>
 
-        <!-- ===== 工具下载（无图标） ===== -->
+        <!-- ===== 工具下载 ===== -->
         <div class="tool-download">
             <div class="info">
                 <strong id="toolName">双页切拼</strong> 工具下载
@@ -324,8 +324,10 @@
                 name: '双页切拼',
                 subtitle: '版式切割 · 拼接重组',
                 articles: [
-                    { id: '1.分合之道', title: '分合之道：古籍数字拼合的本体论与方法论', desc: '单页、双页、整页' },
-                    { id: '2.书页扫描精处理', title: '书页扫描精处理：从工程实践到认知范式的技术思想报告', desc: '自动切拼' }
+                    { id: '01-分合之道', title: '分合之道', desc: '古籍数字拼合的本体论与方法论' },
+                    { id: '2.书页扫描精处理', title: '书页扫描精处理', desc: '从工程实践到认知范式的技术思想报告' },
+                    { id: '3.超分辨率理论', title: '超分辨率论', desc: '从显现到复原的完备理论推导' },
+                    { id: '4.清晰化论', title: '清晰化论', desc: '从弥散到聚焦的完备理论推导' }
                 ]
             };
 
@@ -333,7 +335,6 @@
             //  渲染
             // ============================================================
             const listEl = document.getElementById('catalogList');
-            const countEl = document.getElementById('articleCount');
             const titleEl = document.getElementById('seriesTitle');
             const subEl = document.getElementById('seriesSub');
             const toolNameEl = document.getElementById('toolName');
