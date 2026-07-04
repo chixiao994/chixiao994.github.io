@@ -281,7 +281,7 @@
 <body>
 
     <div class="container">
-        <!-- ===== 顶部栏（无印章、无返回铭心阁） ===== -->
+        <!-- ===== 顶部栏 ===== -->
         <div class="top-bar">
             <div class="brand">
                 简帙<span class="sub">· 工器谱</span>
@@ -292,12 +292,12 @@
         <div class="page-title" id="seriesTitle">字库制作 <span class="sub">系列</span></div>
         <div class="subtitle" id="seriesSub">字体源流 · 字库建构 · 共 <span id="articleCount">0</span> 篇</div>
 
-        <!-- ===== 文章列表（由 JS 动态生成） ===== -->
+        <!-- ===== 文章列表 ===== -->
         <ul class="catalog-list" id="catalogList">
             <!-- JS 渲染 -->
         </ul>
 
-        <!-- ===== 工具下载（无图标） ===== -->
+        <!-- ===== 工具下载 ===== -->
         <div class="tool-download">
             <div class="info">
                 <strong id="toolName">字库制作</strong> 工具下载
@@ -324,12 +324,8 @@
                 name: '字库制作',
                 subtitle: '字体源流 · 字库建构',
                 articles: [
-                    { id: '01-字库概论', title: '字库概论：从刻版到数字', desc: '总纲 · 字库的演变' },
-                    { id: '02-宋体源流', title: '宋体源流：雕版与印刷字体', desc: '宋体 · 仿宋 · 楷体' },
-                    { id: '03-楷法精要', title: '楷法精要：手写与刻本的融合', desc: '楷体 · 行楷 · 书写性' },
-                    { id: '04-字库建构', title: '字库建构：选字与排布之法', desc: '字表 · 字重 · 字距' },
-                    { id: '05-数字字体', title: '数字字体：从轮廓到渲染', desc: '矢量 · 栅格 · 渲染' },
-                    { id: '06-字库审美', title: '字库审美：风格与实用性', desc: '审美 · 识别 · 阅读' }
+                    { id: '1.字块论', title: '字块论：字库建构的单元与边界', desc: '从单个字块到完整的字库体系' },
+                    { id: '2.字块论的四翼', title: '字块论的四翼：形音义用与字库的多维展开', desc: '四翼理论在字库建构中的具体展开' }
                 ]
             };
 
@@ -337,17 +333,14 @@
             //  渲染
             // ============================================================
             const listEl = document.getElementById('catalogList');
-            const countEl = document.getElementById('articleCount');
             const titleEl = document.getElementById('seriesTitle');
             const subEl = document.getElementById('seriesSub');
             const toolNameEl = document.getElementById('toolName');
 
-            // 填充系列信息
             titleEl.innerHTML = seriesData.name + ' <span class="sub">系列</span>';
             subEl.innerHTML = seriesData.subtitle + ' · 共 <span id="articleCount">' + seriesData.articles.length + '</span> 篇';
             toolNameEl.textContent = seriesData.name;
 
-            // 生成列表
             function renderList() {
                 const html = seriesData.articles.map((item, idx) => {
                     const num = String(idx + 1).padStart(2, '0');
@@ -364,15 +357,12 @@
 
             renderList();
 
-            // ============================================================
-            //  返回顶部
-            // ============================================================
             document.getElementById('backToTop').addEventListener('click', function(e) {
                 e.preventDefault();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
 
-            console.log('📋 目录页已加载，共 ' + seriesData.articles.length + ' 篇文章');
+            console.log('📋 字库制作目录页已加载，共 ' + seriesData.articles.length + ' 篇文章');
             console.log('💡 在 seriesData.articles 数组中增删条目，列表自动更新');
         })();
     </script>
