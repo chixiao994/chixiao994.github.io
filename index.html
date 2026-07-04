@@ -31,7 +31,7 @@
       text-align: center;
     }
 
-    /* ===== 第一层 · 标题（篆体） ===== */
+    /* ===== 第一层 · 标题 ===== */
     .header h1 {
       font-size: 4.8rem;
       font-weight: normal;
@@ -40,7 +40,13 @@
       margin-bottom: 0.6rem;
       line-height: 1.15;
       text-shadow: 0 2px 4px rgba(44, 31, 21, 0.06);
-      font-family: '华文篆书', '方正小篆体', 'STZhongsong', '汉仪篆书', '篆体', '华文楷体', 'KaiTi', '宋体', serif;
+      /* 
+        优先篆体 → 若无则用黑体 → 再回退楷体 → 宋体 
+        黑体选项覆盖 Windows (Microsoft YaHei, SimHei) 与 macOS (PingFang SC, Heiti SC)
+      */
+      font-family: '华文篆书', '方正小篆体', 'STZhongsong', '汉仪篆书', '篆体',
+                   'Microsoft YaHei', 'SimHei', 'PingFang SC', 'Heiti SC',
+                   '华文楷体', 'KaiTi', '宋体', serif;
     }
 
     /* ===== 第二层 · 序言 ===== */
@@ -59,7 +65,7 @@
       display: inline;
     }
 
-    /* ===== 第三层 · 四个版块（隶书） ===== */
+    /* ===== 第三层 · 四个版块 ===== */
     .grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -84,8 +90,12 @@
                   inset 0 1px 0 rgba(255, 248, 240, 0.5);
       border: none;
       transform: translateY(0);
-      /* 隶书优先，回退至楷体、宋体 */
-      font-family: '华文隶书', '方正隶书', '汉仪隶书', 'STLiti', '隶书', '华文楷体', 'KaiTi', '宋体', serif;
+      /* 
+        优先隶书 → 若无则用楷体 → 再回退宋体 
+        楷体在手机和电脑上普遍存在，作为可靠回退
+      */
+      font-family: '华文隶书', '方正隶书', '汉仪隶书', 'STLiti', '隶书',
+                   '华文楷体', 'KaiTi', '宋体', serif;
     }
 
     .item:hover {
@@ -151,7 +161,7 @@
 <body>
 <div class="scroll">
 
-  <!-- 第一层 · 标题（篆体） -->
+  <!-- 第一层 · 标题（篆体 → 黑体 → 楷体） -->
   <div class="header">
     <h1>铭心阁</h1>
   </div>
@@ -161,7 +171,7 @@
     <p>铭心阁者，聚简帙以齐古籍，立识辨辑以辨源流，设自然钟以观天时，创医战以习岐黄。愿承先贤之智，启后学之思。</p>
   </div>
 
-  <!-- 第三层 · 四个版块（隶书） -->
+  <!-- 第三层 · 四个版块（隶书 → 楷体） -->
   <div class="grid">
     <a href="./jianzhi/" class="item">简帙</a>
     <a href="./shibianji/" class="item">识辨辑</a>
