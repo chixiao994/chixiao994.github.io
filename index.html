@@ -40,13 +40,16 @@
       margin-bottom: 0.6rem;
       line-height: 1.15;
       text-shadow: 0 2px 4px rgba(44, 31, 21, 0.06);
+      /* 
+        篆体优先 → 各类黑体（覆盖iOS/Android/Windows/macOS） → 楷体 → 宋体
+      */
       font-family: '华文篆书', '方正小篆体', 'STZhongsong', '汉仪篆书', '篆体',
-                   'PingFang SC', 'Heiti SC', 'STHeiti',
-                   'Microsoft YaHei', 'SimHei',
-                   'Roboto', 'Noto Sans CJK SC', 'Noto Sans',
-                   '-apple-system', 'BlinkMacSystemFont', 'system-ui',
-                   'sans-serif',
-                   '华文楷体', 'KaiTi', '宋体', serif;
+                   'PingFang SC', 'Heiti SC', 'STHeiti',          /* iOS & macOS */
+                   'Microsoft YaHei', 'SimHei',                  /* Windows */
+                   'Roboto', 'Noto Sans CJK SC', 'Noto Sans',   /* Android & 通用 */
+                   '-apple-system', 'BlinkMacSystemFont', 'system-ui', /* 系统默认 */
+                   'sans-serif',                                 /* 最终无衬线 */
+                   '华文楷体', 'KaiTi', '宋体', serif;            /* 最后兜底 */
     }
 
     /* ===== 第二层 · 序言 ===== */
@@ -56,15 +59,15 @@
       color: #6b5a4a;
       letter-spacing: 3px;
       margin: 0.2rem 0 2.8rem 0;
-      padding: 0 1.5rem;
+      padding: 0 2.5rem;        /* 左右留白适中，便于阅读 */
       font-weight: 300;
       opacity: 0.8;
-      text-align: left;
+      text-align: left;         /* 整段左对齐，无首行缩进 */
     }
 
     .preface p {
-      text-indent: 0;        /* 无首行缩进，整段左对齐 */
       margin: 0;
+      text-indent: 0;           /* 显式去掉首行缩进 */
     }
 
     /* ===== 第三层 · 四个版块 ===== */
@@ -92,6 +95,10 @@
                   inset 0 1px 0 rgba(255, 248, 240, 0.5);
       border: none;
       transform: translateY(0);
+      /* 
+        隶书优先 → 楷体 → 宋体 
+        楷体在手机和电脑上普遍存在，作为可靠回退
+      */
       font-family: '华文隶书', '方正隶书', '汉仪隶书', 'STLiti', '隶书',
                    '华文楷体', 'KaiTi', '宋体', serif;
     }
@@ -129,7 +136,7 @@
       }
       .preface {
         font-size: 0.95rem;
-        padding: 0 0.8rem;
+        padding: 0 1.2rem;      /* 小屏适当收窄左右留白 */
         margin-bottom: 2rem;
       }
     }
@@ -150,8 +157,8 @@
       .preface {
         font-size: 0.9rem;
         line-height: 1.9;
+        padding: 0 0.8rem;
         margin-bottom: 1.6rem;
-        padding: 0 0.4rem;
       }
     }
   </style>
@@ -159,17 +166,17 @@
 <body>
 <div class="scroll">
 
-  <!-- 第一层 · 标题 -->
+  <!-- 第一层 · 标题（篆体 → 各种黑体 → 楷体） -->
   <div class="header">
     <h1>铭心阁</h1>
   </div>
 
-  <!-- 第二层 · 序言（整段左对齐，无缩进） -->
+  <!-- 第二层 · 序言（左对齐，无首行缩进） -->
   <div class="preface">
     <p>铭心阁者，聚简帙以齐古籍，立识辨辑以辨源流，设自然钟以观天时，创医战以习岐黄。愿承先贤之智，启后学之思。</p>
   </div>
 
-  <!-- 第三层 · 四个版块 -->
+  <!-- 第三层 · 四个版块（隶书 → 楷体） -->
   <div class="grid">
     <a href="./jianzhi/" class="item">简帙</a>
     <a href="./shibianji/" class="item">识辨辑</a>
