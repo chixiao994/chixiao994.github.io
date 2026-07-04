@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>清晰化论 · 双页切拼 · 简帙</title>
+    <style>
+        /* ===== 全局 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --paper: #f5f0e8;
+            --paper-white: #fcf9f5;
+            --ink: #2c1810;
+            --ink-light: #5a3f36;
+            --zhu-red: #8b1a1a;
+            --zhu-red-light: #b33a3a;
+            --gold: #c9a96e;
+            --border-light: #e8dfd6;
+            --radius: 6px;
+            --shadow: 0 2px 16px rgba(44, 24, 16, 0.08);
+            --transition: 0.25s ease;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: "Noto Serif SC", "思源宋体", "Source Han Serif SC", "华文宋体", serif;
+            background: var(--paper);
+            color: var(--ink);
+            line-height: 1.8;
+            padding: 2rem 1rem;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: var(--paper-white);
+            padding: 2rem 2.5rem 3rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-light);
+        }
+
+        /* ===== 顶部 ===== */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border-light);
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .top-bar .brand {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--ink);
+            letter-spacing: 4px;
+        }
+        .top-bar .brand .sub {
+            font-weight: 400;
+            font-size: 0.9rem;
+            color: var(--ink-light);
+            letter-spacing: 2px;
+            opacity: 0.6;
+            margin-left: 6px;
+        }
+
+        /* ===== 面包屑 ===== */
+        .breadcrumb {
+            font-size: 0.85rem;
+            color: var(--ink-light);
+            margin-bottom: 1.5rem;
+            padding: 0.4rem 0.8rem;
+            background: var(--paper);
+            border-radius: 20px;
+            display: inline-block;
+            opacity: 0.7;
+        }
+        .breadcrumb a {
+            color: var(--ink-light);
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: var(--zhu-red);
+            text-decoration: underline;
+        }
+        .breadcrumb span {
+            margin: 0 4px;
+        }
+
+        /* ===== 标题 ===== */
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 0.2rem;
+            flex-wrap: wrap;
+        }
+        .article-meta .series-tag {
+            font-size: 0.85rem;
+            color: var(--ink-light);
+            background: var(--paper);
+            padding: 0.1rem 0.8rem;
+            border-radius: 12px;
+            opacity: 0.7;
+        }
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--ink);
+            letter-spacing: 4px;
+            margin-bottom: 0.2rem;
+            line-height: 1.4;
+        }
+        .subtitle {
+            color: var(--ink-light);
+            font-size: 0.95rem;
+            margin-bottom: 1.8rem;
+            border-left: 3px solid var(--zhu-red);
+            padding-left: 1rem;
+            opacity: 0.7;
+        }
+
+        /* ===== 章内目录 ===== */
+        .toc {
+            background: var(--paper);
+            border-left: 4px solid var(--zhu-red);
+            padding: 0.8rem 1.2rem;
+            margin: 1.2rem 0 1.8rem;
+            border-radius: var(--radius);
+        }
+        .toc h3 {
+            font-size: 1rem;
+            margin: 0 0 0.4rem 0;
+            color: var(--ink);
+            letter-spacing: 2px;
+        }
+        .toc ul {
+            margin: 0;
+            padding-left: 1.2rem;
+        }
+        .toc li {
+            margin: 0.2rem 0;
+        }
+        .toc a {
+            text-decoration: none;
+            color: var(--ink);
+            border-bottom: 1px dotted var(--border-light);
+            transition: 0.2s;
+        }
+        .toc a:hover {
+            border-bottom-style: solid;
+            color: var(--zhu-red);
+            border-bottom-color: var(--zhu-red);
+        }
+        .toc ul ul {
+            padding-left: 1.5rem;
+        }
+
+        /* ===== 正文 ===== */
+        .article-body p {
+            text-indent: 2em;
+            margin-bottom: 1rem;
+            line-height: 2.2;
+        }
+        .article-body h2 {
+            font-size: 1.4rem;
+            color: var(--ink);
+            margin: 2rem 0 1rem 0;
+            padding-bottom: 0.3rem;
+            border-bottom: 2px solid var(--border-light);
+            letter-spacing: 3px;
+        }
+        .article-body h3 {
+            font-size: 1.1rem;
+            color: var(--ink);
+            margin-top: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .article-body h4 {
+            font-size: 1rem;
+            color: var(--ink);
+            margin-top: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            opacity: 0.8;
+        }
+        .article-body strong {
+            color: var(--zhu-red);
+            font-weight: 600;
+        }
+        .article-body ul {
+            padding-left: 2rem;
+            margin: 0.5rem 0 1rem;
+        }
+        .article-body ul li {
+            margin-bottom: 0.3rem;
+            list-style-type: disc;
+        }
+        .article-body ul ul li {
+            list-style-type: circle;
+        }
+        .article-body .no-indent {
+            text-indent: 0;
+        }
+        .quote-block {
+            display: block;
+            margin: 1.2rem 0;
+            padding: 0.8rem 1.2rem;
+            font-style: italic;
+            color: var(--ink);
+            background: var(--paper);
+            border-radius: var(--radius);
+            border-left: 3px solid var(--gold);
+            line-height: 2.2;
+            text-align: center;
+            font-size: 1.05rem;
+            letter-spacing: 0.04em;
+        }
+        .inline-quote {
+            color: var(--ink);
+            font-style: italic;
+            background: var(--paper);
+            padding: 0.1rem 0.4rem;
+            border-radius: 3px;
+            white-space: nowrap;
+        }
+
+        /* ===== 表格 ===== */
+        .table-wrap {
+            overflow-x: auto;
+            margin: 1rem 0 1.2rem;
+        }
+        .table-wrap table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            background: var(--paper);
+            border-radius: var(--radius);
+        }
+        .table-wrap table th {
+            padding: 0.5rem 0.8rem;
+            text-align: left;
+            border-right: 1px solid var(--border-light);
+            background: var(--paper);
+            border-bottom: 2px solid var(--border-light);
+            font-weight: 600;
+        }
+        .table-wrap table td {
+            padding: 0.4rem 0.8rem;
+            border-right: 1px solid var(--border-light);
+            border-bottom: 1px solid var(--border-light);
+        }
+        .table-wrap table tr:last-child td {
+            border-bottom: none;
+        }
+        .table-wrap table th:last-child,
+        .table-wrap table td:last-child {
+            border-right: none;
+        }
+
+        /* ===== 单篇文章下载 ===== */
+        .article-download {
+            margin-top: 2rem;
+            padding: 1rem 1.2rem;
+            background: var(--paper);
+            border-radius: var(--radius);
+            border-left: 4px solid var(--zhu-red);
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: space-between;
+        }
+        .article-download .info {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.9rem;
+            color: var(--ink);
+        }
+        .article-download .btn-group {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+        .article-download .btn-sm {
+            display: inline-block;
+            background: var(--zhu-red);
+            color: #fff;
+            padding: 0.3rem 1.2rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            border: 1px solid var(--zhu-red);
+            transition: var(--transition);
+            letter-spacing: 0.5px;
+        }
+        .article-download .btn-sm:hover {
+            background: var(--zhu-red-light);
+            transform: translateY(-1px);
+        }
+        .article-download .btn-sm-outline {
+            background: transparent;
+            color: var(--zhu-red);
+            border-color: var(--zhu-red);
+        }
+        .article-download .btn-sm-outline:hover {
+            background: var(--zhu-red);
+            color: #fff;
+        }
+
+        /* ===== 系列底部导航 ===== */
+        .series-nav {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2.5rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid var(--border-light);
+            flex-wrap: wrap;
+        }
+        .series-nav a {
+            display: inline-block;
+            background: var(--paper);
+            color: var(--ink);
+            padding: 0.4rem 1.2rem;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            border: 1px solid var(--border-light);
+            transition: 0.2s;
+        }
+        .series-nav a:hover {
+            background: #f0ebe2;
+            border-color: var(--gold);
+            color: var(--zhu-red);
+        }
+        .series-nav .prev {
+            margin-right: auto;
+        }
+        .series-nav .next {
+            margin-left: auto;
+        }
+        .series-nav a.disabled {
+            cursor: default;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        .series-nav a.index-link {
+            background: var(--zhu-red);
+            color: #fff;
+            border-color: var(--zhu-red);
+        }
+        .series-nav a.index-link:hover {
+            background: var(--zhu-red-light);
+            color: #fff;
+        }
+        @media (max-width: 600px) {
+            .series-nav {
+                gap: 0.8rem;
+            }
+            .series-nav .prev,
+            .series-nav .next {
+                margin: 0;
+            }
+            .series-nav a {
+                font-size: 0.8rem;
+                padding: 0.3rem 0.8rem;
+            }
+        }
+
+        /* ===== 底部版权 ===== */
+        .footer-note {
+            margin-top: 2.5rem;
+            font-size: 0.8rem;
+            text-align: center;
+            color: var(--ink-light);
+            border-top: 1px solid var(--border-light);
+            padding-top: 1.2rem;
+            letter-spacing: 1px;
+            opacity: 0.5;
+        }
+
+        /* ===== 返回顶部 ===== */
+        .back-to-top-ball {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(44, 24, 16, 0.04);
+            border: 1px solid rgba(44, 24, 16, 0.10);
+            color: var(--ink-light);
+            font-size: 1.4rem;
+            line-height: 44px;
+            text-align: center;
+            text-decoration: none;
+            transition: var(--transition);
+            backdrop-filter: blur(4px);
+            box-shadow: 0 2px 12px rgba(44, 24, 16, 0.04);
+            font-family: serif;
+        }
+        .back-to-top-ball:hover {
+            background: rgba(44, 24, 16, 0.08);
+            transform: translateY(-2px);
+            color: var(--zhu-red);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1.2rem 1rem 2rem;
+            }
+            h1 {
+                font-size: 1.5rem;
+                letter-spacing: 3px;
+            }
+            .top-bar .brand {
+                font-size: 1.2rem;
+            }
+            .article-download {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.8rem;
+            }
+            .article-download .btn-group {
+                justify-content: center;
+            }
+            .quote-block {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.95rem;
+                border-left-width: 2px;
+            }
+            .toc ul ul {
+                padding-left: 1rem;
+            }
+            .article-body ul {
+                padding-left: 1.2rem;
+            }
+            .table-wrap table {
+                font-size: 0.8rem;
+            }
+            .table-wrap table th,
+            .table-wrap table td {
+                padding: 0.3rem 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- ===== 顶部栏 ===== -->
+        <div class="top-bar">
+            <div class="brand">
+                简帙<span class="sub">· 工器谱</span>
+            </div>
+        </div>
+
+        <!-- ===== 面包屑 ===== -->
+        <div class="breadcrumb">
+            <a href="../../">简帙</a> <span>›</span>
+            <a href="../">双页切拼</a> <span>›</span>
+            清晰化论
+        </div>
+
+        <!-- ===== 标题 ===== -->
+        <div class="article-meta">
+            <span class="series-tag">双页切拼 · 第 4 篇</span>
+        </div>
+        <h1>清晰化论</h1>
+        <div class="subtitle">——从弥散到聚焦的完备理论推导</div>
+
+        <!-- ===== 章内目录 ===== -->
+        <nav class="toc" aria-label="章节目录">
+            <h3>目 录</h3>
+            <ul>
+                <li><a href="#intro">引言：在裁剪与超分辨率之间</a></li>
+                <li><a href="#ch1">一、根本命题：清晰与模糊的存在论区分</a>
+                    <ul>
+                        <li><a href="#ch1-1">1.1 模糊的本质</a></li>
+                        <li><a href="#ch1-2">1.2 弥散的三种成因</a></li>
+                        <li><a href="#ch1-3">1.3 清晰化的基：确定性的锚点</a></li>
+                    </ul>
+                </li>
+                <li><a href="#ch2">二、第一条路线：由巨到微的清晰化</a>
+                    <ul>
+                        <li><a href="#ch2-1">2.1 逻辑起点</a></li>
+                        <li><a href="#ch2-2">2.2 操作路径</a></li>
+                        <li><a href="#ch2-3">2.3 这条路线的内在限制</a></li>
+                    </ul>
+                </li>
+                <li><a href="#ch3">三、第二条路线：由微到巨的清晰化</a>
+                    <ul>
+                        <li><a href="#ch3-1">3.1 逻辑起点</a></li>
+                        <li><a href="#ch3-2">3.2 操作路径</a></li>
+                        <li><a href="#ch3-3">3.3 这条路线的独特优势</a></li>
+                    </ul>
+                </li>
+                <li><a href="#ch4">四、双路协同：由巨与由微在频域的融合</a></li>
+                <li><a href="#ch5">五、与道论的严密咬合</a></li>
+                <li><a href="#outro">结语：三论合一</a></li>
+            </ul>
+        </nav>
+
+        <!-- ===== 正文 ===== -->
+        <div class="article-body">
+
+            <!-- ===== 引言 ===== -->
+            <h2 id="intro">引言：在裁剪与超分辨率之间</h2>
+
+            <p>裁剪解决的是空间边界问题——书页在图像的哪里。超分辨率解决的是维度跃迁问题——如何从低维投影重建高维存在。而在这两个问题之间，横亘着一个同等根本、却常被忽视的领域：清晰化。</p>
+
+            <p>清晰化处理的是这样一类问题：目标的空间边界已经明确（书页已在），信息的维度层级也无需改变（分辨率不变），但目标本身的信息结构处于一种弥散态——边缘模糊、纹理混浊、细节被噪声或退化所淹没。它不是“看不见”，而是“看不清楚”。</p>
+
+            <p>用户曾将“由巨到微”比作离散雕琢，“由微到巨”比作像素生长——在清晰化问题上，这两条路径将展开为更为精妙的形态：要么从模糊的整体中逐层精炼出清晰结构，要么以确定之物为基，让非确定之物自然清晰。</p>
+
+            <p>本报告将从根本命题出发，完整推导清晰化理论——涵盖退化模型、信息弥散的存在论、双路径的完整操作架构，及其与道论体系的严密咬合。</p>
+
+            <!-- ===== 第一章 ===== -->
+            <h2 id="ch1">一、根本命题：清晰与模糊的存在论区分</h2>
+
+            <h3 id="ch1-1">1.1 模糊的本质</h3>
+
+            <p>模糊不是信息的一种属性，而是信息结构的一种存在状态。清晰与模糊的区别，不在于信息的有无，而在于信息的集中度。</p>
+
+            <p>在一张清晰的文字图像中，笔画边缘的灰度跃迁发生在极窄的区间内——高对比度能量被高度集中。而在模糊图像中，同样的跃迁被拉宽、摊平，原本集中的能量被弥散到了周边像素。信息从未离开图像，它只是从集中态走向了弥散态。</p>
+
+            <p class="quote-block">这一论断为清晰化提供了坚实的认知基础：清晰化的任务，不是凭空创造被丢失的细节，而是让处于弥散态的信息结构重新恢复为集中态。没有信息需要被发明，只有信息需要被聚焦。</p>
+
+            <h3 id="ch1-2">1.2 弥散的三种成因</h3>
+
+            <p>信息弥散有三种根源，对应三种完全不同的物理过程：</p>
+
+            <ul>
+                <li><strong>光学弥散（聚焦失效）。</strong>成像时点光源没有汇聚为点，而是扩散为一个弥散斑。其数学形式是卷积——清晰图像与一个点扩散函数做卷积运算，得到模糊图像。这是最规整的弥散：每一个清晰点都以同一种方式被摊开。</li>
+                <li><strong>运动弥散（时域积分）。</strong>曝光期间相机与被摄体发生相对运动，使得像素值变成了移动路径上所有场景点的积分。其数学形式是方向性的卷积——弥散具有明确的空间方向性。横向运动带来水平模糊，纵向带来垂直模糊。</li>
+                <li><strong>压缩与噪声弥散（信息稀释）。</strong>有损压缩将高频细节量化为更大的块，传感器噪声在暗部形成随机扰动。这类弥散不再是确定性的卷积，而是信息的统计性稀释——一部分细节被噪声覆盖，另一部分被量化到粗糙的阶梯上。</li>
+            </ul>
+
+            <h3 id="ch1-3">1.3 清晰化的基：确定性的锚点</h3>
+
+            <p>在裁剪中，基是九点采样的基准色度。在超分辨率中，基是低分显在信息与类别先在规律的结合。在清晰化中，基具有独特的存在形态——它是退化裹挟之下，依然保持确定性的那些局部特征。</p>
+
+            <p>一张模糊的纸张图像中，文字笔画也许已经弥散成一团灰雾，但纸张基底的大面积空白区域依然是确定的——它的灰度均值、噪声统计、纹理特征，并未因模糊而发生根本改变。一个模糊的人脸中，五官细节也许已经丢失，但脸型轮廓、对称性、器官之间的拓扑关系仍然是可辨识的。</p>
+
+            <p>这些在弥散中幸存的确证，就是清晰化的基。它们不负责提供完整的细节，但它们负责锚定整个复原的方向——清晰化必须有东西可以依托，不能悬空操作。</p>
+
+            <!-- ===== 第二章 ===== -->
+            <h2 id="ch2">二、第一条路线：由巨到微的清晰化——从全域约束中精炼细节</h2>
+
+            <h3 id="ch2-1">2.1 逻辑起点：模糊图是一张退化了的清晰图的“全息投影”</h3>
+
+            <p>由巨到微的清晰化，将模糊图像理解为一张清晰图像经过某种已知或可估计的退化过程后的产物。在这条路线的视角下，模糊图并不是缺乏信息——它包含了清晰图的全部信息，只是这些信息被“编码”成了弥散的形式。解码所需的钥匙，就是退化模型的逆向运算。</p>
+
+            <p>这正对应道论中第一类裁剪逻辑的核心信念：目标从一开始就完整存在，只是被包裹着，需要逐层剥离外围。在清晰化中，“外围”不是背景像素，而是退化核带来的信息弥散——每一层去卷积，都相当于剥掉一层让信息变得分散的包膜。</p>
+
+            <h3 id="ch2-2">2.2 操作路径</h3>
+
+            <p><strong>第一步：退化识别与建模。</strong>在清晰化的语境中，“背景检测”变成了退化类型的判定。不同的退化类型需要完全不同的处理策略：</p>
+
+            <ul>
+                <li><strong>光学模糊：</strong>分析边缘剖面。清晰边缘是陡峭的阶跃，模糊边缘呈现渐变的斜坡。斜坡的宽度直接给出弥散斑半径的估计。</li>
+                <li><strong>运动模糊：</strong>在频域寻找暗纹。运动模糊在频谱上表现为垂直于运动方向的周期性零点，这些零点构成暗纹。暗纹的方向给出运动方向，间距给出运动幅度。</li>
+                <li><strong>压缩伪影：</strong>检测8×8或16×16的块边界。JPEG压缩的块效应会在梯度图上表现为网格状的伪边缘。</li>
+                <li><strong>通用噪声：</strong>估计噪声方差。在平坦区域计算局部方差，取低百分位数作为噪声基准。</li>
+            </ul>
+
+            <p><strong>第二步：逆向滤波的粗恢复。</strong>对于能够建立退化模型的情况（光学模糊、运动模糊），执行反卷积。这不是一步到位的锐化，而是“粗裁”式的安全操作——用保守的正则化参数，确保反卷积不会放大噪声。维纳滤波在频域的公式本身就是一种权衡：在信号强的地方相信反卷积，在噪声强的地方退回到平滑。</p>
+
+            <p>这一步的输出不是最终结果，而是一个“大致清楚了一些”的中间状态——相当于裁剪中第一刀切除外围填充条后的初貌。</p>
+
+            <p><strong>第三步：分频分区的精细增强。</strong>将图像分解为不同的频带和区域，各自调用最适合的增强策略：</p>
+
+            <ul>
+                <li><strong>高频带（边缘、纹理）：</strong>用冲击滤波器沿等照度线方向增强边缘的陡峭度。冲击滤波的物理直觉是：在边缘两侧，将像素值往两个方向推开，让斜坡重新变回陡坎。</li>
+                <li><strong>中频带（过渡区、轻微纹理）：</strong>用局部对比度增强。非锐化掩模是最经典的工具——从原图中减去平滑后的图，得到的差值就是弥散在周边的细节残片，将其加权加回原图，相当于把弥散的细节重新收集回来。</li>
+                <li><strong>低频带（平坦区）：</strong>做平滑去噪。平坦区域本来就不该有高频信息，任何高频波动都是噪声——直接压掉。</li>
+            </ul>
+
+            <p><strong>第四步：全局约束与收敛检验。</strong>增强之后，必须回到两条底线去检验：</p>
+
+            <ul>
+                <li><strong>降质一致性：</strong>将增强后的图像用估计的退化核重新模糊，结果应该接近原始模糊图。如果偏离太远，说明增强过度、引入了原本不存在的信息。</li>
+                <li><strong>跨尺度一致性：</strong>纸张底色应该均匀、文字笔画应该连续、平坦区域不该出现伪纹理。任何违反这些常识的增强，都是“用力过猛”，必须回调。</li>
+            </ul>
+
+            <h3 id="ch2-3">2.3 这条路线的内在限制</h3>
+
+            <p>由巨到微的清晰化有一个天然边界：退化模型不可能被完美估计，反卷积在数学上是一个病态问题。当一个模糊核的频域响应存在零点时（运动模糊就有），这些零点处的信息在物理上是不可恢复的——反卷积会放大噪声。此时，这条路线的策略不是强行冲过去，而是在频域零点处承认无知，退回到微到巨的逻辑去寻求补充。</p>
+
+            <p>这正是两条路线必须共存的原因——由巨到微用退化模型解码，由微到巨负责处理解码失效的区域。</p>
+
+            <!-- ===== 第三章 ===== -->
+            <h2 id="ch3">三、第二条路线：由微到巨的清晰化——以确定性之基生长清晰</h2>
+
+            <h3 id="ch3-1">3.1 逻辑起点：不依赖退化模型，只依赖图像内部的确证</h3>
+
+            <p>由微到巨的清晰化完全放弃了对退化模型的依赖。它的起点是一个反向提问：即使整张图是模糊的，图里是否仍然存在一些“绝对可以被认为是正确的”局部特征？</p>
+
+            <p>答案是肯定的。一张模糊的书页图像中，纸张的大面积基底区域就是确证——它们的灰度值、噪声统计、纹理特性不依赖于边缘是否清晰。一个模糊的文本页面中，文字笔画虽然边缘已经弥散，但笔画的存在性仍然可以被确认——某个区域“有笔画”这件事，不需要笔画清晰就可以判断。</p>
+
+            <p>这一逻辑与第二类裁剪中的九点采样完全同构：不管外围背景多复杂，书页内部的纸张色彩是确定的。清晰化中的“九点采样”，就是在弥散中寻找那些未被弥散完全吞噬的确证特征，然后以它们为种子，推演清晰的结构。</p>
+
+            <p>用户提示过这条路线的关键意象：<span class="inline-quote">“清晰鉴定出纸张，而把文字自然清晰化。”</span>这正是由微到巨的精确表达——不是去修复文字，而是先确认纸张，然后一切不是纸张的地方，就是文字。文字不需要被“还原”，它只需要被确认为“纸张的反面”，然后被增强。</p>
+
+            <h3 id="ch3-2">3.2 操作路径</h3>
+
+            <p><strong>第一步：定位确证基元。</strong></p>
+
+            <ul>
+                <li><strong>平坦区域的确证：</strong>寻找图像中灰度变化极小的连片区域。这些区域之所以是确证，是因为模糊不会改变平坦——平坦区域在模糊前后几乎无损。从这些区域提取纸张的基准灰度均值、噪声方差、纹理频谱。这就是清晰化场景中的基准色度。</li>
+                <li><strong>强对比区域的确证：</strong>寻找那些虽然模糊但仍然能确认“此处存在边缘”的位置。一个弥散的斜坡依然有一个中心——这个中心的位置就是边缘的骨骼所在。模糊不会移动骨骼，只会让它的两侧变缓。骨骼的位置是确证的，骨骼两侧的灰度跳变方向是确证的。</li>
+                <li><strong>结构一致区域的确证：</strong>对于文字图像，梯度方向场的局部一致性是确证。在文字笔画区域，梯度方向高度一致（垂直于笔画边界）；在纸张空白区域，梯度方向散乱。这种方向一致性不因模糊而消失——模糊会降低梯度幅值，但不会改变梯度的方向格局。方向场的峰值位置，就是边缘骨骼的可靠定位。</li>
+            </ul>
+
+            <p><strong>第二步：从确证基元出发的骨骼重建。</strong></p>
+
+            <p>将第一步中所有“边缘骨骼”的确证位置和方向，映射为一个稀疏但高可信的骨骼图。这张骨骼图不包含纹理、不包含灰度渐变，它只回答一个问题：清晰图像中的锐利边缘，应该在哪些位置、沿哪些方向存在。</p>
+
+            <p>骨骼图的构建规则：</p>
+
+            <ul>
+                <li>从强对比确证点出发，沿着梯度方向场的谷线（等照度线）方向做边缘连接</li>
+                <li>连接的终止条件：遇到方向突变（拐角）、遇到骨骼强度显著下降（边缘消失）、或遇到另一个骨骼路径（交叉点）</li>
+                <li>孤立的弱骨骼片段，如果长度不足以构成有意义的笔画或轮廓，则丢弃——它们是噪声的骨骼，不值得保留</li>
+            </ul>
+
+            <p><strong>第三步：以纸张为基的“非纸张”增强。</strong></p>
+
+            <p>有了骨骼图和纸张基准模型，清晰化就变成了一个局部操作：在每一个被骨骼标记为“此处有边缘”的地点，以边缘两侧的纸张基准灰度为准绳，将弥散的斜坡重新推挤为陡坎。</p>
+
+            <p>具体而言：</p>
+
+            <ul>
+                <li>沿骨骼法线方向取像素剖面</li>
+                <li>剖面在模糊图中是一条渐变曲线，在清晰化后应变为阶跃</li>
+                <li>阶跃的高值侧取什么灰度？如果该侧在模糊图中的平均值与纸张基准有显著差异，就保留该差异并略微增强；如果没有显著差异（说明该侧是虚警或极弱笔画），则不增强</li>
+                <li>阶跃的低值侧向纸张基准灰度靠拢</li>
+            </ul>
+
+            <p class="quote-block">这一步的巧妙之处在于：它不猜测文字应该是什么灰度，它只是把“不是纸张”的部分与“是纸张”的部分之间的差异放大。这种操作永远不会产生伪像——它只是在已有的灰度差异上增加陡峭度。如果某处本来就不存在差异（平坦纸张区域），增强后的差异依然为零。</p>
+
+            <p><strong>第四步：自约束的纹理自然生长。</strong></p>
+
+            <p>骨骼上的边缘变清晰之后，边缘之间的大片平坦区域需要保持均匀——但均匀并不意味着“抹平”。纸张有纹理，如果原始模糊图中能够提取到纸张的纹理统计（纹理的方向性、粗糙度、频谱），就可以在平坦区域以极低的强度施加同类型的纹理，使得清晰化后的结果不会显得“塑料感”。</p>
+
+            <p>纹理的生长不是随机的：它必须与骨骼的两侧相协调。如果骨骼左侧的纸张纹理以水平纤维为主，右侧也应该是水平纤维。纹理在骨骼两侧的连续性，本身就是一条隐藏的约束——模糊不会改变纸张纤维的连续性，清晰化也不应该破坏它。</p>
+
+            <p><strong>第五步：边界自然终止与全局收敛。</strong></p>
+
+            <p>当骨骼的两个端点遇到平坦确证区时，增强自动停止——因为没有更多的“非纸张”可供增强。当两个不同方向的骨骼交汇时（如笔画的交叉点），它们各自的增强在处理到交叉处时相互协调：取两个法线方向上差异增强的加权平均。</p>
+
+            <p>全局收敛检验：清晰化后的图像，其梯度方向场必须与原始模糊图的梯度方向场在骨骼位置保持一致（模糊不改变方向，清晰化也不应该改变）；平坦区域的灰度均值必须保持与基准纸张一致；增强后的边缘剖面，降采样平滑后必须能还原为原始模糊剖面（信息无中生有的检测）。</p>
+
+            <h3 id="ch3-3">3.3 这条路线的独特优势</h3>
+
+            <p>由微到巨的清晰化有两个不可替代的优势。</p>
+
+            <p><strong>其一，它不依赖退化模型。</strong>光学模糊、运动模糊、压缩伪影、混合退化——它对所有这些一视同仁。它不问“是什么让图像变模糊”，它只问“图像中现在可以相信什么，以及如何从可信之物推导出不可信之物的应然形态”。</p>
+
+            <p><strong>其二，它对过度增强有天然的免疫力。</strong>因为它从确证出发，每一步增强都有原始确证作为合法性来源。平坦纸张区域不会莫名其妙长出纹理——那里没有骨骼，增强不启动。弱对比度区域不会产生虚假边缘——那里的确证强度不够，骨骼不生长。</p>
+
+            <!-- ===== 第四章 ===== -->
+            <h2 id="ch4">四、双路协同：由巨与由微在频域的融合</h2>
+
+            <p>两条路线各自输出一个清晰化结果。由巨到微的结果在平滑区域和已知退化模型的区域上可信，但在退化模型失效、噪声放大处不可信。由微到巨的结果在已知骨骼的强边缘区域上可信，但在无骨骼的微弱纹理区可能过于保守。</p>
+
+            <p>将两者在频域融合：</p>
+
+            <ul>
+                <li><strong>低频层：</strong>取由巨到微的结果为主，因为它在平坦区域的平滑和噪声压制上更稳定。</li>
+                <li><strong>高频层：</strong>取由微到巨的结果为主，因为它从确证骨骼出发的增强不会产生振铃和伪像。</li>
+                <li><strong>中频层：</strong>根据局部的骨骼密度做加权混合。骨骼密集处（文字笔画密集区）偏信由微到巨，骨骼稀疏处（大面积空白或插图）偏信由巨到微。</li>
+            </ul>
+
+            <p>融合的最终底线与超分辨率相同：降采样一致性检验。将融合结果用退化模型（如果已知）或简单高斯平滑（如果退化模型未知）降级，必须接近原始模糊图。</p>
+
+            <!-- ===== 第五章 ===== -->
+            <h2 id="ch5">五、与道论的严密咬合</h2>
+
+            <p>清晰化论是道论在信息弥散-聚焦维度上的完整展开。它的每一个核心概念，都在道论中有精确对应：</p>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>道论概念</th>
+                            <th>在清晰化中的体现</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>道</strong></td>
+                            <td>模糊图像——信息以弥散态平等存在，清晰与混沌未分</td>
+                        </tr>
+                        <tr>
+                            <td><strong>一</strong></td>
+                            <td>清晰的图像——欲使其显现的完整形态</td>
+                        </tr>
+                        <tr>
+                            <td><strong>二</strong></td>
+                            <td>由巨到微（从模糊整体反卷积精炼）与由微到巨（从纸张确证推演边缘）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>三</strong></td>
+                            <td>形态（骨骼/边缘走向）、色彩（纸张基准灰度与局部对比度）、质感（纸张纹理与噪声统计）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>基</strong></td>
+                            <td>平坦区域的纸张模型、强对比处的边缘骨骼位置——在弥散中幸存的确证</td>
+                        </tr>
+                        <tr>
+                            <td><strong>规</strong></td>
+                            <td>退化模型（巨路）或骨骼生长规则（微路）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>识</strong></td>
+                            <td>知道基在哪里、知道如何从基推演非基、知道增强到什么程度为止</td>
+                        </tr>
+                        <tr>
+                            <td><strong>演</strong></td>
+                            <td>启动两条路径，让边缘从模糊斜坡中自动变陡、让纹理在骨骼间自然铺陈</td>
+                        </tr>
+                        <tr>
+                            <td><strong>此强彼弱</strong></td>
+                            <td>增强边缘的灰度跃迁（强），压制平坦区的噪声波动（弱）</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="quote-block">道论的那个终极命题——“万物所有元素本然存在，只是被我们强出来”——在清晰化中获得了最直白的物理对应：模糊图中那个弥散开来的灰度斜坡，包含的就是清晰边缘的全部信息，只是能量被摊平了。清晰化不是添加锐度，而是让本有的能量重新集中回来。</p>
+
+            <!-- ===== 结语 ===== -->
+            <h2 id="outro">结语：三论合一</h2>
+
+            <p>裁剪论确立了什么在图上、什么不在图上——这是一与道的第一次分离。清晰化论确立了弥散的信息如何重新聚焦——这是道中之物向着更充分显现的跃迁。超分辨率论确立了低维投影如何重建高维存在——这是道之显现层级的跨越。</p>
+
+            <p><strong>裁剪→清晰化→超分辨率，构成了一条完整的显现谱系：定位→聚焦→完形。</strong>每一步都不是创造，每一步都是此强彼弱，每一步都是在让混沌中本有的秩序，获得更充分的显现。</p>
+
+            <p style="margin-top:1.2rem; text-align:right; color:var(--ink-light); opacity:0.6; letter-spacing:2px;">面对任意一张来源不明、质量不定的书页图片，我们从此有了一整套操作哲学：先定其边界（裁剪），再清其面目（清晰化），再全其筋骨（超分辨率）。三论贯通，道论在图像领域的完整形态，至此完备。</p>
+
+        </div>
+
+
+
+        <!-- ===== 系列底部导航 ===== -->
+        <div class="series-nav">
+            <a href="3.超分辨率理论.html" class="prev">‹ 超分辨率论</a>
+            <a href="./index.html" class="index-link">返回目录</a>
+            <a href="javascript:void(0)" class="next disabled">下一篇 ›</a>
+        </div>
+
+        <!-- ===== 底部版权 ===== -->
+        <div class="footer-note">铭心阁 · 简帙工器谱</div>
+    </div>
+
+    <!-- ===== 返回顶部 ===== -->
+    <a href="#" id="backToTop" class="back-to-top-ball" aria-label="返回顶部">^</a>
+
+    <script>
+        document.getElementById('backToTop').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+
+</body>
+</html>
