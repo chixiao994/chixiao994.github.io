@@ -45,11 +45,11 @@
             border: 1px solid var(--border-light);
         }
 
-        /* ===== 顶部 ===== */
+        /* ===== 顶部（居中） ===== */
         .top-bar {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
             margin-bottom: 1.5rem;
             padding-bottom: 0.8rem;
             border-bottom: 1px solid var(--border-light);
@@ -61,6 +61,7 @@
             font-weight: 600;
             color: var(--ink);
             letter-spacing: 4px;
+            text-align: center;
         }
         .top-bar .brand .sub {
             font-weight: 400;
@@ -69,15 +70,6 @@
             letter-spacing: 2px;
             opacity: 0.6;
             margin-left: 6px;
-        }
-
-        /* ===== 标题 ===== */
-        h1 {
-            font-size: 2.2rem;
-            font-weight: 700;
-            color: var(--ink);
-            letter-spacing: 8px;
-            margin-bottom: 0.2rem;
         }
 
         /* ===== 序言 ===== */
@@ -93,59 +85,9 @@
             opacity: 0.8;
         }
 
-        /* ===== 主程序卡片（点击进入子页面） ===== */
-        .main-card {
-            display: block;
-            background: var(--paper);
-            border-radius: var(--radius);
-            padding: 1.8rem 2rem 1.5rem;
-            margin: 1.5rem 0 0rem;
-            border: 1px solid var(--border-light);
-            transition: var(--transition);
-            text-decoration: none;
-            color: var(--ink);
-            position: relative;
-        }
-        .main-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 6px 24px rgba(44, 24, 16, 0.08);
-            border-color: var(--gold);
-            background: #f8f4ee;
-        }
-        .main-card .card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-        .main-card .card-header h2 {
-            font-size: 1.2rem;
-            color: var(--zhu-red);
-            letter-spacing: 3px;
-            border: none;
-            margin: 0;
-        }
-        .main-card .card-header .badge {
-            font-size: 0.7rem;
-            color: var(--zhu-red);
-            border: 1px solid var(--gold);
-            border-radius: 20px;
-            padding: 0.05rem 0.7rem;
-            opacity: 0.5;
-            letter-spacing: 1px;
-        }
-        .main-card .card-desc {
-            font-size: 0.9rem;
-            color: var(--ink-light);
-            margin-top: 0.3rem;
-            line-height: 1.8;
-            opacity: 0.7;
-        }
-
-        /* ===== 独立下载区（带框） ===== */
+        /* ===== 独立下载区（带框，无图标） ===== */
         .download-section {
-            margin: 1.2rem 0 1.8rem 0;
+            margin: 0 0 1.2rem 0;
             padding: 1.2rem 1.5rem;
             background: var(--paper);
             border-radius: var(--radius);
@@ -160,9 +102,6 @@
             display: flex;
             align-items: center;
             gap: 0.6rem;
-        }
-        .download-section .info .icon {
-            font-size: 1.2rem;
         }
         .download-section .info .label {
             font-size: 0.9rem;
@@ -221,6 +160,58 @@
             .download-section .btn-group {
                 justify-content: center;
             }
+        }
+
+        /* ===== 主程序卡片（标题居中） ===== */
+        .main-card {
+            display: block;
+            background: var(--paper);
+            border-radius: var(--radius);
+            padding: 1.8rem 2rem 1.5rem;
+            margin: 0 0 1.5rem 0;
+            border: 1px solid var(--border-light);
+            transition: var(--transition);
+            text-decoration: none;
+            color: var(--ink);
+            position: relative;
+        }
+        .main-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 24px rgba(44, 24, 16, 0.08);
+            border-color: var(--gold);
+            background: #f8f4ee;
+        }
+        .main-card .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            text-align: center;
+        }
+        .main-card .card-header h2 {
+            font-size: 1.2rem;
+            color: var(--zhu-red);
+            letter-spacing: 3px;
+            border: none;
+            margin: 0;
+        }
+        .main-card .card-header .badge {
+            font-size: 0.7rem;
+            color: var(--zhu-red);
+            border: 1px solid var(--gold);
+            border-radius: 20px;
+            padding: 0.05rem 0.7rem;
+            opacity: 0.5;
+            letter-spacing: 1px;
+        }
+        .main-card .card-desc {
+            font-size: 0.9rem;
+            color: var(--ink-light);
+            margin-top: 0.3rem;
+            line-height: 1.8;
+            opacity: 0.7;
+            text-align: center;
         }
 
         /* ===== 四艺卡片（无篇数徽标） ===== */
@@ -307,10 +298,6 @@
                 grid-template-columns: 1fr 1fr;
                 gap: 0.8rem;
             }
-            h1 {
-                font-size: 1.6rem;
-                letter-spacing: 5px;
-            }
             .top-bar .brand {
                 font-size: 1.2rem;
             }
@@ -319,10 +306,13 @@
             }
             .main-card .card-header {
                 flex-direction: column;
-                align-items: flex-start;
+                align-items: center;
             }
             .preface p {
                 font-size: 0.9rem;
+            }
+            .download-section {
+                padding: 1rem 1rem;
             }
         }
         @media (max-width: 400px) {
@@ -335,22 +325,31 @@
 <body>
 
     <div class="container">
-        <!-- ===== 顶部栏 ===== -->
+        <!-- ===== 顶部栏（居中） ===== -->
         <div class="top-bar">
             <div class="brand">
                 简帙<span class="sub">· 工器谱</span>
             </div>
         </div>
 
-        <!-- ===== 标题 ===== -->
-        <h1>简帙</h1>
-
         <!-- ===== 序言 ===== -->
         <div class="preface">
             <p>简帙者，集工器之理论，汇四艺之精要。字库以立其本，切拼以成其形，重排以调其气，阅读以通其神。四者相承，乃为完璧。兹录诸篇，以备览者参详。</p>
         </div>
 
-        <!-- ===== 简帙古籍整理系统（主程序卡片，点击进入 jianzhi/） ===== -->
+        <!-- ===== 独立下载区（带框，无图标，位于卡片上方） ===== -->
+        <div class="download-section">
+            <div class="info">
+                <span class="label"><strong>简帙古籍整理系统</strong> 下载</span>
+                <span class="version">v2.1 · 2026年6月</span>
+            </div>
+            <div class="btn-group">
+                <a href="https://pan.baidu.com/s/1HuW0NXGxccT-LhJ9cse60Q?pwd=hqrt" target="_blank" class="btn" rel="noopener noreferrer">百度网盘</a>
+                <a href="https://pan.quark.cn/s/acd54713f4d5" target="_blank" class="btn btn-outline" rel="noopener noreferrer">夸克网盘</a>
+            </div>
+        </div>
+
+        <!-- ===== 简帙古籍整理系统（主程序卡片，标题居中） ===== -->
         <a href="jianzhi/" class="main-card" id="mainCard">
             <div class="card-header">
                 <h2>简帙古籍整理系统</h2>
@@ -360,19 +359,6 @@
                 集成字库制作、双页切拼、制版重排、文档阅读四大工器，助力古籍数字化整理与学术研究。
             </div>
         </a>
-
-        <!-- ===== 独立下载区（带框） ===== -->
-        <div class="download-section">
-            <div class="info">
-                <span class="icon">📦</span>
-                <span class="label"><strong>简帙古籍整理系统</strong> 下载</span>
-                <span class="version">v2.1 · 2026年6月</span>
-            </div>
-            <div class="btn-group">
-                <a href="https://pan.baidu.com/s/1HuW0NXGxccT-LhJ9cse60Q?pwd=hqrt" target="_blank" class="btn" rel="noopener noreferrer">百度网盘</a>
-                <a href="https://pan.quark.cn/s/acd54713f4d5" target="_blank" class="btn btn-outline" rel="noopener noreferrer">夸克网盘</a>
-            </div>
-        </div>
 
         <!-- ===== 四艺入口（无篇数徽标） ===== -->
         <div class="grid-4">
