@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>书页扫描精处理 · 双页切拼 · 简帙</title>
+    <style>
+        /* ===== 全局 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --paper: #f5f0e8;
+            --paper-white: #fcf9f5;
+            --ink: #2c1810;
+            --ink-light: #5a3f36;
+            --zhu-red: #8b1a1a;
+            --zhu-red-light: #b33a3a;
+            --gold: #c9a96e;
+            --border-light: #e8dfd6;
+            --radius: 6px;
+            --shadow: 0 2px 16px rgba(44, 24, 16, 0.08);
+            --transition: 0.25s ease;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: "Noto Serif SC", "思源宋体", "Source Han Serif SC", "华文宋体", serif;
+            background: var(--paper);
+            color: var(--ink);
+            line-height: 1.8;
+            padding: 2rem 1rem;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: var(--paper-white);
+            padding: 2rem 2.5rem 3rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-light);
+        }
+
+        /* ===== 顶部（无印章、无返回） ===== */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border-light);
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .top-bar .brand {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--ink);
+            letter-spacing: 4px;
+        }
+        .top-bar .brand .sub {
+            font-weight: 400;
+            font-size: 0.9rem;
+            color: var(--ink-light);
+            letter-spacing: 2px;
+            opacity: 0.6;
+            margin-left: 6px;
+        }
+
+        /* ===== 面包屑 ===== */
+        .breadcrumb {
+            font-size: 0.85rem;
+            color: var(--ink-light);
+            margin-bottom: 1.5rem;
+            padding: 0.4rem 0.8rem;
+            background: var(--paper);
+            border-radius: 20px;
+            display: inline-block;
+            opacity: 0.7;
+        }
+        .breadcrumb a {
+            color: var(--ink-light);
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: var(--zhu-red);
+            text-decoration: underline;
+        }
+        .breadcrumb span {
+            margin: 0 4px;
+        }
+
+        /* ===== 标题 ===== */
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 0.2rem;
+            flex-wrap: wrap;
+        }
+        .article-meta .series-tag {
+            font-size: 0.85rem;
+            color: var(--ink-light);
+            background: var(--paper);
+            padding: 0.1rem 0.8rem;
+            border-radius: 12px;
+            opacity: 0.7;
+        }
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--ink);
+            letter-spacing: 4px;
+            margin-bottom: 0.2rem;
+            line-height: 1.4;
+        }
+        .subtitle {
+            color: var(--ink-light);
+            font-size: 0.95rem;
+            margin-bottom: 1.8rem;
+            border-left: 3px solid var(--zhu-red);
+            padding-left: 1rem;
+            opacity: 0.7;
+        }
+
+        /* ===== 章内目录 ===== */
+        .toc {
+            background: var(--paper);
+            border-left: 4px solid var(--zhu-red);
+            padding: 0.8rem 1.2rem;
+            margin: 1.2rem 0 1.8rem;
+            border-radius: var(--radius);
+        }
+        .toc h3 {
+            font-size: 1rem;
+            margin: 0 0 0.4rem 0;
+            color: var(--ink);
+            letter-spacing: 2px;
+        }
+        .toc ul {
+            margin: 0;
+            padding-left: 1.2rem;
+        }
+        .toc li {
+            margin: 0.2rem 0;
+        }
+        .toc a {
+            text-decoration: none;
+            color: var(--ink);
+            border-bottom: 1px dotted var(--border-light);
+            transition: 0.2s;
+        }
+        .toc a:hover {
+            border-bottom-style: solid;
+            color: var(--zhu-red);
+            border-bottom-color: var(--zhu-red);
+        }
+        .toc ul ul {
+            padding-left: 1.5rem;
+        }
+
+        /* ===== 正文 ===== */
+        .article-body p {
+            text-indent: 2em;
+            margin-bottom: 1rem;
+            line-height: 2.2;
+        }
+        .article-body h2 {
+            font-size: 1.4rem;
+            color: var(--ink);
+            margin: 2rem 0 1rem 0;
+            padding-bottom: 0.3rem;
+            border-bottom: 2px solid var(--border-light);
+            letter-spacing: 3px;
+        }
+        .article-body h3 {
+            font-size: 1.1rem;
+            color: var(--ink);
+            margin-top: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .article-body h4 {
+            font-size: 1rem;
+            color: var(--ink);
+            margin-top: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            opacity: 0.8;
+        }
+        .article-body strong {
+            color: var(--zhu-red);
+            font-weight: 600;
+        }
+        .article-body ul {
+            padding-left: 2rem;
+            margin: 0.5rem 0 1rem;
+        }
+        .article-body ul li {
+            margin-bottom: 0.3rem;
+            list-style-type: disc;
+        }
+        .article-body ul ul li {
+            list-style-type: circle;
+        }
+        .article-body .no-indent {
+            text-indent: 0;
+        }
+        .quote-block {
+            display: block;
+            margin: 1.2rem 0;
+            padding: 0.8rem 1.2rem;
+            font-style: italic;
+            color: var(--ink);
+            background: var(--paper);
+            border-radius: var(--radius);
+            border-left: 3px solid var(--gold);
+            line-height: 2.2;
+            text-align: center;
+            font-size: 1.05rem;
+            letter-spacing: 0.04em;
+        }
+        .inline-quote {
+            color: var(--ink);
+            font-style: italic;
+            background: var(--paper);
+            padding: 0.1rem 0.4rem;
+            border-radius: 3px;
+            white-space: nowrap;
+        }
+
+        /* ===== 单篇文章下载 ===== */
+        .article-download {
+            margin-top: 2rem;
+            padding: 1rem 1.2rem;
+            background: var(--paper);
+            border-radius: var(--radius);
+            border-left: 4px solid var(--zhu-red);
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: space-between;
+        }
+        .article-download .info {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.9rem;
+            color: var(--ink);
+        }
+        .article-download .btn-group {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+        .article-download .btn-sm {
+            display: inline-block;
+            background: var(--zhu-red);
+            color: #fff;
+            padding: 0.3rem 1.2rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            border: 1px solid var(--zhu-red);
+            transition: var(--transition);
+            letter-spacing: 0.5px;
+        }
+        .article-download .btn-sm:hover {
+            background: var(--zhu-red-light);
+            transform: translateY(-1px);
+        }
+        .article-download .btn-sm-outline {
+            background: transparent;
+            color: var(--zhu-red);
+            border-color: var(--zhu-red);
+        }
+        .article-download .btn-sm-outline:hover {
+            background: var(--zhu-red);
+            color: #fff;
+        }
+
+        /* ===== 系列底部导航 ===== */
+        .series-nav {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2.5rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid var(--border-light);
+            flex-wrap: wrap;
+        }
+        .series-nav a {
+            display: inline-block;
+            background: var(--paper);
+            color: var(--ink);
+            padding: 0.4rem 1.2rem;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            border: 1px solid var(--border-light);
+            transition: 0.2s;
+        }
+        .series-nav a:hover {
+            background: #f0ebe2;
+            border-color: var(--gold);
+            color: var(--zhu-red);
+        }
+        .series-nav .prev {
+            margin-right: auto;
+        }
+        .series-nav .next {
+            margin-left: auto;
+        }
+        .series-nav a.disabled {
+            cursor: default;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        .series-nav a.index-link {
+            background: var(--zhu-red);
+            color: #fff;
+            border-color: var(--zhu-red);
+        }
+        .series-nav a.index-link:hover {
+            background: var(--zhu-red-light);
+            color: #fff;
+        }
+        @media (max-width: 600px) {
+            .series-nav {
+                gap: 0.8rem;
+            }
+            .series-nav .prev,
+            .series-nav .next {
+                margin: 0;
+            }
+            .series-nav a {
+                font-size: 0.8rem;
+                padding: 0.3rem 0.8rem;
+            }
+        }
+
+        /* ===== 底部版权 ===== */
+        .footer-note {
+            margin-top: 2.5rem;
+            font-size: 0.8rem;
+            text-align: center;
+            color: var(--ink-light);
+            border-top: 1px solid var(--border-light);
+            padding-top: 1.2rem;
+            letter-spacing: 1px;
+            opacity: 0.5;
+        }
+
+        /* ===== 返回顶部 ===== */
+        .back-to-top-ball {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(44, 24, 16, 0.04);
+            border: 1px solid rgba(44, 24, 16, 0.10);
+            color: var(--ink-light);
+            font-size: 1.4rem;
+            line-height: 44px;
+            text-align: center;
+            text-decoration: none;
+            transition: var(--transition);
+            backdrop-filter: blur(4px);
+            box-shadow: 0 2px 12px rgba(44, 24, 16, 0.04);
+            font-family: serif;
+        }
+        .back-to-top-ball:hover {
+            background: rgba(44, 24, 16, 0.08);
+            transform: translateY(-2px);
+            color: var(--zhu-red);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1.2rem 1rem 2rem;
+            }
+            h1 {
+                font-size: 1.5rem;
+                letter-spacing: 3px;
+            }
+            .top-bar .brand {
+                font-size: 1.2rem;
+            }
+            .article-download {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.8rem;
+            }
+            .article-download .btn-group {
+                justify-content: center;
+            }
+            .quote-block {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.95rem;
+                border-left-width: 2px;
+            }
+            .toc ul ul {
+                padding-left: 1rem;
+            }
+            .article-body ul {
+                padding-left: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- ===== 顶部栏（无印章、无返回） ===== -->
+        <div class="top-bar">
+            <div class="brand">
+                简帙<span class="sub">· 工器谱</span>
+            </div>
+        </div>
+
+        <!-- ===== 面包屑 ===== -->
+        <div class="breadcrumb">
+            <a href="../../">简帙</a> <span>›</span>
+            <a href="../">双页切拼</a> <span>›</span>
+            书页扫描精处理
+        </div>
+
+        <!-- ===== 标题 ===== -->
+        <div class="article-meta">
+            <span class="series-tag">双页切拼 · 第 2 篇</span>
+        </div>
+        <h1>书页扫描精处理：从工程实践到认知范式的技术思想报告</h1>
+        <div class="subtitle">——自“书页自动裁切系统”而悟入</div>
+
+        <!-- ===== 章内目录 ===== -->
+        <nav class="toc" aria-label="章节目录">
+            <h3>目 录</h3>
+            <ul>
+                <li><a href="#intro">引言</a></li>
+                <li><a href="#ch1">一、理论根基：三要素完备性原理</a></li>
+                <li><a href="#ch2">二、第一大类逻辑：由巨到微的逐层雕琢</a>
+                    <ul>
+                        <li><a href="#ch2-1">2.1 三阶段递进架构</a></li>
+                        <li><a href="#ch2-2">2.2 两步走策略：粗裁与精裁的接力</a></li>
+                    </ul>
+                </li>
+                <li><a href="#ch3">三、第二大类逻辑：由微到巨的自然生长</a>
+                    <ul>
+                        <li><a href="#ch3-1">3.1 九点采样体系的精妙设计</a></li>
+                        <li><a href="#ch3-2">3.2 两类背景的统一判据</a></li>
+                        <li><a href="#ch3-3">3.3 任意形状边界的生成</a></li>
+                    </ul>
+                </li>
+                <li><a href="#ch4">四、异构冗余的终端角逐</a></li>
+                <li><a href="#ch5">五、技术思想：从裁剪到显现</a></li>
+                <li><a href="#outro">结语</a></li>
+            </ul>
+        </nav>
+
+        <!-- ===== 正文 ===== -->
+        <div class="article-body">
+
+            <!-- ===== 引言 ===== -->
+            <h2 id="intro">引言</h2>
+
+            <p>我们面对的是一个极端具体的工程问题：对任意来源的图片——扫描件、手机翻拍、截图——自动完成书页本体的精准提取。这个任务看似狭窄，却因其场景的极度多样性，迫使我们逐步建构起一套完整的三要素感知体系与双路径认知架构。</p>
+
+            <p>在数月密集的算法迭代中，一条认知主线逐渐清晰：<strong>图像处理中的分割问题，与“万物如何从混沌中显现秩序”这一普遍性命题，共享完全同构的逻辑结构。</strong>本报告旨在完整记录这一发现——它既是一份技术方案的系统阐述，也是一套认知方法的奠基性文本。</p>
+
+            <!-- ===== 第一章 ===== -->
+            <h2 id="ch1">一、理论根基：三要素完备性原理</h2>
+
+            <p>书页扫描与手机截图之间、古籍泛黄纸张与纯白现代书籍之间、清晰扫描件与模糊翻拍之间，不存在任何能覆盖所有情况的单一规则。我们最终确立的底层原理是：</p>
+
+            <p><strong>形态、色彩、质感，是任何视觉对象仅有的三个独立且完备的底层维度。</strong>目标主体与背景的可区分性，必然在至少一个维度上成立——否则人眼也无法分辨。</p>
+
+            <div style="overflow-x:auto; margin:1rem 0 1.2rem;">
+                <table style="width:100%; border-collapse:collapse; font-size:0.9rem; background:var(--paper); border-radius:var(--radius);">
+                    <thead>
+                        <tr style="background:var(--paper); border-bottom:2px solid var(--border-light);">
+                            <th style="padding:0.5rem 0.8rem; text-align:left; border-right:1px solid var(--border-light);">维度</th>
+                            <th style="padding:0.5rem 0.8rem; text-align:left; border-right:1px solid var(--border-light);">核心特征</th>
+                            <th style="padding:0.5rem 0.8rem; text-align:left; border-right:1px solid var(--border-light);">可计算手段</th>
+                            <th style="padding:0.5rem 0.8rem; text-align:left;">失效边界</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom:1px solid var(--border-light);">
+                            <td style="padding:0.4rem 0.8rem; border-right:1px solid var(--border-light);"><strong>形态</strong></td>
+                            <td style="padding:0.4rem 0.8rem; border-right:1px solid var(--border-light);">几何边界与形状</td>
+                            <td style="padding:0.4rem 0.8rem; border-right:1px solid var(--border-light);">边缘检测、投影分析、连通域</td>
+                            <td style="padding:0.4rem 0.8rem;">边缘极弱或与背景融合</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid var(--border-light);">
+                            <td style="padding:0.4rem 0.8rem; border-right:1px solid var(--border-light);"><strong>色彩</strong></td>
+                            <td style="padding:0.4rem 0.8rem; border-right:1px solid var(--border-light);">像素的颜色属性</td>
+                            <td style="padding:0.4rem 0.8rem; border-right:1px solid var(--border-light);">HSV三通道分离、色彩连续性</td>
+                            <td style="padding:0.4rem 0.8rem;">前景背景色差极小</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:0.4rem 0.8rem; border-right:1px solid var(--border-light);"><strong>质感</strong></td>
+                            <td style="padding:0.4rem 0.8rem; border-right:1px solid var(--border-light);">局部统计规律</td>
+                            <td style="padding:0.4rem 0.8rem; border-right:1px solid var(--border-light);">梯度方向场、纹理粗糙度</td>
+                            <td style="padding:0.4rem 0.8rem;">完全纯色、无方向性纹理</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p>这一原理的证明是负向的：如果三个维度同时失效——即书页与背景既无形态边界、又无色彩差异、也无纹理区分——则任何算法都将无能为力。但此时，人眼同样无法分辨。三要素的完备性，正建立在人与机器感知极限的同一性上。</p>
+
+            <p>正是在这一理论的指导下，我们放弃了寻找“万能算法”的幻想，转而建构<strong>异构冗余的双管线架构</strong>：让两条逻辑从互不信任的前提出发，各自独立完成裁切，再在终端互评采信。只要它们不在同一方向上一同失效，系统就有保底输出。</p>
+
+            <!-- ===== 第二章 ===== -->
+            <h2 id="ch2">二、第一大类逻辑：由巨到微的逐层雕琢</h2>
+
+            <p>这类逻辑的核心前提是：<strong>目标书页作为完整的物理实体，一开始就完整地存在于图像之中</strong>，只是被外围的无关元素层层包裹。我们的工作，是从最外围的粗大边界开始，逐层剔除，不断收紧，直到书页本体从混沌的图像整体中清晰地浮现。</p>
+
+            <h3 id="ch2-1">2.1 三阶段递进架构</h3>
+
+            <p><strong>第一阶段：外围背景切除。</strong>这是“最大的那一刀”——从图像四边向内部扫描，检测纯色填充条、截图UI、杂乱桌面背景等明显不属于书页的区域。我们同时运行三种检测机制：滑动窗口方差检测纯色条带，边缘密度与高饱和块检测UI干扰，最后对每条边取三种检测的最大值，再施以全局比例约束。这一刀若偏保守，后续阶段还能补救；若偏激进，损失不可挽回。历经多轮“还是过猛”的调试，我们最终确立了“<strong>宁可漏切、不可过切</strong>”的保守原则。</p>
+
+            <p><strong>第二阶段：形态主导的精确定位。</strong>在第一阶段的成果上，用三条子线独立寻找书页边界：形态线跑多级Sobel边缘检测并做方向投影，色彩线在HSV空间分离纸张底色并取最大连通域，质感线分析梯度方向直方图的一致性强弱。三条线的结果并非平等投票——<strong>形态线的输出作为锚定基准</strong>，色彩和质感两条线只被允许向外扩展，绝不向内收缩；且只有两条辅助线都同意扩展时，扩展才生效。这种“形态锚定融合”策略，源于一个重要发现：在由巨到微的逻辑中，形态才是真正可靠的参照系，色彩与纹理只应扮演辅助角色。</p>
+
+            <p><strong>第三阶段：单双页判定。</strong>对精裁结果的中部区域做垂直灰度投影，寻找投影波谷。若波谷足够深且连续，则判定为双页拼版，沿中缝分割；否则保留为单页。</p>
+
+            <h3 id="ch2-2">2.2 两步走策略：粗裁与精裁的接力</h3>
+
+            <p>形态主导阶段内部还有一次接力：先用高边缘阈值（25）做粗定位，将四边大致锁定；再在粗裁结果的更干净区域内，用低阈值（15）做精裁，紧贴真实边界。这不是简单的参数调优，而是一种“<strong>由粗到精</strong>”的认知节律——先确保不出大错，再在安全范围内追求极致精度。</p>
+
+            <!-- ===== 第三章 ===== -->
+            <h2 id="ch3">三、第二大类逻辑：由微到巨的自然生长</h2>
+
+            <p>第一类逻辑依赖一个假设：存在清晰的外围，可以从外向内层层剥除。但这一假设并非总是成立——截图UI可能侵入画面深处，杂乱背景可能与书页边缘犬牙交错。此时，从外向内无从下手。我们需要一条完全反转的逻辑线：<strong>不管外围多乱，只要书页内部存在可被确认的“属于书页”的像素，就从那里开始，向外生长，直到触及边界。</strong></p>
+
+            <p>这类逻辑的核心判据不是一个固定阈值，而是一个关于“<strong>变化</strong>”的动态判断：从种子点出发，沿着每条边向外推进。当推进方向上发生“整体质变”——无论是色彩突变，还是内部相似度的跃迁式升高——那里就是边界。</p>
+
+            <h3 id="ch3-1">3.1 九点采样体系的精妙设计</h3>
+
+            <p>整个生长过程的起点，是找到绝对可靠的“书页种子”。我们在图像上布局三层采样点：四角作为背景嫌疑种子，中心作为书页内容代表，最关键的是中心到四角各四分之一处的四象限角——它们既躲避了最外围可能被背景污染的区域，又比中心更具空间代表性，构成“更权威的基准”。</p>
+
+            <p><strong>文字规避机制</strong>是这条逻辑线的隐藏支柱：当采样点落在墨色像素上，自动以该点为中心螺旋向外搜索，找到第一个纸张色像素替代。这看似细小的设计，保证了整个基准确立过程不会被书页上的文字污染——而这正是第一类逻辑不需要操心、第二类逻辑却必须解决的独特问题。</p>
+
+            <h3 id="ch3-2">3.2 两类背景的统一判据</h3>
+
+            <ul>
+                <li><strong>高相似度背景</strong>（纯色边框、统一色调的桌面）：内部像素高度一致——此时看的是整行或整列色彩统计的突变，突变处即边界。</li>
+                <li><strong>低相似度背景</strong>（杂乱桌面、花哨UI）：内部像素彼此差异极大——此时看的是行或列内部相似度的跃迁。一旦推进到书页区域，原本散乱的像素突然变得彼此趋近，这个跃迁位置就是边界。</li>
+            </ul>
+
+            <p>这两条判据合在一起，让第二类逻辑彻底摆脱了对背景性质的任何预设。它不需要知道背景是什么颜色、什么纹理，它只需要知道：<strong>无论背景长什么样，它进入书页的那一刻，一定会发生某种可被检测的整体质变。</strong></p>
+
+            <h3 id="ch3-3">3.3 任意形状边界的生成</h3>
+
+            <p>传统裁切方案几乎都将裁切线默认为水平或垂直的直线，但真实的书页边缘——尤其是古籍、破损本、圆角印刷——从来不是整齐的矩形。第二类逻辑在找到边界的大致位置后，并不简单地取整行或整列，而是在边界带内逐像素回溯，定位每一个跃迁点的精确坐标。将这些离散的跃迁点连接成线，就得到了一条能够自然贴合书页不规则边缘的<strong>任意形状裁切线</strong>。三条边同理，一条一条独立生成，最后闭合为完整的书页轮廓。</p>
+
+            <p class="quote-block">这一步是第二类逻辑从“假设矩形”到“直面真实”的最后一次解放。</p>
+
+            <!-- ===== 第四章 ===== -->
+            <h2 id="ch4">四、异构冗余的终端角逐</h2>
+
+            <p>两条逻辑各自独立跑完全程，各自输出一个最终产品。它们在内部已经过每步的小融合——每一阶段的输出都是该阶段三条子线（形态、色彩、质感）融合后的最优结果。到了终端，两条管线不互侵、不嫁接，而是以完整产品的身份进入三方评判：</p>
+
+            <ul>
+                <li><strong>原图保真度（50%）</strong>：各自的裁切结果，是否完整保留了原图中的有效信息。任何将文字误判为背景、将插图边缘削去的过度裁切，都会在此显露。</li>
+                <li><strong>交叉一致性（30%）</strong>：两个终产品缩放到统一尺寸后比对。两者若是高度相似，说明殊途同归，都抓住了书页的核心区域；若是差异悬殊，则至少有一路发生了系统性偏差。</li>
+                <li><strong>自评置信度（20%）</strong>：各管线对自己内部每步融合质量的量化评估。</li>
+            </ul>
+
+            <p>这套评判机制，让两条互不信任的路线互为对手，又互为参照。原图是唯一的真值参考——我们不预设哪个方案更好，我们只是让它们各自拿出结果，然后判断哪个与原始图像最为一致。</p>
+
+            <!-- ===== 第五章 ===== -->
+            <h2 id="ch5">五、技术思想：从裁剪到显现</h2>
+
+            <p>贯穿两套方案全部细节的一个深层原则，最终凝结成一句话：<strong>万物所有元素本然存在，从未消失，也从未被创造。</strong>我们只是在每一步操作中，赋予某些特征更强的显现权重，同时削弱另一些特征的存在感。</p>
+
+            <p>在图像层面，这意味着切割不是暴力剔除，而是阈值调节——将书页纸张色的权重拉高，将背景杂色的权重压低。裁切线不是真的“切”开图像，而是一道权重分界线：线内的像素获得了充分显现的权利，线外的像素返回不可见的混沌。</p>
+
+            <p class="quote-block">这一思想，是这本书页处理理论能够被提升为道论的深层原因。它不只是一套图像算法，它是一种关于存在如何从混沌中浮现、人类如何主动参与这一过程的操作哲学。</p>
+
+            <!-- ===== 结语 ===== -->
+            <h2 id="outro">结语</h2>
+
+            <p>我们从一张古籍书页的自动裁剪出发，建构了三要素完备体系，发现了由巨到微与由微到巨两条根本路径，确立了每步融合、终端互评的异构冗余架构，并在反复的参数调试中体认了显现逻辑的真义。</p>
+
+            <p>当我们面对任何一张来源不明的图像，不再需要猜测它的背景性质、它的色彩分布、它的边缘清晰度。我们只需要启动两条并行的认知管线，让它们各自在形态、色彩、质感三个维度上独立判断，然后在终端做出最优选择。书页会在这一过程中自然浮现——<strong>不是被切割出来，而是在规律的运行中被感知出来的。</strong></p>
+
+            <p style="margin-top:1.2rem; text-align:right; color:var(--ink-light); opacity:0.6; letter-spacing:2px;">不是切割去留，不是创造新生。是让它自然显现。</p>
+
+        </div>
+
+        <!-- ===== 单篇文章下载 ===== -->
+        <div class="article-download">
+            <div class="info">
+                <span>📄</span>
+                <span><strong>下载本文</strong> · PDF / EPUB 版本</span>
+            </div>
+            <div class="btn-group">
+                <a href="#" class="btn-sm" target="_blank">下载 PDF</a>
+                <a href="#" class="btn-sm btn-sm-outline" target="_blank">下载 EPUB</a>
+            </div>
+        </div>
+
+        <!-- ===== 系列底部导航 ===== -->
+        <div class="series-nav">
+            <a href="1.分合之道.html" class="prev">‹ 分合之道</a>
+            <a href="./index.html" class="index-link">返回目录</a>
+            <a href="javascript:void(0)" class="next disabled">下一篇 ›</a>
+        </div>
+
+        <!-- ===== 底部版权 ===== -->
+        <div class="footer-note">铭心阁 · 简帙工器谱</div>
+    </div>
+
+    <!-- ===== 返回顶部 ===== -->
+    <a href="#" id="backToTop" class="back-to-top-ball" aria-label="返回顶部">^</a>
+
+    <script>
+        document.getElementById('backToTop').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+
+</body>
+</html>
