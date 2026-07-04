@@ -1,1401 +1,409 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>简帙 · 工器谱</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>简帙 · 工器谱 · 铭心阁</title>
     <style>
-        /* ===== 全局重置 & 基础 ===== */
+        /* ===== 全局 ===== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         :root {
-            --zhu-red: #8b1a1a;
-            --zhu-red-light: #b33a3a;
-            --gold: #c9a96e;
-            --gold-light: #e8d5a3;
-            --ink: #2c1810;
-            --ink-light: #5a3f36;
-            --paper: #f5f0e8;
-            --paper-white: #fcf9f5;
-            --card-shadow: 0 4px 20px rgba(44, 24, 16, 0.10);
-            --radius: 10px;
-            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --primary: #2c6e2f;
+            --primary-light: #4a8a4d;
+            --primary-dark: #1a4a1c;
+            --bg-light: #f9fafb;
+            --card-bg: #ffffff;
+            --border-color: #eaecef;
+            --text-dark: #2c3e2c;
+            --text-muted: #8a9b8a;
+            --radius: 8px;
+            --shadow: 0 2px 12px rgba(44, 46, 44, 0.06);
+            --transition: 0.25s ease;
         }
-
         html {
             scroll-behavior: smooth;
         }
-
         body {
             font-family: "Noto Serif SC", "思源宋体", "Source Han Serif SC", "华文宋体", serif;
-            background: var(--paper);
-            color: var(--ink);
-            line-height: 1.7;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.8;
+            padding: 2rem 1rem;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 2rem 2.5rem 3rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
         }
 
-        /* ===== 滚动条 ===== */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--paper);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--gold);
-            border-radius: 8px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--zhu-red);
-        }
-
-        /* ===== 顶部导航 ===== */
-        .navbar {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background: rgba(245, 240, 232, 0.92);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(201, 169, 110, 0.30);
-            padding: 0 2rem;
+        /* ===== 顶部 ===== */
+        .top-bar {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            height: 70px;
-            flex-shrink: 0;
-            box-shadow: 0 2px 12px rgba(44, 24, 16, 0.04);
+            margin-bottom: 2rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 0.8rem;
         }
-
-        .navbar .brand {
+        .top-bar .brand {
             display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 1.6rem;
+            align-items: baseline;
+            gap: 8px;
+            font-size: 1.2rem;
             font-weight: 600;
-            color: var(--zhu-red);
-            letter-spacing: 4px;
-            text-decoration: none;
-            user-select: none;
-        }
-        .navbar .brand .seal {
-            display: inline-block;
-            width: 36px;
-            height: 36px;
-            border: 2px solid var(--zhu-red);
-            border-radius: 4px;
-            text-align: center;
-            line-height: 32px;
-            font-size: 0.9rem;
-            color: var(--zhu-red);
-            font-weight: 700;
-            transform: rotate(-4deg);
-            background: rgba(139, 26, 26, 0.06);
-        }
-        .navbar .brand span {
-            font-weight: 300;
-            color: var(--ink-light);
-            font-size: 0.9rem;
+            color: var(--primary-dark);
             letter-spacing: 2px;
-            margin-left: 2px;
+        }
+        .top-bar .brand .seal {
+            font-size: 1.6rem;
+            font-family: '华文篆书', '方正小篆体', '篆书', serif;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            border-radius: 4px;
+            padding: 0 0.3rem;
+            line-height: 1.4;
+            transform: rotate(-2deg);
+            background: rgba(44, 110, 47, 0.04);
+        }
+        .top-bar .home-link {
+            font-size: 0.9rem;
+            color: var(--primary);
+            text-decoration: none;
+            border-bottom: 1px solid #c8d6c8;
+            padding-bottom: 2px;
+        }
+        .top-bar .home-link:hover {
+            color: var(--primary-dark);
+            border-bottom-color: var(--primary);
         }
 
-        .nav-links {
+        /* ===== 面包屑 ===== */
+        .breadcrumb {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            padding: 0.4rem 0.8rem;
+            background: var(--bg-light);
+            border-radius: 20px;
+            display: inline-block;
+        }
+        .breadcrumb span {
+            margin: 0 4px;
+        }
+
+        /* ===== 标题 ===== */
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            letter-spacing: 4px;
+            margin-bottom: 0.2rem;
+        }
+        h1 .sub {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            margin-left: 12px;
+        }
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 1.8rem;
+            border-left: 3px solid var(--primary);
+            padding-left: 1rem;
+            opacity: 0.8;
+        }
+
+        /* ===== 下载卡片（主页专用） ===== */
+        .download-hero {
+            background: linear-gradient(135deg, #f0f5f0 0%, #e8efe8 100%);
+            border-radius: var(--radius);
+            padding: 2rem 2rem 1.8rem;
+            margin: 1.5rem 0 2rem;
+            border: 1px solid var(--primary-light);
+            text-align: center;
+            box-shadow: 0 2px 12px rgba(44, 110, 47, 0.06);
+        }
+        .download-hero .icon {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+        .download-hero h2 {
+            border: none;
+            margin: 0.2rem 0 0.4rem;
+            font-size: 1.4rem;
+            color: var(--primary-dark);
+        }
+        .download-hero p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            max-width: 600px;
+            margin: 0 auto 1rem;
+            line-height: 1.8;
+        }
+        .download-hero .btn-group {
             display: flex;
-            gap: 6px;
-            list-style: none;
+            gap: 1rem;
+            justify-content: center;
             flex-wrap: wrap;
         }
-        .nav-links li {
+        .download-hero .btn {
             display: inline-block;
-        }
-        .nav-links a {
-            display: inline-block;
-            padding: 0.4rem 1.2rem;
+            background: var(--primary);
+            color: #fff;
+            padding: 0.6rem 2rem;
             border-radius: 40px;
-            color: var(--ink-light);
             text-decoration: none;
             font-size: 0.95rem;
             font-weight: 500;
+            border: 1px solid var(--primary);
             transition: var(--transition);
-            cursor: pointer;
-            border: 1px solid transparent;
-            letter-spacing: 1px;
-            font-family: inherit;
+            box-shadow: 0 2px 8px rgba(44, 110, 47, 0.10);
+        }
+        .download-hero .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(44, 110, 47, 0.15);
+        }
+        .download-hero .btn-outline {
             background: transparent;
+            color: var(--primary);
+            border-color: var(--primary);
         }
-        .nav-links a:hover {
-            color: var(--zhu-red);
-            background: rgba(139, 26, 26, 0.06);
+        .download-hero .btn-outline:hover {
+            background: var(--primary);
+            color: #fff;
         }
-        .nav-links a.active {
-            color: var(--paper-white);
-            background: var(--zhu-red);
-            border-color: var(--zhu-red);
-            box-shadow: 0 2px 10px rgba(139, 26, 26, 0.25);
-        }
-        .nav-links a.active:hover {
-            background: var(--zhu-red-light);
-        }
-
-        /* ===== 主容器 ===== */
-        .app-container {
-            flex: 1;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem 2rem 3rem;
-            width: 100%;
-        }
-
-        /* ===== 页面切换 ===== */
-        .page {
-            display: none;
-            animation: fadeSlideUp 0.45s ease forwards;
-        }
-        .page.active {
-            display: block;
-        }
-
-        @keyframes fadeSlideUp {
-            0% {
-                opacity: 0;
-                transform: translateY(18px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* ===== 通用卡片 ===== */
-        .card {
-            background: var(--paper-white);
-            border-radius: var(--radius);
-            box-shadow: var(--card-shadow);
-            padding: 1.8rem 2rem;
-            border: 1px solid rgba(201, 169, 110, 0.15);
-            transition: var(--transition);
-        }
-        .card:hover {
-            box-shadow: 0 6px 28px rgba(44, 24, 16, 0.12);
-        }
-
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--zhu-red);
-            letter-spacing: 2px;
-            margin-bottom: 0.3rem;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .section-title::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: linear-gradient(to right, var(--gold), transparent);
-        }
-        .section-sub {
-            color: var(--ink-light);
-            font-size: 0.95rem;
-            margin-bottom: 1.5rem;
+        .download-hero .meta {
+            margin-top: 0.8rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
             opacity: 0.7;
-            letter-spacing: 1px;
         }
 
-        /* ===== 总览页 ===== */
-        .overview-hero {
-            text-align: center;
-            padding: 2.5rem 1rem 1.5rem;
-        }
-        .overview-hero .big-title {
-            font-size: 3.2rem;
-            font-weight: 700;
-            color: var(--zhu-red);
-            letter-spacing: 12px;
-            margin-bottom: 0.5rem;
-            text-shadow: 0 2px 8px rgba(139, 26, 26, 0.08);
-        }
-        .overview-hero .big-sub {
-            font-size: 1.1rem;
-            color: var(--ink-light);
-            letter-spacing: 6px;
-            opacity: 0.7;
-            border-top: 1px solid rgba(201, 169, 110, 0.3);
-            display: inline-block;
-            padding-top: 0.6rem;
-        }
-
+        /* ===== 四艺卡片 ===== */
         .grid-4 {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 1.5rem;
-            margin-top: 2rem;
+            gap: 1.2rem;
+            margin: 1.5rem 0 0.5rem;
         }
-
-        .tool-card {
-            background: var(--paper-white);
+        .grid-4 .card {
+            background: var(--bg-light);
             border-radius: var(--radius);
-            padding: 1.8rem 1.5rem 1.5rem;
-            box-shadow: var(--card-shadow);
-            border: 1px solid rgba(201, 169, 110, 0.12);
-            cursor: pointer;
-            transition: var(--transition);
+            padding: 1.5rem 1rem 1.2rem;
             text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        .tool-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(to right, var(--gold), var(--zhu-red));
-            opacity: 0;
+            border: 1px solid var(--border-color);
             transition: var(--transition);
-        }
-        .tool-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 12px 36px rgba(44, 24, 16, 0.12);
-        }
-        .tool-card:hover::before {
-            opacity: 1;
-        }
-        .tool-card .icon {
-            font-size: 2.6rem;
+            text-decoration: none;
+            color: var(--text-dark);
             display: block;
-            margin-bottom: 0.6rem;
-            line-height: 1.2;
         }
-        .tool-card h3 {
-            font-size: 1.2rem;
-            color: var(--zhu-red);
-            letter-spacing: 2px;
-            margin-bottom: 0.3rem;
+        .grid-4 .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 20px rgba(44, 110, 47, 0.08);
+            border-color: var(--primary-light);
+            background: #f5f8f5;
         }
-        .tool-card p {
-            font-size: 0.9rem;
-            color: var(--ink-light);
-            opacity: 0.7;
-            margin-bottom: 0.8rem;
-            line-height: 1.6;
-        }
-        .tool-card .badge {
-            display: inline-block;
-            font-size: 0.7rem;
-            color: var(--gold);
-            border: 1px solid var(--gold);
-            border-radius: 20px;
-            padding: 0.1rem 0.8rem;
-            letter-spacing: 1px;
-            opacity: 0.6;
-        }
-
-        /* ===== 字库制作 ===== */
-        .font-layout {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 1.8rem;
-            align-items: start;
-        }
-        .font-list {
-            max-height: 500px;
-            overflow-y: auto;
-            padding-right: 4px;
-        }
-        .font-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.7rem 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: var(--transition);
-            border-left: 3px solid transparent;
-            margin-bottom: 4px;
-            background: rgba(245, 240, 232, 0.3);
-        }
-        .font-item:hover {
-            background: rgba(201, 169, 110, 0.12);
-        }
-        .font-item.active {
-            background: rgba(139, 26, 26, 0.06);
-            border-left-color: var(--zhu-red);
-        }
-        .font-item .name {
-            font-weight: 500;
-            font-size: 0.95rem;
-        }
-        .font-item .del {
-            color: #b0a090;
-            cursor: pointer;
-            font-size: 0.8rem;
-            padding: 0 6px;
-            transition: var(--transition);
-            background: none;
-            border: none;
-            font-family: inherit;
-        }
-        .font-item .del:hover {
-            color: var(--zhu-red);
-        }
-        .font-preview {
-            min-height: 340px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: rgba(245, 240, 232, 0.3);
-            border-radius: var(--radius);
-            padding: 2rem;
-            border: 1px dashed rgba(201, 169, 110, 0.3);
-        }
-        .font-preview .sample {
-            font-size: 4.2rem;
-            font-weight: 400;
-            letter-spacing: 6px;
-            color: var(--ink);
-            line-height: 1.4;
-            transition: var(--transition);
-        }
-        .font-preview .sample-info {
-            margin-top: 1rem;
-            color: var(--ink-light);
-            opacity: 0.5;
-            font-size: 0.85rem;
-            letter-spacing: 2px;
-        }
-        .font-add {
-            display: flex;
-            gap: 10px;
-            margin-top: 1.2rem;
-            flex-wrap: wrap;
-        }
-        .font-add input {
-            flex: 1;
-            min-width: 140px;
-            padding: 0.5rem 1rem;
-            border: 1px solid rgba(201, 169, 110, 0.3);
-            border-radius: 40px;
-            background: var(--paper-white);
-            font-family: inherit;
-            font-size: 0.9rem;
-            outline: none;
-            transition: var(--transition);
-            color: var(--ink);
-        }
-        .font-add input:focus {
-            border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.15);
-        }
-        .btn {
-            padding: 0.5rem 1.6rem;
-            border: none;
-            border-radius: 40px;
-            background: var(--zhu-red);
-            color: #fff;
-            font-family: inherit;
-            font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition);
-            letter-spacing: 1px;
-            box-shadow: 0 2px 8px rgba(139, 26, 26, 0.15);
-        }
-        .btn:hover {
-            background: var(--zhu-red-light);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(139, 26, 26, 0.20);
-        }
-        .btn-outline {
-            background: transparent;
-            color: var(--zhu-red);
-            border: 1px solid var(--zhu-red);
-            box-shadow: none;
-        }
-        .btn-outline:hover {
-            background: var(--zhu-red);
-            color: #fff;
-        }
-        .btn-sm {
-            padding: 0.3rem 1.2rem;
-            font-size: 0.8rem;
-        }
-
-        /* ===== 双页切拼 ===== */
-        .page-viewer {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1.8rem;
-        }
-        .page-sim {
-            display: flex;
-            align-items: stretch;
-            justify-content: center;
-            gap: 0;
-            width: 100%;
-            max-width: 780px;
-            margin: 0 auto;
-            background: rgba(245, 240, 232, 0.3);
-            border-radius: var(--radius);
-            padding: 1.2rem;
-            border: 1px solid rgba(201, 169, 110, 0.15);
-            position: relative;
-            min-height: 320px;
-        }
-        .page-sim .page {
-            flex: 1;
-            background: var(--paper-white);
-            border-radius: 4px;
-            padding: 1.8rem 1.2rem;
-            box-shadow: 0 2px 12px rgba(44, 24, 16, 0.06);
-            min-height: 260px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            transition: var(--transition);
-            border: 1px solid rgba(201, 169, 110, 0.08);
-            margin: 0 2px;
-        }
-        .page-sim .page:first-child {
-            margin-right: 1px;
-        }
-        .page-sim .page:last-child {
-            margin-left: 1px;
-        }
-        .page-sim .page .page-num {
-            font-size: 0.7rem;
-            color: var(--gold);
-            letter-spacing: 2px;
-            margin-top: 0.6rem;
-            opacity: 0.5;
-        }
-        .page-sim .page .content {
-            font-size: 1.1rem;
-            line-height: 2;
-            color: var(--ink-light);
-            max-width: 90%;
-        }
-        .page-sim .page .content .big-char {
-            font-size: 3.6rem;
+        .grid-4 .card .icon {
+            font-size: 2.4rem;
             display: block;
             margin-bottom: 0.4rem;
-            color: var(--zhu-red);
-            opacity: 0.5;
-            font-weight: 300;
         }
-        .page-sim .cut-line {
-            width: 2px;
-            background: repeating-linear-gradient(to bottom,
-                    var(--gold),
-                    var(--gold) 6px,
-                    transparent 6px,
-                    transparent 12px);
-            flex-shrink: 0;
-            margin: 0 6px;
-            opacity: 0.5;
-            transition: var(--transition);
-            cursor: col-resize;
-            position: relative;
-        }
-        .page-sim .cut-line.active {
-            opacity: 1;
-            background: var(--zhu-red);
-            width: 3px;
-        }
-        .page-controls {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .page-controls .btn {
-            min-width: 100px;
-        }
-
-        /* ===== 制版重排 ===== */
-        .layout-editor {
-            display: grid;
-            grid-template-columns: 1fr 280px;
-            gap: 1.8rem;
-            align-items: start;
-        }
-        .text-preview {
-            background: var(--paper-white);
-            border-radius: var(--radius);
-            padding: 2rem 2.2rem;
-            border: 1px solid rgba(201, 169, 110, 0.12);
-            min-height: 380px;
-            box-shadow: inset 0 2px 8px rgba(44, 24, 16, 0.02);
-        }
-        .text-preview .content {
-            transition: var(--transition);
-            color: var(--ink);
-        }
-        .text-preview .content p {
-            margin-bottom: 0.8rem;
-            text-indent: 2em;
-        }
-        .text-preview .content .title {
-            font-size: 1.4rem;
+        .grid-4 .card h3 {
+            font-size: 1rem;
+            color: var(--primary-dark);
+            letter-spacing: 2px;
             font-weight: 600;
-            text-indent: 0;
-            text-align: center;
-            color: var(--zhu-red);
-            letter-spacing: 4px;
-            margin-bottom: 1.2rem;
         }
-        .control-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 1.2rem;
-        }
-        .control-group {
-            background: rgba(245, 240, 232, 0.3);
-            border-radius: var(--radius);
-            padding: 1.2rem 1.4rem;
-            border: 1px solid rgba(201, 169, 110, 0.10);
-        }
-        .control-group label {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-            color: var(--ink-light);
-            letter-spacing: 1px;
-            margin-bottom: 4px;
-        }
-        .control-group label span {
-            color: var(--zhu-red);
-            font-weight: 500;
-        }
-        .control-group input[type="range"] {
-            width: 100%;
-            accent-color: var(--zhu-red);
-            background: transparent;
-            cursor: pointer;
-        }
-        .control-group .val {
-            font-weight: 500;
-            color: var(--zhu-red);
-        }
-        .align-group {
-            display: flex;
-            gap: 6px;
-            margin-top: 6px;
-            flex-wrap: wrap;
-        }
-        .align-group .btn {
-            flex: 1;
-            min-width: 50px;
-            padding: 0.3rem 0.2rem;
+        .grid-4 .card .desc {
             font-size: 0.8rem;
-            background: transparent;
-            color: var(--ink-light);
-            border: 1px solid rgba(201, 169, 110, 0.2);
-            box-shadow: none;
+            color: var(--text-muted);
+            margin-top: 0.2rem;
+            line-height: 1.5;
         }
-        .align-group .btn:hover {
-            background: rgba(139, 26, 26, 0.04);
-            color: var(--zhu-red);
-        }
-        .align-group .btn.active {
-            background: var(--zhu-red);
-            color: #fff;
-            border-color: var(--zhu-red);
-        }
-
-        /* ===== 文档阅读 ===== */
-        .reader-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1.5rem;
-        }
-        .reader-content {
-            background: var(--paper-white);
-            border-radius: var(--radius);
-            padding: 2.8rem 3.2rem;
-            max-width: 780px;
-            width: 100%;
-            min-height: 420px;
-            border: 1px solid rgba(201, 169, 110, 0.12);
-            box-shadow: var(--card-shadow);
-            position: relative;
-        }
-        .reader-content .doc-title {
-            font-size: 1.6rem;
-            font-weight: 600;
-            color: var(--zhu-red);
-            text-align: center;
-            letter-spacing: 4px;
-            margin-bottom: 1.2rem;
-            border-bottom: 1px solid rgba(201, 169, 110, 0.2);
-            padding-bottom: 0.6rem;
-        }
-        .reader-content .doc-body {
-            font-size: 1.05rem;
-            line-height: 2;
-            color: var(--ink);
-            text-indent: 2em;
-        }
-        .reader-content .doc-body p {
-            margin-bottom: 0.8rem;
-        }
-        .reader-footer {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1.2rem;
-            flex-wrap: wrap;
-            max-width: 780px;
-            width: 100%;
-        }
-        .reader-footer .page-info {
-            font-size: 0.9rem;
-            color: var(--ink-light);
-            opacity: 0.6;
+        .grid-4 .card .badge {
+            display: inline-block;
+            margin-top: 0.5rem;
+            font-size: 0.65rem;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            border-radius: 20px;
+            padding: 0.05rem 0.7rem;
+            opacity: 0.5;
             letter-spacing: 1px;
         }
-        .reader-footer .controls {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-        .reader-footer .controls .btn {
-            padding: 0.3rem 1.2rem;
-            font-size: 0.85rem;
-            min-width: 70px;
-        }
-        .reader-footer .controls .btn-outline {
-            background: transparent;
-            color: var(--zhu-red);
-            border: 1px solid var(--zhu-red);
-        }
-        .reader-footer .controls .btn-outline:hover {
-            background: var(--zhu-red);
-            color: #fff;
-        }
-        .reader-footer .controls .btn-outline:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-            transform: none;
-            background: transparent;
-            color: var(--zhu-red);
-        }
 
-        /* ===== 空状态 ===== */
-        .empty-state {
+        /* ===== 底部版权 ===== */
+        .footer-note {
+            margin-top: 2.5rem;
+            font-size: 0.8rem;
             text-align: center;
-            padding: 2.5rem 1rem;
-            color: var(--ink-light);
-            opacity: 0.5;
-        }
-        .empty-state .icon {
-            font-size: 3rem;
-            display: block;
-            margin-bottom: 0.6rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            padding-top: 1.2rem;
+            letter-spacing: 1px;
         }
 
-        /* ===== 响应式 ===== */
-        @media (max-width: 1024px) {
-            .grid-4 {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .font-layout,
-            .layout-editor {
-                grid-template-columns: 1fr;
-            }
-            .font-layout .font-list {
-                max-height: 220px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .navbar {
-                flex-direction: column;
-                height: auto;
-                padding: 0.8rem 1rem;
-                gap: 0.6rem;
-            }
-            .navbar .brand {
-                font-size: 1.3rem;
-            }
-            .nav-links {
-                justify-content: center;
-                gap: 4px;
-            }
-            .nav-links a {
-                padding: 0.3rem 0.8rem;
-                font-size: 0.8rem;
-            }
-            .app-container {
-                padding: 1rem 1rem 2rem;
-            }
-            .grid-4 {
-                grid-template-columns: 1fr 1fr;
-                gap: 1rem;
-            }
-            .overview-hero .big-title {
-                font-size: 2.2rem;
-                letter-spacing: 6px;
-            }
-            .page-sim {
-                flex-direction: column;
-                align-items: center;
-                padding: 0.8rem;
-                min-height: auto;
-            }
-            .page-sim .page {
-                min-height: 140px;
-                width: 100%;
-                margin: 2px 0 !important;
-            }
-            .page-sim .cut-line {
-                width: 100%;
-                height: 2px;
-                margin: 4px 0;
-                background: repeating-linear-gradient(to right,
-                        var(--gold),
-                        var(--gold) 6px,
-                        transparent 6px,
-                        transparent 12px);
-                cursor: row-resize;
-            }
-            .layout-editor {
-                grid-template-columns: 1fr;
-            }
-            .reader-content {
-                padding: 1.5rem 1.2rem;
-                min-height: 280px;
-            }
-            .reader-content .doc-title {
-                font-size: 1.2rem;
-            }
-            .reader-footer {
-                flex-direction: column;
-                align-items: center;
-            }
-            .control-panel {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 1rem;
-            }
-            .control-panel .control-group:last-child {
-                grid-column: 1 / -1;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .grid-4 {
-                grid-template-columns: 1fr;
-            }
-            .nav-links a {
-                font-size: 0.7rem;
-                padding: 0.2rem 0.6rem;
-            }
-            .font-add {
-                flex-direction: column;
-            }
-            .font-add input {
-                min-width: auto;
-            }
-            .control-panel {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* ===== 工具提示 ===== */
-        .toast {
+        /* ===== 返回顶部 ===== */
+        .back-to-top-ball {
             position: fixed;
             bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: var(--ink);
-            color: var(--paper-white);
-            padding: 0.6rem 1.8rem;
-            border-radius: 40px;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            opacity: 0;
+            right: 2rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(44, 110, 47, 0.08);
+            border: 1px solid rgba(44, 110, 47, 0.15);
+            color: var(--primary);
+            font-size: 1.6rem;
+            line-height: 44px;
+            text-align: center;
+            text-decoration: none;
             transition: var(--transition);
-            pointer-events: none;
-            z-index: 9999;
-            box-shadow: 0 4px 20px rgba(44, 24, 16, 0.25);
-            border: 1px solid rgba(201, 169, 110, 0.2);
+            backdrop-filter: blur(4px);
+            box-shadow: 0 2px 12px rgba(44, 46, 44, 0.06);
+            font-family: serif;
         }
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
+        .back-to-top-ball:hover {
+            background: rgba(44, 110, 47, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(44, 110, 47, 0.10);
         }
 
-        /* ===== 额外工具类 ===== */
-        .mt-1 {
-            margin-top: 1rem;
+        @media (max-width: 600px) {
+            .container {
+                padding: 1.2rem 1rem 2rem;
+            }
+            .grid-4 {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.8rem;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+            h1 .sub {
+                display: block;
+                margin-left: 0;
+                font-size: 0.85rem;
+            }
+            .top-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .download-hero {
+                padding: 1.5rem 1rem;
+            }
+            .download-hero .btn-group {
+                flex-direction: column;
+                align-items: center;
+            }
         }
-        .text-center {
-            text-align: center;
-        }
-        .gap-1 {
-            gap: 0.8rem;
-        }
-        .flex-wrap {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
+        @media (max-width: 400px) {
+            .grid-4 {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- ===== 顶部导航 ===== -->
-    <nav class="navbar" role="navigation">
-        <a class="brand" href="#">
-            <span class="seal">简</span>
-            简帙
-            <span>· 工器谱</span>
-        </a>
-        <ul class="nav-links">
-            <li><a class="active" data-page="overview">总览</a></li>
-            <li><a data-page="font">字库制作</a></li>
-            <li><a data-page="pagesplit">双页切拼</a></li>
-            <li><a data-page="layout">制版重排</a></li>
-            <li><a data-page="reader">文档阅读</a></li>
-        </ul>
-    </nav>
-
-    <!-- ===== 主容器 ===== -->
-    <main class="app-container">
-
-        <!-- ========== 总览 ========== -->
-        <section class="page active" id="page-overview">
-            <div class="overview-hero">
-                <div class="big-title">简 帙</div>
-                <div class="big-sub">工 器 谱 · 四 艺</div>
-                <p style="margin-top:1.2rem; color:var(--ink-light); opacity:0.6; letter-spacing:2px; font-size:0.95rem;">
-                    字库 · 切拼 · 重排 · 阅读
-                </p>
+    <div class="container">
+        <!-- ===== 顶部栏 ===== -->
+        <div class="top-bar">
+            <div class="brand">
+                <span class="seal">简</span>
+                简帙
+                <span style="font-weight:400; font-size:0.8rem; color:var(--text-muted); letter-spacing:1px;">· 工器谱</span>
             </div>
-            <div class="grid-4">
-                <div class="tool-card" data-page="font">
-                    <span class="icon">🖋</span>
-                    <h3>字库制作</h3>
-                    <p>管理字族、预览字体，构建专属字库</p>
-                    <span class="badge">字库 · 字体</span>
-                </div>
-                <div class="tool-card" data-page="pagesplit">
-                    <span class="icon">📄</span>
-                    <h3>双页切拼</h3>
-                    <p>双页视图，切割拼接，灵活制版</p>
-                    <span class="badge">切割 · 拼接</span>
-                </div>
-                <div class="tool-card" data-page="layout">
-                    <span class="icon">📐</span>
-                    <h3>制版重排</h3>
-                    <p>调整字号、行距、字距，实时重排版面</p>
-                    <span class="badge">排版 · 调整</span>
-                </div>
-                <div class="tool-card" data-page="reader">
-                    <span class="icon">📖</span>
-                    <h3>文档阅读</h3>
-                    <p>沉浸式阅读，翻页浏览，舒适体验</p>
-                    <span class="badge">阅读 · 浏览</span>
-                </div>
+            <a href="#" class="home-link" id="homeLink">← 铭心阁</a>
+        </div>
+
+        <!-- ===== 面包屑 ===== -->
+        <div class="breadcrumb">简帙 <span>›</span> 总览</div>
+
+        <!-- ===== 标题 ===== -->
+        <h1>简帙 <span class="sub">工器谱 · 四艺</span></h1>
+        <div class="subtitle">字库 · 切拼 · 重排 · 阅读 —— 工器理论文集</div>
+
+        <!-- ===== 下载区 ===== -->
+        <div class="download-hero">
+            <span class="icon">📦</span>
+            <h2>简帙古籍整理系统</h2>
+            <p>集成字库制作、双页切拼、制版重排、文档阅读四大工器，助力古籍数字化整理与学术研究。</p>
+            <div class="btn-group">
+                <a href="https://pan.quark.cn/s/xxxxxxxx" target="_blank" class="btn" rel="noopener noreferrer">📥 夸克网盘</a>
+                <a href="https://pan.baidu.com/s/xxxxxxxxxxxxxxxx" target="_blank" class="btn btn-outline" rel="noopener noreferrer">📥 百度网盘</a>
             </div>
-        </section>
+            <div class="meta">当前版本 v2.1 · 更新于 2026年6月</div>
+        </div>
 
-        <!-- ========== 字库制作 ========== -->
-        <section class="page" id="page-font">
-            <div class="section-title">字库制作</div>
-            <div class="section-sub">管理字库 · 预览字体 · 自由增减</div>
-            <div class="font-layout">
-                <!-- 字库列表 -->
-                <div class="card font-list" id="fontList">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.8rem;">
-                        <span style="font-weight:500; font-size:0.9rem; letter-spacing:1px; opacity:0.6;">字 库</span>
-                        <span style="font-size:0.8rem; opacity:0.4;" id="fontCount">4 款</span>
-                    </div>
-                    <div id="fontItems">
-                        <!-- 由 JS 动态渲染 -->
-                    </div>
-                    <div class="font-add">
-                        <input type="text" id="fontNameInput" placeholder="输入字库名称…" />
-                        <button class="btn btn-sm" id="addFontBtn">添加</button>
-                    </div>
-                </div>
-                <!-- 预览区 -->
-                <div class="card font-preview" id="fontPreview">
-                    <div class="sample" id="sampleText" style="font-family: '思源宋体', 'Noto Serif SC', serif;">
-                        永
-                    </div>
-                    <div class="sample-info" id="sampleInfo">思源宋体 · 常规</div>
-                    <div style="margin-top:1rem; display:flex; gap:8px; flex-wrap:wrap; justify-content:center;">
-                        <button class="btn btn-sm btn-outline" data-sample="永">永</button>
-                        <button class="btn btn-sm btn-outline" data-sample="簡">簡</button>
-                        <button class="btn btn-sm btn-outline" data-sample="帙">帙</button>
-                        <button class="btn btn-sm btn-outline" data-sample="工器">工器</button>
-                        <button class="btn btn-sm btn-outline" data-sample="谱">谱</button>
-                    </div>
-                </div>
-            </div>
-        </section>
+        <!-- ===== 四艺入口 ===== -->
+        <div class="grid-4">
+            <a href="ziku/" class="card">
+                <span class="icon">🖋</span>
+                <h3>字库制作</h3>
+                <div class="desc">字体源流 · 字库建构</div>
+                <span class="badge">6 篇</span>
+            </a>
+            <a href="shuangye/" class="card">
+                <span class="icon">📄</span>
+                <h3>双页切拼</h3>
+                <div class="desc">版式切割 · 拼接重组</div>
+                <span class="badge">4 篇</span>
+            </a>
+            <a href="zhiban/" class="card">
+                <span class="icon">📐</span>
+                <h3>制版重排</h3>
+                <div class="desc">版面调适 · 重排原理</div>
+                <span class="badge">5 篇</span>
+            </a>
+            <a href="yuedu/" class="card">
+                <span class="icon">📖</span>
+                <h3>文档阅读</h3>
+                <div class="desc">阅读法式 · 文献阐释</div>
+                <span class="badge">4 篇</span>
+            </a>
+        </div>
 
-        <!-- ========== 双页切拼 ========== -->
-        <section class="page" id="page-pagesplit">
-            <div class="section-title">双页切拼</div>
-            <div class="section-sub">双页展开 · 切割拼接 · 自由制版</div>
-            <div class="card page-viewer">
-                <div class="page-sim" id="pageSim">
-                    <div class="page" id="leftPage">
-                        <div class="content">
-                            <span class="big-char">左</span>
-                            双页对开，左文右图。<br />
-                            气韵相生，虚实互映。
-                        </div>
-                        <div class="page-num">— 左页 —</div>
-                    </div>
-                    <div class="cut-line" id="cutLine" title="拖动调整分割"></div>
-                    <div class="page" id="rightPage">
-                        <div class="content">
-                            <span class="big-char">右</span>
-                            图文交错，动静相宜。<br />
-                            版式天成，意趣盎然。
-                        </div>
-                        <div class="page-num">— 右页 —</div>
-                    </div>
-                </div>
-                <div class="page-controls">
-                    <button class="btn" id="splitBtn">✂ 切割</button>
-                    <button class="btn btn-outline" id="mergeBtn">⊹ 拼接</button>
-                    <button class="btn btn-outline" id="resetPageBtn">⟳ 重置</button>
-                </div>
-                <div style="font-size:0.8rem; opacity:0.4; letter-spacing:1px;" id="splitStatus">当前：双页完整</div>
-            </div>
-        </section>
+        <!-- ===== 简介 ===== -->
+        <div style="margin-top: 2.5rem; padding: 1rem 0 0.5rem; border-top: 1px solid var(--border-color);">
+            <p style="font-size:0.9rem; color:var(--text-muted); text-indent:2em; line-height:2;">
+                简帙者，集工器之理论，汇四艺之精要。字库以立其本，切拼以成其形，
+                重排以调其气，阅读以通其神。四者相承，乃为完璧。兹录诸篇，以备览者参详。
+            </p>
+        </div>
 
-        <!-- ========== 制版重排 ========== -->
-        <section class="page" id="page-layout">
-            <div class="section-title">制版重排</div>
-            <div class="section-sub">调整参数 · 实时重排 · 所见即所得</div>
-            <div class="layout-editor">
-                <div class="card text-preview" id="textPreview">
-                    <div class="content" id="previewContent">
-                        <div class="title">简帙·制版说</div>
-                        <p>制版之道，贵在从容。字之大小，行之疏密，皆关乎气韵。</p>
-                        <p>重排者，非徒改其形，乃调其神也。字号得宜，则目舒；行距适中，则气畅；字距相谐，则韵生。</p>
-                        <p>故曰：版式之妙，存乎一心。简帙工器，助君运斤成风，游刃有余。</p>
-                    </div>
-                </div>
-                <div class="control-panel">
-                    <div class="control-group">
-                        <label>字号 <span class="val" id="fontSizeVal">18</span>px</label>
-                        <input type="range" id="fontSizeSlider" min="12" max="32" value="18" step="1" />
-                    </div>
-                    <div class="control-group">
-                        <label>行距 <span class="val" id="lineHeightVal">2.0</span></label>
-                        <input type="range" id="lineHeightSlider" min="1.2" max="3.0" value="2.0" step="0.1" />
-                    </div>
-                    <div class="control-group">
-                        <label>字距 <span class="val" id="letterSpacingVal">0</span>px</label>
-                        <input type="range" id="letterSpacingSlider" min="0" max="8" value="0" step="1" />
-                    </div>
-                    <div class="control-group">
-                        <label>对齐方式</label>
-                        <div class="align-group">
-                            <button class="btn active" data-align="left">左</button>
-                            <button class="btn" data-align="center">中</button>
-                            <button class="btn" data-align="right">右</button>
-                            <button class="btn" data-align="justify">均</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+        <!-- ===== 底部版权 ===== -->
+        <div class="footer-note">铭心阁 · 简帙工器谱 · 古籍解读与知识重构</div>
+    </div>
 
-        <!-- ========== 文档阅读 ========== -->
-        <section class="page" id="page-reader">
-            <div class="section-title">文档阅读</div>
-            <div class="section-sub">沉浸阅读 · 翻页浏览 · 自在随心</div>
-            <div class="card reader-container">
-                <div class="reader-content" id="readerContent">
-                    <div class="doc-title" id="docTitle">简帙·卷首</div>
-                    <div class="doc-body" id="docBody">
-                        <p>夫工器之谱，所以纪技艺之要，传匠心之道也。简帙者，取其简约而不失其真，帙卷而神韵自足。</p>
-                        <p>字库以蓄其形，切拼以合其势，重排以调其气，阅读以通其神。四艺相承，乃成完璧。</p>
-                        <p>今录此文，以为诸艺之纲。览者当知，工器虽繁，其本在简；技艺虽多，其要在心。</p>
-                    </div>
-                </div>
-                <div class="reader-footer">
-                    <span class="page-info" id="pageInfo">第 1 / 3 页</span>
-                    <div class="controls">
-                        <button class="btn btn-outline" id="prevPageBtn">‹ 上一页</button>
-                        <button class="btn btn-outline" id="nextPageBtn">下一页 ›</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- ===== Toast ===== -->
-    <div class="toast" id="toast"></div>
+    <!-- ===== 返回顶部 ===== -->
+    <a href="#" id="backToTop" class="back-to-top-ball" aria-label="返回顶部">^</a>
 
     <script>
-        // ================================================================
-        //  全局工具
-        // ================================================================
-        function toast(msg, duration = 2000) {
-            const el = document.getElementById('toast');
-            el.textContent = msg;
-            el.classList.add('show');
-            clearTimeout(el._timer);
-            el._timer = setTimeout(() => el.classList.remove('show'), duration);
-        }
-
-        // ================================================================
-        //  导航切换
-        // ================================================================
-        const navLinks = document.querySelectorAll('.nav-links a');
-        const pages = {
-            overview: document.getElementById('page-overview'),
-            font: document.getElementById('page-font'),
-            pagesplit: document.getElementById('page-pagesplit'),
-            layout: document.getElementById('page-layout'),
-            reader: document.getElementById('page-reader'),
-        };
-
-        function switchPage(pageId) {
-            // 更新导航
-            navLinks.forEach(a => {
-                a.classList.toggle('active', a.dataset.page === pageId);
-            });
-            // 更新页面
-            Object.keys(pages).forEach(key => {
-                pages[key].classList.toggle('active', key === pageId);
-            });
-            // 如果切换到字库，刷新列表
-            if (pageId === 'font') renderFontList();
-            if (pageId === 'reader') updateReader();
-        }
-
-        navLinks.forEach(a => {
-            a.addEventListener('click', (e) => {
-                e.preventDefault();
-                switchPage(a.dataset.page);
-            });
-        });
-
-        // 总览卡片点击
-        document.querySelectorAll('.tool-card[data-page]').forEach(card => {
-            card.addEventListener('click', () => {
-                switchPage(card.dataset.page);
-            });
-        });
-
-        // ================================================================
-        //  字库制作
-        // ================================================================
-        let fontData = [
-            { id: 1, name: '思源宋体', family: '"思源宋体","Noto Serif SC",serif' },
-            { id: 2, name: '方正楷体', family: '"方正楷体","KaiTi",serif' },
-            { id: 3, name: '华文行楷', family: '"华文行楷","Xingkai SC",cursive' },
-            { id: 4, name: '汉仪旗黑', family: '"汉仪旗黑","PingFang SC",sans-serif' },
-        ];
-        let selectedFontId = 1;
-
-        function renderFontList() {
-            const container = document.getElementById('fontItems');
-            const count = document.getElementById('fontCount');
-            count.textContent = fontData.length + ' 款';
-            container.innerHTML = fontData.map(f => `
-                    <div class="font-item ${f.id === selectedFontId ? 'active' : ''}" data-id="${f.id}">
-                        <span class="name">${f.name}</span>
-                        <button class="del" data-id="${f.id}" title="删除">✕</button>
-                    </div>
-                `).join('');
-
-            // 点击选中
-            container.querySelectorAll('.font-item').forEach(el => {
-                el.addEventListener('click', (e) => {
-                    if (e.target.classList.contains('del')) return;
-                    const id = parseInt(el.dataset.id);
-                    selectFont(id);
-                });
-            });
-
-            // 删除
-            container.querySelectorAll('.del').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const id = parseInt(btn.dataset.id);
-                    deleteFont(id);
-                });
-            });
-
-            // 更新预览
-            updateFontPreview();
-        }
-
-        function selectFont(id) {
-            selectedFontId = id;
-            renderFontList();
-        }
-
-        function deleteFont(id) {
-            if (fontData.length <= 1) {
-                toast('至少保留一款字库');
-                return;
-            }
-            fontData = fontData.filter(f => f.id !== id);
-            if (selectedFontId === id) {
-                selectedFontId = fontData[0].id;
-            }
-            renderFontList();
-            toast('已删除字库');
-        }
-
-        function updateFontPreview() {
-            const f = fontData.find(d => d.id === selectedFontId);
-            if (!f) return;
-            const sample = document.getElementById('sampleText');
-            sample.style.fontFamily = f.family;
-            document.getElementById('sampleInfo').textContent = f.name + ' · 预览';
-        }
-
-        // 添加字库
-        document.getElementById('addFontBtn').addEventListener('click', () => {
-            const input = document.getElementById('fontNameInput');
-            const name = input.value.trim();
-            if (!name) { toast('请输入字库名称'); return; }
-            if (fontData.some(f => f.name === name)) { toast('字库已存在'); return; }
-            const id = Date.now();
-            fontData.push({
-                id,
-                name,
-                family: `"${name}", serif`
-            });
-            selectedFontId = id;
-            input.value = '';
-            renderFontList();
-            toast('字库「' + name + '」已添加');
-        });
-
-        // 回车添加
-        document.getElementById('fontNameInput').addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') document.getElementById('addFontBtn').click();
-        });
-
-        // 预览示例字
-        document.querySelectorAll('[data-sample]').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const char = btn.dataset.sample;
-                document.getElementById('sampleText').textContent = char;
-            });
-        });
-
-        // 初始化字库
-        renderFontList();
-
-        // ================================================================
-        //  双页切拼
-        // ================================================================
-        let isCut = false;
-
-        function updateSplitUI() {
-            const left = document.getElementById('leftPage');
-            const right = document.getElementById('rightPage');
-            const line = document.getElementById('cutLine');
-            const status = document.getElementById('splitStatus');
-
-            if (isCut) {
-                left.style.opacity = '0.4';
-                right.style.opacity = '0.4';
-                line.classList.add('active');
-                status.textContent = '当前：已切割 — 可拖动分割线调整';
-                document.getElementById('splitBtn').textContent = '✂ 已切割';
-            } else {
-                left.style.opacity = '1';
-                right.style.opacity = '1';
-                line.classList.remove('active');
-                status.textContent = '当前：双页完整';
-                document.getElementById('splitBtn').textContent = '✂ 切割';
-            }
-        }
-
-        document.getElementById('splitBtn').addEventListener('click', () => {
-            isCut = !isCut;
-            updateSplitUI();
-            toast(isCut ? '已切割双页' : '已恢复双页');
-        });
-
-        document.getElementById('mergeBtn').addEventListener('click', () => {
-            if (isCut) {
-                isCut = false;
-                updateSplitUI();
-                toast('已拼接为双页');
-            } else {
-                toast('当前已是双页状态');
-            }
-        });
-
-        document.getElementById('resetPageBtn').addEventListener('click', () => {
-            isCut = false;
-            updateSplitUI();
-            // 重置内容
-            document.getElementById('leftPage').querySelector('.content').innerHTML = `
-                    <span class="big-char">左</span>
-                    双页对开，左文右图。<br />
-                    气韵相生，虚实互映。
-                `;
-            document.getElementById('rightPage').querySelector('.content').innerHTML = `
-                    <span class="big-char">右</span>
-                    图文交错，动静相宜。<br />
-                    版式天成，意趣盎然。
-                `;
-            toast('已重置页面');
-        });
-
-        // 拖动分割线（简单模拟）
-        const cutLine = document.getElementById('cutLine');
-        let isDragging = false;
-        cutLine.addEventListener('mousedown', (e) => {
-            if (!isCut) return;
-            isDragging = true;
-            document.body.style.cursor = 'col-resize';
+        document.getElementById('backToTop').addEventListener('click', function(e) {
             e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         });
-        document.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-            const sim = document.getElementById('pageSim');
-            const rect = sim.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const pct = Math.max(10, Math.min(90, (x / rect.width) * 100));
-            const left = document.getElementById('leftPage');
-            const right = document.getElementById('rightPage');
-            const line = document.getElementById('cutLine');
-            left.style.flex = pct / 100;
-            right.style.flex = (100 - pct) / 100;
-            line.style.margin = `0 ${Math.max(2, Math.min(12, pct * 0.1))}px`;
+        document.getElementById('homeLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         });
-        document.addEventListener('mouseup', () => {
-            if (isDragging) {
-                isDragging = false;
-                document.body.style.cursor = '';
-            }
-        });
-
-        // ================================================================
-        //  制版重排
-        // ================================================================
-        const previewContent = document.getElementById('previewContent');
-        const fontSizeSlider = document.getElementById('fontSizeSlider');
-        const lineHeightSlider = document.getElementById('lineHeightSlider');
-        const letterSpacingSlider = document.getElementById('letterSpacingSlider');
-        const fontSizeVal = document.getElementById('fontSizeVal');
-        const lineHeightVal = document.getElementById('lineHeightVal');
-        const letterSpacingVal = document.getElementById('letterSpacingVal');
-
-        function applyLayout() {
-            const fs = fontSizeSlider.value;
-            const lh = lineHeightSlider.value;
-            const ls = letterSpacingSlider.value;
-            previewContent.style.fontSize = fs + 'px';
-            previewContent.style.lineHeight = lh;
-            previewContent.style.letterSpacing = ls + 'px';
-            fontSizeVal.textContent = fs;
-            lineHeightVal.textContent = lh;
-            letterSpacingVal.textContent = ls;
-        }
-
-        fontSizeSlider.addEventListener('input', applyLayout);
-        lineHeightSlider.addEventListener('input', applyLayout);
-        letterSpacingSlider.addEventListener('input', applyLayout);
-
-        // 对齐
-        document.querySelectorAll('.align-group .btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.align-group .btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                previewContent.style.textAlign = btn.dataset.align;
-            });
-        });
-
-        applyLayout();
-
-        // ================================================================
-        //  文档阅读
-        // ================================================================
-        const docPages = [{
-            title: '简帙·卷首',
-            body: `<p>夫工器之谱，所以纪技艺之要，传匠心之道也。简帙者，取其简约而不失其真，帙卷而神韵自足。</p>
-                       <p>字库以蓄其形，切拼以合其势，重排以调其气，阅读以通其神。四艺相承，乃成完璧。</p>
-                       <p>今录此文，以为诸艺之纲。览者当知，工器虽繁，其本在简；技艺虽多，其要在心。</p>`
-        }, {
-            title: '简帙·字库篇',
-            body: `<p>字者，文之基也。库者，藏之府也。字库之作，贵在博采而精择。</p>
-                       <p>宋体端庄，楷体温润，行草飘逸，黑体刚健。各具其美，各适其用。</p>
-                       <p>制字库者，当以实用为本，以审美为纲。不慕奇巧，不逐浮华，但求字字可读，款款可用。</p>`
-        }, {
-            title: '简帙·制版篇',
-            body: `<p>制版之道，在于调和。字之大小、行之疏密、墨之浓淡，皆需相谐。</p>
-                       <p>切拼者，分合之术也。双页对开，气韵相连；切割重组，妙趣横生。</p>
-                       <p>重排者，调适之法也。因文设版，因意定式，使文与版相得益彰，读者畅然。</p>`
-        }];
-
-        let currentPageIdx = 0;
-
-        function updateReader() {
-            const page = docPages[currentPageIdx];
-            document.getElementById('docTitle').textContent = page.title;
-            document.getElementById('docBody').innerHTML = page.body;
-            document.getElementById('pageInfo').textContent = `第 ${currentPageIdx + 1} / ${docPages.length} 页`;
-
-            document.getElementById('prevPageBtn').disabled = currentPageIdx === 0;
-            document.getElementById('nextPageBtn').disabled = currentPageIdx === docPages.length - 1;
-        }
-
-        document.getElementById('prevPageBtn').addEventListener('click', () => {
-            if (currentPageIdx > 0) { currentPageIdx--;
-                updateReader(); }
-        });
-
-        document.getElementById('nextPageBtn').addEventListener('click', () => {
-            if (currentPageIdx < docPages.length - 1) { currentPageIdx++;
-                updateReader(); }
-        });
-
-        // 键盘翻页
-        document.addEventListener('keydown', (e) => {
-            const readerPage = document.getElementById('page-reader');
-            if (!readerPage.classList.contains('active')) return;
-            if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
-                e.preventDefault();
-                document.getElementById('prevPageBtn').click();
-            } else if (e.key === 'ArrowRight' || e.key === 'PageDown') {
-                e.preventDefault();
-                document.getElementById('nextPageBtn').click();
-            }
-        });
-
-        updateReader();
-
-        // ================================================================
-        //  初始化
-        // ================================================================
-        console.log('📜 简帙 · 工器谱 已加载');
-        console.log('🛠 四艺：字库制作 · 双页切拼 · 制版重排 · 文档阅读');
     </script>
 
 </body>
-  </html>
+</html>
