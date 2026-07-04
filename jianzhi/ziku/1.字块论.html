@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>字块论 · 字库制作 · 简帙</title>
+    <style>
+        /* ===== 全局 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --paper: #f5f0e8;
+            --paper-white: #fcf9f5;
+            --ink: #2c1810;
+            --ink-light: #5a3f36;
+            --zhu-red: #8b1a1a;
+            --zhu-red-light: #b33a3a;
+            --gold: #c9a96e;
+            --border-light: #e8dfd6;
+            --radius: 6px;
+            --shadow: 0 2px 16px rgba(44, 24, 16, 0.08);
+            --transition: 0.25s ease;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: "Noto Serif SC", "思源宋体", "Source Han Serif SC", "华文宋体", serif;
+            background: var(--paper);
+            color: var(--ink);
+            line-height: 1.8;
+            padding: 2rem 1rem;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: var(--paper-white);
+            padding: 2rem 2.5rem 3rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-light);
+        }
+
+        /* ===== 顶部 ===== */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border-light);
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .top-bar .brand {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--ink);
+            letter-spacing: 4px;
+        }
+        .top-bar .brand .sub {
+            font-weight: 400;
+            font-size: 0.9rem;
+            color: var(--ink-light);
+            letter-spacing: 2px;
+            opacity: 0.6;
+            margin-left: 6px;
+        }
+
+        /* ===== 面包屑 ===== */
+        .breadcrumb {
+            font-size: 0.85rem;
+            color: var(--ink-light);
+            margin-bottom: 1.5rem;
+            padding: 0.4rem 0.8rem;
+            background: var(--paper);
+            border-radius: 20px;
+            display: inline-block;
+            opacity: 0.7;
+        }
+        .breadcrumb a {
+            color: var(--ink-light);
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: var(--zhu-red);
+            text-decoration: underline;
+        }
+        .breadcrumb span {
+            margin: 0 4px;
+        }
+
+        /* ===== 标题 ===== */
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 0.2rem;
+            flex-wrap: wrap;
+        }
+        .article-meta .series-tag {
+            font-size: 0.85rem;
+            color: var(--ink-light);
+            background: var(--paper);
+            padding: 0.1rem 0.8rem;
+            border-radius: 12px;
+            opacity: 0.7;
+        }
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--ink);
+            letter-spacing: 4px;
+            margin-bottom: 0.2rem;
+            line-height: 1.4;
+        }
+        .subtitle {
+            color: var(--ink-light);
+            font-size: 0.95rem;
+            margin-bottom: 1.8rem;
+            border-left: 3px solid var(--zhu-red);
+            padding-left: 1rem;
+            opacity: 0.7;
+        }
+
+        /* ===== 章内目录 ===== */
+        .toc {
+            background: var(--paper);
+            border-left: 4px solid var(--zhu-red);
+            padding: 0.8rem 1.2rem;
+            margin: 1.2rem 0 1.8rem;
+            border-radius: var(--radius);
+        }
+        .toc h3 {
+            font-size: 1rem;
+            margin: 0 0 0.4rem 0;
+            color: var(--ink);
+            letter-spacing: 2px;
+        }
+        .toc ul {
+            margin: 0;
+            padding-left: 1.2rem;
+        }
+        .toc li {
+            margin: 0.2rem 0;
+        }
+        .toc a {
+            text-decoration: none;
+            color: var(--ink);
+            border-bottom: 1px dotted var(--border-light);
+            transition: 0.2s;
+        }
+        .toc a:hover {
+            border-bottom-style: solid;
+            color: var(--zhu-red);
+            border-bottom-color: var(--zhu-red);
+        }
+        .toc ul ul {
+            padding-left: 1.5rem;
+        }
+
+        /* ===== 正文 ===== */
+        .article-body p {
+            text-indent: 2em;
+            margin-bottom: 1rem;
+            line-height: 2.2;
+        }
+        .article-body h2 {
+            font-size: 1.4rem;
+            color: var(--ink);
+            margin: 2rem 0 1rem 0;
+            padding-bottom: 0.3rem;
+            border-bottom: 2px solid var(--border-light);
+            letter-spacing: 3px;
+        }
+        .article-body h3 {
+            font-size: 1.1rem;
+            color: var(--ink);
+            margin-top: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .article-body h4 {
+            font-size: 1rem;
+            color: var(--ink);
+            margin-top: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            opacity: 0.8;
+        }
+        .article-body strong {
+            color: var(--zhu-red);
+            font-weight: 600;
+        }
+        .article-body ul {
+            padding-left: 2rem;
+            margin: 0.5rem 0 1rem;
+        }
+        .article-body ul li {
+            margin-bottom: 0.3rem;
+            list-style-type: disc;
+        }
+        .article-body ul ul li {
+            list-style-type: circle;
+        }
+        .article-body .no-indent {
+            text-indent: 0;
+        }
+        .quote-block {
+            display: block;
+            margin: 1.2rem 0;
+            padding: 0.8rem 1.2rem;
+            font-style: italic;
+            color: var(--ink);
+            background: var(--paper);
+            border-radius: var(--radius);
+            border-left: 3px solid var(--gold);
+            line-height: 2.2;
+            text-align: center;
+            font-size: 1.05rem;
+            letter-spacing: 0.04em;
+        }
+        .inline-quote {
+            color: var(--ink);
+            font-style: italic;
+            background: var(--paper);
+            padding: 0.1rem 0.4rem;
+            border-radius: 3px;
+            white-space: nowrap;
+        }
+
+        /* ===== 表格 ===== */
+        .table-wrap {
+            overflow-x: auto;
+            margin: 1rem 0 1.2rem;
+        }
+        .table-wrap table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            background: var(--paper);
+            border-radius: var(--radius);
+        }
+        .table-wrap table th {
+            padding: 0.5rem 0.8rem;
+            text-align: left;
+            border-right: 1px solid var(--border-light);
+            background: var(--paper);
+            border-bottom: 2px solid var(--border-light);
+            font-weight: 600;
+        }
+        .table-wrap table td {
+            padding: 0.4rem 0.8rem;
+            border-right: 1px solid var(--border-light);
+            border-bottom: 1px solid var(--border-light);
+        }
+        .table-wrap table tr:last-child td {
+            border-bottom: none;
+        }
+        .table-wrap table th:last-child,
+        .table-wrap table td:last-child {
+            border-right: none;
+        }
+
+        /* ===== 单篇文章下载 ===== */
+        .article-download {
+            margin-top: 2rem;
+            padding: 1rem 1.2rem;
+            background: var(--paper);
+            border-radius: var(--radius);
+            border-left: 4px solid var(--zhu-red);
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: space-between;
+        }
+        .article-download .info {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.9rem;
+            color: var(--ink);
+        }
+        .article-download .btn-group {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+        .article-download .btn-sm {
+            display: inline-block;
+            background: var(--zhu-red);
+            color: #fff;
+            padding: 0.3rem 1.2rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            border: 1px solid var(--zhu-red);
+            transition: var(--transition);
+            letter-spacing: 0.5px;
+        }
+        .article-download .btn-sm:hover {
+            background: var(--zhu-red-light);
+            transform: translateY(-1px);
+        }
+        .article-download .btn-sm-outline {
+            background: transparent;
+            color: var(--zhu-red);
+            border-color: var(--zhu-red);
+        }
+        .article-download .btn-sm-outline:hover {
+            background: var(--zhu-red);
+            color: #fff;
+        }
+
+        /* ===== 系列底部导航 ===== */
+        .series-nav {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2.5rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid var(--border-light);
+            flex-wrap: wrap;
+        }
+        .series-nav a {
+            display: inline-block;
+            background: var(--paper);
+            color: var(--ink);
+            padding: 0.4rem 1.2rem;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            border: 1px solid var(--border-light);
+            transition: 0.2s;
+        }
+        .series-nav a:hover {
+            background: #f0ebe2;
+            border-color: var(--gold);
+            color: var(--zhu-red);
+        }
+        .series-nav .prev {
+            margin-right: auto;
+        }
+        .series-nav .next {
+            margin-left: auto;
+        }
+        .series-nav a.disabled {
+            cursor: default;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        .series-nav a.index-link {
+            background: var(--zhu-red);
+            color: #fff;
+            border-color: var(--zhu-red);
+        }
+        .series-nav a.index-link:hover {
+            background: var(--zhu-red-light);
+            color: #fff;
+        }
+        @media (max-width: 600px) {
+            .series-nav {
+                gap: 0.8rem;
+            }
+            .series-nav .prev,
+            .series-nav .next {
+                margin: 0;
+            }
+            .series-nav a {
+                font-size: 0.8rem;
+                padding: 0.3rem 0.8rem;
+            }
+        }
+
+        /* ===== 底部版权 ===== */
+        .footer-note {
+            margin-top: 2.5rem;
+            font-size: 0.8rem;
+            text-align: center;
+            color: var(--ink-light);
+            border-top: 1px solid var(--border-light);
+            padding-top: 1.2rem;
+            letter-spacing: 1px;
+            opacity: 0.5;
+        }
+
+        /* ===== 返回顶部 ===== */
+        .back-to-top-ball {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(44, 24, 16, 0.04);
+            border: 1px solid rgba(44, 24, 16, 0.10);
+            color: var(--ink-light);
+            font-size: 1.4rem;
+            line-height: 44px;
+            text-align: center;
+            text-decoration: none;
+            transition: var(--transition);
+            backdrop-filter: blur(4px);
+            box-shadow: 0 2px 12px rgba(44, 24, 16, 0.04);
+            font-family: serif;
+        }
+        .back-to-top-ball:hover {
+            background: rgba(44, 24, 16, 0.08);
+            transform: translateY(-2px);
+            color: var(--zhu-red);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1.2rem 1rem 2rem;
+            }
+            h1 {
+                font-size: 1.5rem;
+                letter-spacing: 3px;
+            }
+            .top-bar .brand {
+                font-size: 1.2rem;
+            }
+            .article-download {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.8rem;
+            }
+            .article-download .btn-group {
+                justify-content: center;
+            }
+            .quote-block {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.95rem;
+                border-left-width: 2px;
+            }
+            .toc ul ul {
+                padding-left: 1rem;
+            }
+            .article-body ul {
+                padding-left: 1.2rem;
+            }
+            .table-wrap table {
+                font-size: 0.8rem;
+            }
+            .table-wrap table th,
+            .table-wrap table td {
+                padding: 0.3rem 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- ===== 顶部栏 ===== -->
+        <div class="top-bar">
+            <div class="brand">
+                简帙<span class="sub">· 工器谱</span>
+            </div>
+        </div>
+
+        <!-- ===== 面包屑 ===== -->
+        <div class="breadcrumb">
+            <a href="../index.html">简帙</a> <span>›</span>
+            <a href="./index.html">字库制作</a> <span>›</span>
+            字块论
+        </div>
+
+        <!-- ===== 标题 ===== -->
+        <div class="article-meta">
+            <span class="series-tag">字库制作 · 第 1 篇</span>
+        </div>
+        <h1>字块论</h1>
+        <div class="subtitle">从字形迁移到文本复用的完备理论推导</div>
+
+        <!-- ===== 章内目录 ===== -->
+        <nav class="toc" aria-label="章节目录">
+            <h3>目 录</h3>
+            <ul>
+                <li><a href="#intro">引言：当裁剪、清晰化、超分辨率完成之后</a></li>
+                <li><a href="#ch1">一、根本命题：字形作为可迁移的视觉基元</a>
+                    <ul>
+                        <li><a href="#ch1-1">1.1 字块的视觉存在</a></li>
+                        <li><a href="#ch1-2">1.2 同一性的确立：不依赖标签的重复发现</a></li>
+                    </ul>
+                </li>
+                <li><a href="#ch2">二、第一条路线：由巨到微的字块迁移——以一正众</a>
+                    <ul>
+                        <li><a href="#ch2-1">2.1 逻辑起点：标准字面的确立</a></li>
+                        <li><a href="#ch2-2">2.2 基于基的迁移与覆盖</a></li>
+                        <li><a href="#ch2-3">2.3 非基实例的信息回馈</a></li>
+                    </ul>
+                </li>
+                <li><a href="#ch3">三、第二条路线：由微到巨的字块迁移——聚形成字</a>
+                    <ul>
+                        <li><a href="#ch3-1">3.1 逻辑起点：当不存在完整实例时</a></li>
+                        <li><a href="#ch3-2">3.2 骨骼共识的提取</a></li>
+                        <li><a href="#ch3-3">3.3 迁移与反向验证</a></li>
+                    </ul>
+                </li>
+                <li><a href="#ch4">四、双路协同与体系贯通</a></li>
+                <li><a href="#ch5">五、字块论与道论的对应</a></li>
+                <li><a href="#ch6">六、不依赖Unicode的深远意义</a></li>
+                <li><a href="#outro">结语：道在字中</a></li>
+            </ul>
+        </nav>
+
+        <!-- ===== 正文 ===== -->
+        <div class="article-body">
+
+            <!-- ===== 引言 ===== -->
+            <h2 id="intro">引言：当裁剪、清晰化、超分辨率完成之后</h2>
+
+            <p>裁剪确立了书页的物理边界，清晰化让弥散的笔画重新聚焦，超分辨率将低维投影重建为高维完形。这三步走完，我们得到了一张干净的、清晰的、完整的书页图像——但它的文字，仍然是“这一页”的文字。</p>
+
+            <p>然而，许多古籍、碑帖、写本在流传中存在着一个普遍现象：同一个字，在同一本书、同一组刻板、甚至同一张页面上，反复出现。每一次出现，都是同一母字的具身化——它们共享一个字形来源，却在不同的位置、不同的印刷力度、不同的保存状态中，呈现出微妙或显著的差异。</p>
+
+            <p>传统解决方案是“字库制作”：挑选出代表性字形，为每个字形赋予一个Unicode码位，将异体、异写、形近字分别归类。这无疑是强大的工具，但它有一条天然的边界：<strong>Unicode编码依赖对“字种”的预先定义。</strong>当面对不识字种的字、跨文本的字形流变、或因版刻差异而无法简单归并的同文异形现象时，编码体系就会遇到瓶颈——要么为无数变体各自编码（导致码位爆炸），要么强行归并（丢失信息）。</p>
+
+            <p>我们需要一条根本不同的思路：<strong>不依赖字符编码，而依赖字形的可视同一性，在图像层面直接完成字块的迁移与复用。</strong></p>
+
+            <p>这条思路，将把我们引向道论在符号层面的又一次展开。</p>
+
+            <!-- ===== 第一章 ===== -->
+            <h2 id="ch1">一、根本命题：字形作为可迁移的视觉基元</h2>
+
+            <h3 id="ch1-1">1.1 字块的视觉存在</h3>
+
+            <p>一张处理后清晰完整的书页图像，其内容由离散的墨迹区域组成。这些墨迹区域天然地聚合成一个个视觉上闭合或近闭合的块——这就是字块。</p>
+
+            <p>字块的定义不涉及任何字符编码。它只依赖视觉属性：一个墨色连通域，或一组因间距显著小于周边间隔而被判别为同一单元的墨色连通域。它的身份不由Unicode确定，而由<strong>其视觉特征向量确定</strong>——笔画骨架的拓扑、关键节点的相对位置、轮廓的矩特征、局部方向场的分布模式。</p>
+
+            <p>在这个意义上，字块是一种前编码的存在。它先于任何字符归类，先于任何语言学分析，它是纯粹的视觉同一性候选者。</p>
+
+            <h3 id="ch1-2">1.2 同一性的确立：不依赖标签的重复发现</h3>
+
+            <p>书页中反复出现的同一个字（如一篇万字的古籍中“之”字出现数百次），它们的字块在形态上具有统计可检测的相似性。这种相似性的本质来源有二：</p>
+
+            <ul>
+                <li><strong>同源关系：</strong>所有来自同一刻板、同一雕版的字形，共享同一个物理母体。它们之间的差异，仅仅是印刷时力度、着墨、纸张吸收的物理性变异。</li>
+                <li><strong>同写关系：</strong>所有来自同一书写者的同字，共享同一个运动程序和笔法习惯。它们之间的差异，是书写时速度、压力、角度的生理性波动。</li>
+            </ul>
+
+            <p>这两类变异都是围绕一个稳定中心的微扰，而非无规律的随机畸变。这意味着：<strong>字块之间的相似性结构，内在地携带了可供提取的“母字”信息</strong>——即使我们从未见过这个字种，也可以从大量实例的反向聚合中，逼近那个从未直接呈现、却始终统摄着所有变体的字形骨骼。</p>
+
+            <p class="quote-block">这正是道论的逻辑：同一种“一”（欲知的母字），体现为书页上众多“万物”（具体的字块实例）。我们没有它的编码，但我们有它的显现。</p>
+
+            <!-- ===== 第二章 ===== -->
+            <h2 id="ch2">二、第一条路线：由巨到微的字块迁移——以一正众</h2>
+
+            <h3 id="ch2-1">2.1 逻辑起点：标准字面的确立</h3>
+
+            <p>由巨到微的字块迁移，起始于一个操作性的信念：在一页或一群同源书页中，存在着一个可以被甄选为“此版标准”的字块实例。</p>
+
+            <p>这个信念的现实支撑在于：同一刻板印出的字，大多数是正常的、完整的、清晰的。缺陷字（断笔、糊版、墨团）是少数。如果我们能够从几十个、几百个“同一个字”的实例中，识别出那个最完整、最清晰、最具代表性的实例，就可以把它确立为此版此字的母本。</p>
+
+            <p>甄选标准不是主观审美，而是可量化的特征：</p>
+
+            <ul>
+                <li><strong>笔画完整性：</strong>骨架连续无断裂，轮廓闭合无缺口</li>
+                <li><strong>形态代表性：</strong>其特征向量在所有候选实例的马氏距离中心处或最近处</li>
+                <li><strong>纹理清晰度：</strong>边缘锐度高，内部墨色均匀</li>
+                <li><strong>空间规范性：</strong>在版框中的位置和尺寸与大多数同字实例一致</li>
+            </ul>
+
+            <p>以这些标准筛选出的最优实例，就是这一字在本书页系统中的“基”。它不需要Unicode标签，它只需要被确定为“同一字形的最高信任度实体”。</p>
+
+            <h3 id="ch2-2">2.2 基于基的迁移与覆盖</h3>
+
+            <p>一旦确立了基字块，同一书页上所有与其视觉相似度超过阈值的字块实例，都可以被关联到这个基上。迁移操作于是成为可能：</p>
+
+            <p><strong>缺陷替换。</strong>如果某个字块实例存在断笔、残缺、墨污，并且该实例与基字块被判定为同一字，那么用基字块替换缺陷实例，或用基字块的对应局部（只替换缺损的笔画部件）进行局部嫁接。替换不是简单的贴图——需要匹配目标位置的局部背景灰度、纸张纹理、邻近笔画的衔接条件。这相当于在裁剪中说过的：形态锚定、色彩纹理仅扩展。这里的“形态”是基字块的笔画骨骼，“色彩纹理”是目标字块的纸张基底和墨色浓淡。</p>
+
+            <p><strong>跨页一致性规整。</strong>一本书中，同一个字的同一个版，可能在奇数页和偶数页因印刷先后而墨色浓淡不同。将基字块的墨色分布映射到不同页面的光照条件下，使得全书同一字的视觉密度趋向一致。这不是抹平差异，而是将差异从“版次差异”转换为“局部微调”——差异仍在，但不再干扰阅读的连续性。</p>
+
+            <h3 id="ch2-3">2.3 非基实例的信息回馈</h3>
+
+            <p>这不是单向的覆盖。那些“次优”的字块实例，虽然整体不如基清晰，但可能在某些局部保留了基已经损失的信息。例如，基字块的某个笔画交叉处有小墨团，但另一个实例的同一位置是干净分开的。</p>
+
+            <p>此时发生反向迁移：<strong>用次优实例的清晰局部，修复基字块的首轮缺失。</strong>基变得更基，然后用更新后的基再去覆盖其他实例。多轮迭代收敛后，基字块本身成为一个“超集”——它综合吸收了所有实例中的最优局部，已经不再是任何单个物理实体，而是一个从多个实体中聚合出来的母字。</p>
+
+            <p class="quote-block">这正是道论中“由巨到微”反复雕琢的体现：从全集出发，确立最优整体，再以次优局部的信息反哺整体，逐轮精炼。</p>
+
+            <!-- ===== 第三章 ===== -->
+            <h2 id="ch3">三、第二条路线：由微到巨的字块迁移——聚形成字</h2>
+
+            <h3 id="ch3-1">3.1 逻辑起点：当不存在完整实例时</h3>
+
+            <p>由巨到微的路线的上限，是必须存在一个足够好的基。但在许多古籍场景中，这个前提并不成立：每一个具体的字块实例都有缺陷——或残缺、或模糊、或被印章叠压。没有任何一个完整到可以单独作为基。</p>
+
+            <p>此时，需要启动第二条逻辑：<strong>不预设任何完整字面，而是从大量零碎的字块实例中，提取出“这个字应该有什么笔画、这些笔画应该在什么位置”的骨骼信息，然后从骨骼出发，重构母字。</strong></p>
+
+            <p>这与第二类裁剪的九点采样完全同构：不依赖书页是什么颜色、背景是什么形态，只依赖从内部确认的确定性种子。此处的种子，就是被多个实例共同验证的局部笔画片段。</p>
+
+            <h3 id="ch3-2">3.2 骨骼共识的提取</h3>
+
+            <p><strong>第一步：</strong>将所有被视觉相似度关联到一起的字块实例，做骨架化处理。每个实例得到一个笔画骨骼图——稀疏的、可能断裂的、但忠实反映该实例实际笔画走向的线状图。</p>
+
+            <p><strong>第二步：</strong>将这些骨骼图对齐。对齐不依赖字符编码，而是基于视觉特征点——笔画交叉点、端点、拐角点——做特征点匹配和形变配准，将所有骨骼图映射到同一个坐标系。</p>
+
+            <p><strong>第三步：</strong>在对齐后的坐标系中，对每一个像素位置统计“在此处属于骨骼”的实例比例。生成一张共识骨骼图：被绝大多数实例共同认定的骨骼位置，标记为高确信；只有少数实例出现的骨骼，标记为疑似噪声或异写。</p>
+
+            <p><strong>第四步：</strong>从高确信骨骼出发，沿着骨骼方向场做连接。断裂的骨骼，如果在方向场中彼此对视且间距在合理阈值内，则予以连接。杂散的弱骨骼，如果不能融入主干网络，则丢弃。</p>
+
+            <p><strong>第五步：</strong>生成共识母字。在高确信骨骼的约束下，从骨骼向两侧生长笔画轮廓，生长的宽度参考所有实例在该骨骼位置的平均笔画宽度。轮廓的细节（顿笔、挑锋、连笔）取所有实例在该局部的统计中位数。</p>
+
+            <p class="quote-block">这个最终生成的字形，不在任何一张原书页上存在过。它是所有残损实例共同“投票”出的字形样貌。它没有Unicode码位，但它有明确的视觉身份。</p>
+
+            <h3 id="ch3-3">3.3 迁移与反向验证</h3>
+
+            <p>共识母字一旦生成，就可以执行与第一路线相同的迁移操作——替换缺陷实例，规整跨页差异。</p>
+
+            <p>但这里多了一层反向验证：当一个字块实例与共识母字的差异，超过了同版印刷的自然变异范围时，这个实例可能根本不是同一个字。第二路线在聚合过程中，本身就隐含着一种分类能力——那些无法被共识骨骼充分解释的字块，就是被误纳入的形近异字，应该被排除出当前字集，形成另一个独立聚团。</p>
+
+            <p class="quote-block">这正是由微到巨的哲学力量：它不仅生成母字，它同时界定这个母字可以覆盖的变异范围——它生长出了一个“字”的边界，而这个边界从未被任何人事先用编码划定过。这与第二类裁剪从种子像素向外生长到触及边界方才停止，完全同构。</p>
+
+            <!-- ===== 第四章 ===== -->
+            <h2 id="ch4">四、双路协同与体系贯通</h2>
+
+            <p>由巨到微的字块迁移（有基覆盖）和由微到巨的字块迁移（无基聚形），覆盖了字块复用的全部可能场景：</p>
+
+            <ul>
+                <li>有完好实例时，走第一条路——快速收敛，精准覆盖。</li>
+                <li>无完好实例时，走第二条路——从残片中投票重构。</li>
+                <li>混合场景时，先用第一条路建立一个初始基，再用第二条路的共识机制校验和补充初始基的细节缺失。</li>
+            </ul>
+
+            <p>在终端，两条路都输出一个共同产物：<strong>一个母字及其覆盖的实例清单。</strong>这个母字可以用于替换、规整同一版本书页上的所有该字实例，也可以用于与其他版本的同字进行版本比对——字形流变的分析，从此不再依赖编码标注，而直接依赖视觉特征聚类。</p>
+
+            <!-- ===== 第五章 ===== -->
+            <h2 id="ch5">五、字块论与道论的对应</h2>
+
+            <p>道论的每一个概念，在字块论中都获得了符号维度的精确映射：</p>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>道论概念</th>
+                            <th>在字块迁移中的体现</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>道</strong></td>
+                            <td>书页上所有墨迹像素未经区分的平等存在</td>
+                        </tr>
+                        <tr>
+                            <td><strong>一</strong></td>
+                            <td>欲知的这个字的母形</td>
+                        </tr>
+                        <tr>
+                            <td><strong>二</strong></td>
+                            <td>由巨到微（以最优实例为正，覆盖规整其余）与由微到巨（从残损实例中聚合成母形）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>三</strong></td>
+                            <td>形态（笔画骨骼与轮廓）、色彩（墨色浓淡与纸张底色）、质感（笔画内部的纹理走向）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>基</strong></td>
+                            <td>甄选出的最优字块实例，或从共识提取的高确信骨骼</td>
+                        </tr>
+                        <tr>
+                            <td><strong>规</strong></td>
+                            <td>相似度阈值、骨骼生长规则、笔画宽度的统计约束</td>
+                        </tr>
+                        <tr>
+                            <td><strong>识</strong></td>
+                            <td>知道哪些字块属于同一字、知道如何从一个实例的局部迁移到另一个实例、知道如何从残片聚合成完整</td>
+                        </tr>
+                        <tr>
+                            <td><strong>演</strong></td>
+                            <td>母字从实例中自然生成，缺陷实例被母字自然规整——不是替换，是让它显现为此字应有的清晰形态</td>
+                        </tr>
+                        <tr>
+                            <td><strong>此强彼弱</strong></td>
+                            <td>增强母字的骨骼在实例中的显现权重，弱化缺损、墨污、断裂的局部干扰</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="quote-block">裁剪论是关于空间边界的显现，清晰化论是关于信息聚焦的显现，超分辨率论是关于维度层级的显现，而字块论是关于符号身份的显现。四论贯通，一条完整的存在显现链条就此闭合：定位（裁剪）→ 聚焦（清晰化）→ 完形（超分辨率）→ 正名（字块迁移）。</p>
+
+            <!-- ===== 第六章 ===== -->
+            <h2 id="ch6">六、不依赖Unicode的深远意义</h2>
+
+            <p>字块迁移理论的核心价值，在于它彻底绕过了编码体系的封闭性。</p>
+
+            <p>Unicode的强大，恰也是其边界：它要求每一种字都被编码，而编码的前提是字种已被识别、被公认、被纳入标准。但古籍世界中存在着大量尚未识别、未达共识、或因版刻流变而无法简单统一赋码的字形。字块迁移不等待这些工作完成——它直接在图像层面，基于视觉同一性完成识别、聚类、迁移和规整。</p>
+
+            <p>更进一步，字块迁移为异体字研究提供了全新的工具：不再是先定义一组异体关系再标注，而是让字形自己通过视觉相似度聚类成聚团，聚团之间的差异度自动映射出异写、异构、异代的分化关系。编码是后置的，字形流变的研究是前置的——这逆转了传统文字学的操作顺序，而这一逆转，恰恰符合道论的根本精神：<strong>先有物，后有名。物从道中显现，名从物后附缀。</strong></p>
+
+            <!-- ===== 结语 ===== -->
+            <h2 id="outro">结语：道在字中</h2>
+
+            <p>一个字，一页书上刻着它，它就在这里。同一页上另一个地方还有它，另一页上还有它——这些“它”是同一个，又不是同一个。它们是同一个母形在世界中的不同显现，各自带着这一次着墨的条件、这一次纸张的肌理、这一次岁月的痕迹。</p>
+
+            <p>字块迁移理论所做的，不是抹平这些差异，而是让差异中那个不变的骨骼显现出来，让它在需要清晰的地方清晰，在需要规整的地方规整，而在需要保留差异的地方——比如版本学的字形比对——让每一个实例的独特面目仍然可被追溯。</p>
+
+            <p style="margin-top:1.2rem; color:var(--ink-light); opacity:0.6; letter-spacing:2px;">这是一场从“字形”的微观层面完成的演道：以字块为基，以迁移为规，以视觉同一性为二法，以母字显现为三度圆满。道在全书中，也在每一个“之”字之中。</p>
+
+        </div>
+
+
+
+        <!-- ===== 系列底部导航 ===== -->
+        <div class="series-nav">
+            <a href="javascript:void(0)" class="prev disabled">上一篇</a>
+            <a href="./index.html" class="index-link">返回目录</a>
+            <a href="2.字块论的四翼.html" class="next">字块论的四翼 ›</a>
+        </div>
+
+        <!-- ===== 底部版权 ===== -->
+        <div class="footer-note">铭心阁 · 简帙工器谱</div>
+    </div>
+
+    <!-- ===== 返回顶部 ===== -->
+    <a href="#" id="backToTop" class="back-to-top-ball" aria-label="返回顶部">^</a>
+
+    <script>
+        document.getElementById('backToTop').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+
+</body>
+</html>
