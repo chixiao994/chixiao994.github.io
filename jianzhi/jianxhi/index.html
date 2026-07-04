@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>简帙古籍整理系统 · 简帙 · 铭心阁</title>
+    <style>
+        /* ===== 全局 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --paper: #f5f0e8;
+            --paper-white: #fcf9f5;
+            --ink: #2c1810;
+            --ink-light: #5a3f36;
+            --zhu-red: #8b1a1a;
+            --zhu-red-light: #b33a3a;
+            --gold: #c9a96e;
+            --border-light: #e8dfd6;
+            --radius: 6px;
+            --shadow: 0 2px 16px rgba(44, 24, 16, 0.08);
+            --transition: 0.25s ease;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: "Noto Serif SC", "思源宋体", "Source Han Serif SC", "华文宋体", serif;
+            background: var(--paper);
+            color: var(--ink);
+            line-height: 1.8;
+            padding: 2rem 1rem;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: var(--paper-white);
+            padding: 2rem 2.5rem 3rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-light);
+        }
+
+        /* ===== 顶部 ===== */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border-light);
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .top-bar .brand {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--ink);
+            letter-spacing: 4px;
+        }
+        .top-bar .brand .sub {
+            font-weight: 400;
+            font-size: 0.9rem;
+            color: var(--ink-light);
+            letter-spacing: 2px;
+            opacity: 0.6;
+            margin-left: 6px;
+        }
+
+        /* ===== 面包屑 ===== */
+        .breadcrumb {
+            font-size: 0.85rem;
+            color: var(--ink-light);
+            margin-bottom: 1.5rem;
+            padding: 0.4rem 0.8rem;
+            background: var(--paper);
+            border-radius: 20px;
+            display: inline-block;
+            opacity: 0.7;
+        }
+        .breadcrumb a {
+            color: var(--ink-light);
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: var(--zhu-red);
+            text-decoration: underline;
+        }
+        .breadcrumb span {
+            margin: 0 4px;
+        }
+
+        /* ===== 标题 ===== */
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--ink);
+            letter-spacing: 6px;
+            margin-bottom: 0.2rem;
+        }
+        .page-title .sub {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--ink-light);
+            letter-spacing: 3px;
+            margin-left: 12px;
+            opacity: 0.6;
+        }
+        .subtitle {
+            color: var(--ink-light);
+            font-size: 0.95rem;
+            margin-bottom: 1.8rem;
+            border-left: 3px solid var(--zhu-red);
+            padding-left: 1rem;
+            opacity: 0.7;
+        }
+
+        /* ===== 目录列表 ===== */
+        .catalog-list {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0 1.5rem;
+        }
+        .catalog-list li {
+            padding: 0.5rem 0.8rem;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: baseline;
+            gap: 0.8rem;
+            transition: var(--transition);
+            border-radius: 4px;
+        }
+        .catalog-list li:hover {
+            background: rgba(245, 240, 232, 0.4);
+        }
+        .catalog-list li:last-child {
+            border-bottom: none;
+        }
+        .catalog-list .index {
+            color: var(--ink-light);
+            font-size: 0.8rem;
+            min-width: 2.4rem;
+            font-feature-settings: "tnum";
+            font-variant-numeric: tabular-nums;
+            opacity: 0.6;
+        }
+        .catalog-list a {
+            color: var(--ink);
+            text-decoration: none;
+            border-bottom: 1px dotted var(--border-light);
+            transition: 0.2s;
+            flex: 1;
+        }
+        .catalog-list a:hover {
+            border-bottom-style: solid;
+            color: var(--zhu-red);
+            border-bottom-color: var(--zhu-red);
+        }
+        .catalog-list .desc {
+            color: var(--ink-light);
+            font-size: 0.8rem;
+            margin-left: auto;
+            white-space: nowrap;
+            opacity: 0.6;
+        }
+        @media (max-width: 600px) {
+            .catalog-list li {
+                flex-wrap: wrap;
+                gap: 0.2rem;
+                padding: 0.6rem 0.4rem;
+            }
+            .catalog-list .desc {
+                margin-left: 0;
+                width: 100%;
+                padding-left: 2.4rem;
+                white-space: normal;
+            }
+        }
+
+        /* ===== 下载区 ===== */
+        .download-section {
+            margin: 1.8rem 0 0.5rem;
+            padding: 1.2rem 1.5rem;
+            background: var(--paper);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-light);
+        }
+        .download-section .label {
+            font-size: 0.85rem;
+            color: var(--ink-light);
+            opacity: 0.6;
+            margin-bottom: 0.6rem;
+            letter-spacing: 1px;
+        }
+        .download-section .btn-group {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+        .download-section .btn {
+            display: inline-block;
+            background: var(--zhu-red);
+            color: #fff;
+            padding: 0.4rem 1.6rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            border: 1px solid var(--zhu-red);
+            transition: var(--transition);
+            letter-spacing: 1px;
+        }
+        .download-section .btn:hover {
+            background: var(--zhu-red-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(139, 26, 26, 0.15);
+        }
+        .download-section .btn-outline {
+            background: transparent;
+            color: var(--zhu-red);
+            border-color: var(--zhu-red);
+        }
+        .download-section .btn-outline:hover {
+            background: var(--zhu-red);
+            color: #fff;
+        }
+        .download-section .meta {
+            font-size: 0.75rem;
+            color: var(--ink-light);
+            opacity: 0.4;
+            letter-spacing: 1px;
+            margin-top: 0.6rem;
+        }
+
+        /* ===== 底部版权 ===== */
+        .footer-note {
+            margin-top: 2.5rem;
+            font-size: 0.8rem;
+            text-align: center;
+            color: var(--ink-light);
+            border-top: 1px solid var(--border-light);
+            padding-top: 1.2rem;
+            letter-spacing: 1px;
+            opacity: 0.5;
+        }
+
+        /* ===== 返回顶部 ===== */
+        .back-to-top-ball {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(44, 24, 16, 0.04);
+            border: 1px solid rgba(44, 24, 16, 0.10);
+            color: var(--ink-light);
+            font-size: 1.4rem;
+            line-height: 44px;
+            text-align: center;
+            text-decoration: none;
+            transition: var(--transition);
+            backdrop-filter: blur(4px);
+            box-shadow: 0 2px 12px rgba(44, 24, 16, 0.04);
+            font-family: serif;
+        }
+        .back-to-top-ball:hover {
+            background: rgba(44, 24, 16, 0.08);
+            transform: translateY(-2px);
+            color: var(--zhu-red);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1.2rem 1rem 2rem;
+            }
+            .page-title {
+                font-size: 1.5rem;
+                letter-spacing: 4px;
+            }
+            .page-title .sub {
+                display: block;
+                margin-left: 0;
+                font-size: 0.85rem;
+            }
+            .top-bar .brand {
+                font-size: 1.2rem;
+            }
+            .download-section {
+                padding: 1rem 1rem;
+            }
+            .download-section .btn-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .download-section .btn {
+                text-align: center;
+            }
+        }
+        @media (max-width: 400px) {
+            .page-title {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- ===== 顶部栏 ===== -->
+        <div class="top-bar">
+            <div class="brand">
+                简帙<span class="sub">· 工器谱</span>
+            </div>
+        </div>
+
+        <!-- ===== 面包屑 ===== -->
+        <div class="breadcrumb">
+            <a href="../index.html">简帙</a> <span>›</span> 简帙古籍整理系统
+        </div>
+
+        <!-- ===== 标题 ===== -->
+        <div class="page-title" id="seriesTitle">简帙古籍整理系统 <span class="sub">系列</span></div>
+        <div class="subtitle" id="seriesSub">系统整体理论 · 共 <span id="articleCount">0</span> 篇</div>
+
+        <!-- ===== 文章列表（由 JS 动态生成） ===== -->
+        <ul class="catalog-list" id="catalogList">
+            <!-- JS 渲染 -->
+        </ul>
+
+        <!-- ===== 下载区 ===== -->
+        <div class="download-section">
+            <div class="label">📦 下载简帙古籍整理系统</div>
+            <div class="btn-group">
+                <a href="https://pan.quark.cn/s/xxxxxxxx" target="_blank" class="btn" rel="noopener noreferrer">夸克网盘</a>
+                <a href="https://pan.baidu.com/s/xxxxxxxxxxxxxxxx" target="_blank" class="btn btn-outline" rel="noopener noreferrer">百度网盘</a>
+            </div>
+            <div class="meta">当前版本 v2.1 · 更新于 2026年6月</div>
+        </div>
+
+        <!-- ===== 底部版权 ===== -->
+        <div class="footer-note">铭心阁 · 简帙工器谱</div>
+    </div>
+
+    <!-- ===== 返回顶部 ===== -->
+    <a href="#" id="backToTop" class="back-to-top-ball" aria-label="返回顶部">^</a>
+
+    <script>
+        (function() {
+            // ============================================================
+            //  数据 —— 在此增删文章条目，列表自动更新
+            // ============================================================
+            const seriesData = {
+                name: '简帙古籍整理系统',
+                subtitle: '系统整体理论',
+                articles: [
+                    // 预留位置，后续添加理论文章
+                    // 示例：
+                    // { id: '01-系统架构', title: '简帙系统架构总论', desc: '整体设计理念与模块划分' },
+                    // { id: '02-工作流设计', title: '古籍整理工作流的设计哲学', desc: '从扫描到输出的完整流程' }
+                ]
+            };
+
+            // ============================================================
+            //  渲染
+            // ============================================================
+            const listEl = document.getElementById('catalogList');
+            const countEl = document.getElementById('articleCount');
+            const titleEl = document.getElementById('seriesTitle');
+            const subEl = document.getElementById('seriesSub');
+
+            titleEl.innerHTML = seriesData.name + ' <span class="sub">系列</span>';
+            subEl.innerHTML = seriesData.subtitle + ' · 共 <span id="articleCount">' + seriesData.articles.length + '</span> 篇';
+            countEl.textContent = seriesData.articles.length;
+
+            function renderList() {
+                if (seriesData.articles.length === 0) {
+                    listEl.innerHTML = `
+                        <li style="padding:1.5rem 0.8rem; text-align:center; color:var(--ink-light); opacity:0.5; font-size:0.9rem; border-bottom:none; justify-content:center;">
+                            暂无文章 · 敬请期待
+                        </li>
+                    `;
+                    return;
+                }
+                const html = seriesData.articles.map((item, idx) => {
+                    const num = String(idx + 1).padStart(2, '0');
+                    return `
+                        <li>
+                            <span class="index">${num}</span>
+                            <a href="${item.id}.html">${item.title}</a>
+                            <span class="desc">${item.desc}</span>
+                        </li>
+                    `;
+                }).join('');
+                listEl.innerHTML = html;
+            }
+
+            renderList();
+
+            document.getElementById('backToTop').addEventListener('click', function(e) {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            console.log('📋 简帙古籍整理系统目录页已加载，共 ' + seriesData.articles.length + ' 篇文章');
+            console.log('💡 在 seriesData.articles 数组中增删条目，列表自动更新');
+        })();
+    </script>
+
+</body>
+</html>
