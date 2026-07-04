@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>拟纸显真 · 简帙古籍整理系统 · 简帙</title>
+    <style>
+        /* ===== 全局 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --paper: #f5f0e8;
+            --paper-white: #fcf9f5;
+            --ink: #2c1810;
+            --ink-light: #5a3f36;
+            --zhu-red: #8b1a1a;
+            --zhu-red-light: #b33a3a;
+            --gold: #c9a96e;
+            --border-light: #e8dfd6;
+            --radius: 6px;
+            --shadow: 0 2px 16px rgba(44, 24, 16, 0.08);
+            --transition: 0.25s ease;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: "Noto Serif SC", "思源宋体", "Source Han Serif SC", "华文宋体", serif;
+            background: var(--paper);
+            color: var(--ink);
+            line-height: 1.8;
+            padding: 2rem 1rem;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: var(--paper-white);
+            padding: 2rem 2.5rem 3rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-light);
+        }
+
+        /* ===== 顶部 ===== */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border-light);
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .top-bar .brand {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--ink);
+            letter-spacing: 4px;
+        }
+        .top-bar .brand .sub {
+            font-weight: 400;
+            font-size: 0.9rem;
+            color: var(--ink-light);
+            letter-spacing: 2px;
+            opacity: 0.6;
+            margin-left: 6px;
+        }
+
+        /* ===== 面包屑 ===== */
+        .breadcrumb {
+            font-size: 0.85rem;
+            color: var(--ink-light);
+            margin-bottom: 1.5rem;
+            padding: 0.4rem 0.8rem;
+            background: var(--paper);
+            border-radius: 20px;
+            display: inline-block;
+            opacity: 0.7;
+        }
+        .breadcrumb a {
+            color: var(--ink-light);
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: var(--zhu-red);
+            text-decoration: underline;
+        }
+        .breadcrumb span {
+            margin: 0 4px;
+        }
+
+        /* ===== 标题 ===== */
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 0.2rem;
+            flex-wrap: wrap;
+        }
+        .article-meta .series-tag {
+            font-size: 0.85rem;
+            color: var(--ink-light);
+            background: var(--paper);
+            padding: 0.1rem 0.8rem;
+            border-radius: 12px;
+            opacity: 0.7;
+        }
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--ink);
+            letter-spacing: 4px;
+            margin-bottom: 0.2rem;
+            line-height: 1.4;
+        }
+        .subtitle {
+            color: var(--ink-light);
+            font-size: 0.95rem;
+            margin-bottom: 1.8rem;
+            border-left: 3px solid var(--zhu-red);
+            padding-left: 1rem;
+            opacity: 0.7;
+        }
+
+        /* ===== 章内目录 ===== */
+        .toc {
+            background: var(--paper);
+            border-left: 4px solid var(--zhu-red);
+            padding: 0.8rem 1.2rem;
+            margin: 1.2rem 0 1.8rem;
+            border-radius: var(--radius);
+        }
+        .toc h3 {
+            font-size: 1rem;
+            margin: 0 0 0.4rem 0;
+            color: var(--ink);
+            letter-spacing: 2px;
+        }
+        .toc ul {
+            margin: 0;
+            padding-left: 1.2rem;
+        }
+        .toc li {
+            margin: 0.2rem 0;
+        }
+        .toc a {
+            text-decoration: none;
+            color: var(--ink);
+            border-bottom: 1px dotted var(--border-light);
+            transition: 0.2s;
+        }
+        .toc a:hover {
+            border-bottom-style: solid;
+            color: var(--zhu-red);
+            border-bottom-color: var(--zhu-red);
+        }
+        .toc ul ul {
+            padding-left: 1.5rem;
+        }
+
+        /* ===== 正文 ===== */
+        .article-body p {
+            text-indent: 2em;
+            margin-bottom: 1rem;
+            line-height: 2.2;
+        }
+        .article-body h2 {
+            font-size: 1.4rem;
+            color: var(--ink);
+            margin: 2rem 0 1rem 0;
+            padding-bottom: 0.3rem;
+            border-bottom: 2px solid var(--border-light);
+            letter-spacing: 3px;
+        }
+        .article-body h3 {
+            font-size: 1.1rem;
+            color: var(--ink);
+            margin-top: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .article-body h4 {
+            font-size: 1rem;
+            color: var(--ink);
+            margin-top: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            opacity: 0.8;
+        }
+        .article-body strong {
+            color: var(--zhu-red);
+            font-weight: 600;
+        }
+        .article-body ul {
+            padding-left: 2rem;
+            margin: 0.5rem 0 1rem;
+        }
+        .article-body ul li {
+            margin-bottom: 0.3rem;
+            list-style-type: disc;
+        }
+        .article-body ul ul li {
+            list-style-type: circle;
+        }
+        .article-body ol {
+            padding-left: 2rem;
+            margin: 0.5rem 0 1rem;
+        }
+        .article-body ol li {
+            margin-bottom: 0.3rem;
+        }
+        .article-body .no-indent {
+            text-indent: 0;
+        }
+        .quote-block {
+            display: block;
+            margin: 1.2rem 0;
+            padding: 0.8rem 1.2rem;
+            font-style: italic;
+            color: var(--ink);
+            background: var(--paper);
+            border-radius: var(--radius);
+            border-left: 3px solid var(--gold);
+            line-height: 2.2;
+            text-align: left;
+            font-size: 1rem;
+            letter-spacing: 0.04em;
+        }
+        .inline-quote {
+            color: var(--ink);
+            font-style: italic;
+            background: var(--paper);
+            padding: 0.1rem 0.4rem;
+            border-radius: 3px;
+            white-space: nowrap;
+        }
+
+        /* ===== 表格 ===== */
+        .table-wrap {
+            overflow-x: auto;
+            margin: 1rem 0 1.2rem;
+        }
+        .table-wrap table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            background: var(--paper);
+            border-radius: var(--radius);
+        }
+        .table-wrap table th {
+            padding: 0.5rem 0.8rem;
+            text-align: left;
+            border-right: 1px solid var(--border-light);
+            background: var(--paper);
+            border-bottom: 2px solid var(--border-light);
+            font-weight: 600;
+        }
+        .table-wrap table td {
+            padding: 0.4rem 0.8rem;
+            border-right: 1px solid var(--border-light);
+            border-bottom: 1px solid var(--border-light);
+        }
+        .table-wrap table tr:last-child td {
+            border-bottom: none;
+        }
+        .table-wrap table th:last-child,
+        .table-wrap table td:last-child {
+            border-right: none;
+        }
+
+        /* ===== 单篇文章下载 ===== */
+        .article-download {
+            margin-top: 2rem;
+            padding: 1rem 1.2rem;
+            background: var(--paper);
+            border-radius: var(--radius);
+            border-left: 4px solid var(--zhu-red);
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: space-between;
+        }
+        .article-download .info {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.9rem;
+            color: var(--ink);
+        }
+        .article-download .btn-group {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+        .article-download .btn-sm {
+            display: inline-block;
+            background: var(--zhu-red);
+            color: #fff;
+            padding: 0.3rem 1.2rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            border: 1px solid var(--zhu-red);
+            transition: var(--transition);
+            letter-spacing: 0.5px;
+        }
+        .article-download .btn-sm:hover {
+            background: var(--zhu-red-light);
+            transform: translateY(-1px);
+        }
+        .article-download .btn-sm-outline {
+            background: transparent;
+            color: var(--zhu-red);
+            border-color: var(--zhu-red);
+        }
+        .article-download .btn-sm-outline:hover {
+            background: var(--zhu-red);
+            color: #fff;
+        }
+
+        /* ===== 系列底部导航 ===== */
+        .series-nav {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2.5rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid var(--border-light);
+            flex-wrap: wrap;
+        }
+        .series-nav a {
+            display: inline-block;
+            background: var(--paper);
+            color: var(--ink);
+            padding: 0.4rem 1.2rem;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            border: 1px solid var(--border-light);
+            transition: 0.2s;
+        }
+        .series-nav a:hover {
+            background: #f0ebe2;
+            border-color: var(--gold);
+            color: var(--zhu-red);
+        }
+        .series-nav .prev {
+            margin-right: auto;
+        }
+        .series-nav .next {
+            margin-left: auto;
+        }
+        .series-nav a.disabled {
+            cursor: default;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        .series-nav a.index-link {
+            background: var(--zhu-red);
+            color: #fff;
+            border-color: var(--zhu-red);
+        }
+        .series-nav a.index-link:hover {
+            background: var(--zhu-red-light);
+            color: #fff;
+        }
+        @media (max-width: 600px) {
+            .series-nav {
+                gap: 0.8rem;
+            }
+            .series-nav .prev,
+            .series-nav .next {
+                margin: 0;
+            }
+            .series-nav a {
+                font-size: 0.8rem;
+                padding: 0.3rem 0.8rem;
+            }
+        }
+
+        /* ===== 底部版权 ===== */
+        .footer-note {
+            margin-top: 2.5rem;
+            font-size: 0.8rem;
+            text-align: center;
+            color: var(--ink-light);
+            border-top: 1px solid var(--border-light);
+            padding-top: 1.2rem;
+            letter-spacing: 1px;
+            opacity: 0.5;
+        }
+
+        /* ===== 返回顶部 ===== */
+        .back-to-top-ball {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(44, 24, 16, 0.04);
+            border: 1px solid rgba(44, 24, 16, 0.10);
+            color: var(--ink-light);
+            font-size: 1.4rem;
+            line-height: 44px;
+            text-align: center;
+            text-decoration: none;
+            transition: var(--transition);
+            backdrop-filter: blur(4px);
+            box-shadow: 0 2px 12px rgba(44, 24, 16, 0.04);
+            font-family: serif;
+        }
+        .back-to-top-ball:hover {
+            background: rgba(44, 24, 16, 0.08);
+            transform: translateY(-2px);
+            color: var(--zhu-red);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1.2rem 1rem 2rem;
+            }
+            h1 {
+                font-size: 1.5rem;
+                letter-spacing: 3px;
+            }
+            .top-bar .brand {
+                font-size: 1.2rem;
+            }
+            .article-download {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.8rem;
+            }
+            .article-download .btn-group {
+                justify-content: center;
+            }
+            .quote-block {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.9rem;
+                border-left-width: 2px;
+            }
+            .toc ul ul {
+                padding-left: 1rem;
+            }
+            .article-body ul,
+            .article-body ol {
+                padding-left: 1.2rem;
+            }
+            .table-wrap table {
+                font-size: 0.8rem;
+            }
+            .table-wrap table th,
+            .table-wrap table td {
+                padding: 0.3rem 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- ===== 顶部栏 ===== -->
+        <div class="top-bar">
+            <div class="brand">
+                简帙<span class="sub">· 工器谱</span>
+            </div>
+        </div>
+
+        <!-- ===== 面包屑 ===== -->
+        <div class="breadcrumb">
+            <a href="../index.html">简帙</a> <span>›</span>
+            <a href="./index.html">简帙古籍整理系统</a> <span>›</span>
+            拟纸显真
+        </div>
+
+        <!-- ===== 标题 ===== -->
+        <div class="article-meta">
+            <span class="series-tag">简帙古籍整理系统 · 第 3 篇</span>
+        </div>
+        <h1>拟纸显真</h1>
+        <div class="subtitle">纸张理论的深度认识与字印寻原技术思想</div>
+
+        <!-- ===== 章内目录 ===== -->
+        <nav class="toc" aria-label="章节目录">
+            <h3>目 录</h3>
+            <ul>
+                <li><a href="#ch1">一、纸分二界：实纸与拟纸</a></li>
+                <li><a href="#ch2">二、古今同构：操作与载体的永恒逻辑</a></li>
+                <li><a href="#ch3">三、拟纸显真：一项技术理论的确立</a></li>
+                <li><a href="#ch4">四、寻原的分化：拟字寻原与拟印寻原</a></li>
+                <li><a href="#ch5">五、第二步操作：拟字与拟印</a></li>
+                <li><a href="#ch6">六、寻原的人文动机：为雅而战</a></li>
+                <li><a href="#ch7">七、审判之尺：唯雅是留，遇劣必清</a></li>
+                <li><a href="#ch8">八、理论总纲</a></li>
+            </ul>
+        </nav>
+
+        <!-- ===== 正文 ===== -->
+        <div class="article-body">
+
+            <!-- ===== 第一章 ===== -->
+            <h2 id="ch1">一、纸分二界：实纸与拟纸</h2>
+
+            <p><strong>何以谓之纸？</strong></p>
+
+            <p>凡以草木纤维交织、具备物理实体者，是为<strong>实纸</strong>。它是文字与版刻印刷的物质载体，拥有重量、厚度、触感及一切可被感官直接验证的纹理质量。实纸唯一，是一切视觉认知的母本与终极参照。</p>
+
+            <p>凡脱离物理实体、仅以视觉形式存在之纸的映像或模拟，悉数归于<strong>拟纸</strong>。无论是扫描仪捕捉的光学信号、相机拍摄的数字影像，还是软件生成的纯虚拟纹理，皆属此列。拟纸万象，无重量，依托色彩、亮度、对比度、纯度与明度诸要素的综合模拟，在观者心中唤起“此乃纸张”的整体认知。</p>
+
+            <p><strong>不存在第三态。非实即拟，泾渭分明。</strong></p>
+
+            <!-- ===== 第二章 ===== -->
+            <h2 id="ch2">二、古今同构：操作与载体的永恒逻辑</h2>
+
+            <p>实纸与拟纸虽分二界，然人之操作，古今一揆。</p>
+
+            <p>古人于实纸之上盖章，今人于拟纸之上打水印，皆为对载体进行标记与归属。前者以印泥留物理压痕，后者以像素覆视觉区域。手段虽虚实有别，而“施加痕迹以宣示权属”之逻辑，如出一辙。</p>
+
+            <p>古人以雕版定字，今人以重排布局，皆为对内容进行结构化与复制。前者以物理凸起转印油墨，后者以数字网格约束文字。手段虽古今异路，而“先固其版，后布其字”之思路，并无二致。</p>
+
+            <p>由此，两对操作在体系中的位置亦得精确对应：</p>
+
+            <ul>
+                <li><strong>盖章/打水印：</strong>属后期施加，是寄生性的。它附着于内容之上，原则上不影响内容本身。</li>
+                <li><strong>雕印/重排：</strong>属全局定版，是构成性的。它决定了内容呈现的根本结构，破坏则内容秩序随之瓦解。</li>
+            </ul>
+
+            <p>古人面对一纸书页，今人面对一张扫描，所需做的判断本质无异：哪些是内容本身，哪些是后来所加；哪些需要深化还原，哪些可以淡化处理。</p>
+
+            <!-- ===== 第三章 ===== -->
+            <h2 id="ch3">三、拟纸显真：一项技术理论的确立</h2>
+
+            <p>传统图影处理，惯于直奔内容而去——去噪、去底、去印、增对比。然若表层干扰与核心图文深度交织，则一切直接操作，皆如隔靴搔痒，甚或伤及内容本身。</p>
+
+            <p>有鉴于此，一种根本性的思想转向应运而生：</p>
+
+            <p style="text-align:center; font-size:1.1rem; margin:0.5rem 0; letter-spacing:3px; color:var(--zhu-red);">
+                <strong>得纸为先，其余次之。</strong>
+            </p>
+
+            <p>“拟纸显真”作为一项技术理论，其核心命意便在于此：并非消极地“去除”某个具体的干扰，而是积极地<strong>重建一张在视觉认知上足以替代实纸的、更为纯粹的拟纸</strong>。整个工程，自始至终，皆在拟纸的范畴内运行——从有缺陷的拟纸，走向更接近实纸视觉本质的拟纸。</p>
+
+            <p>这便是“拟纸显真”的目标：<strong>得到拟纸本身。</strong></p>
+
+            <!-- ===== 第四章 ===== -->
+            <h2 id="ch4">四、寻原的分化：拟字寻原与拟印寻原</h2>
+
+            <p>拟纸既成，其上才能承载内容。</p>
+
+            <p>一条清晰的因果链条由此确立：</p>
+
+            <p style="text-align:center; font-size:1.05rem; margin:0.5rem 0; letter-spacing:2px; color:var(--zhu-red);">
+                <strong>拟纸越真，则拟字越清；拟字越清，则拟印愈明。</strong>
+            </p>
+
+            <p>纸为土壤，字、印为植被。载体质量决定内容还原之上限。由此，“还原本来面目”这一终极目标，必然分化为两个相互关联又各自独立的技术方向：</p>
+
+            <ul>
+                <li><strong>拟字寻原：</strong>当拟纸达到足够的视觉真度，寄身其上的虚拟文字便从纸面浮现，使原始文本内容得以辨认与还原。</li>
+                <li><strong>拟印寻原：</strong>同理，版框、界栏、印章、墨色层次——这些构成版本形态的关键元素，亦因拟纸质量的提升而各归其位，显露出原始的秩序与面貌。</li>
+            </ul>
+
+            <p><strong>寻原并非一步之功，而是以拟纸为舟，渡向文字与版印之彼岸。</strong></p>
+
+            <!-- ===== 第五章 ===== -->
+            <h2 id="ch5">五、第二步操作：拟字与拟印</h2>
+
+            <p>载体既立，方可言操作。</p>
+
+            <p>在拟纸显真奠定的根基之上，第二步便是主动作用于纸上痕迹——是为<strong>拟字</strong>与<strong>拟印</strong>。其操作逻辑，并非在物理层面增添或削删，而是在拟纸的虚拟深度上，进行视觉权重的精微调控。两端并用：</p>
+
+            <ul>
+                <li><strong>淡化：</strong>非抹除也，乃是让干扰之迹沉入纸纤维深处。闲章褪其色，污痕隐其迹，而纸纹墨色不为所动。痕迹犹存于拟纸之中，只是不再抢占视觉焦点。</li>
+                <li><strong>深化：</strong>非添墨也，乃是让残损之迹从纸面重新鼓胀。磨损的刀口恢复其锋锐，枯断的笔画重聚其神气。仿佛刻字入纸的力度，被从时光磨蚀中再度唤醒。</li>
+            </ul>
+
+            <p><strong>淡化与深化，看似方向相反，实则同根同源。</strong>二者皆为“拟纸显真”思想在操作层面之自然延伸，是对拟纸之上视觉真实的精微调控。</p>
+
+            <!-- ===== 第六章 ===== -->
+            <h2 id="ch6">六、寻原的人文动机：为雅而战</h2>
+
+            <p>技术之架构既明，仍需追问其人文动机：<strong>我们为何要寻原？</strong></p>
+
+            <p>处理一张图像，总有来源。保留他人之标记，亦非不可。然而，标记往往受限于施加者的审美水平与思想境界。有的印记与原文相得益彰，成为鉴赏之组成；有的则严重干扰文字阅读，构成极强视觉侵犯，虽历千年而不改其劣。寻原之冲动，正源于此。</p>
+
+            <p class="quote-block">如果所有人都大公无私，还寻什么；如果所有人都懂美观，那加个印记还成古迹而不是垃圾，谁还想清除它。</p>
+
+            <p>此言切中肯綮。寻原，并非因为技术本身有此自觉，而是因为现实世界中，有太多施加者怀私心而乏审美，以一己之声张凌驾于公共阅读之上。</p>
+
+            <!-- ===== 第七章 ===== -->
+            <h2 id="ch7">七、审判之尺：唯雅是留，遇劣必清</h2>
+
+            <p>由此，我们确立了一条毫不妥协的审判准则。</p>
+
+            <p>此尺不量美丑，美丑止于视觉形式，失之于表。此尺<strong>只量雅劣</strong>。</p>
+
+            <ul>
+                <li><strong>雅：</strong>是克制的、谦逊的、与原文共生而非凌驾的。它体现施加者对文本与读者的双重尊重。一方印章，钤在恰当空白处，朱墨与玄墨相映成趣，是为雅。</li>
+                <li><strong>劣：</strong>是放纵的、自私的、将个人声张凌驾于公共阅读权益之上的。它暴露施加者的审美匮乏与思想粗鄙。一颗硕大无朋、死死盖住正文的鲜红水印，是为劣。</li>
+            </ul>
+
+            <p><strong>此尺无古无今，不厚古薄今，亦不厚今薄古。古中亦有垃圾，今中亦存雅品。</strong></p>
+
+            <ul>
+                <li>古之劣者，虽历千百年，不改其劣，必清。</li>
+                <li>今之雅者，虽是今人所加，亦可存而不论。</li>
+                <li>一本书写得不行，直接扔；一本好书刻得不行，也扔；一本好书刻印精美而盖章不雅，必清理。</li>
+            </ul>
+
+            <p><strong>寻原者眼中有尺，尺量雅劣；心中有美，美在清正。</strong></p>
+
+            <!-- ===== 第八章 ===== -->
+            <h2 id="ch8">八、理论总纲</h2>
+
+            <p>综上所述，本理论构建了一个根基牢固、层次分明且循环自洽的完整体系：</p>
+
+            <ol>
+                <li><strong>本体之根基：</strong>纸唯二类。实纸为物质母本，刻字入纸发生于此；拟纸为视觉载体，拟字拟印操作其上。非实即拟，无第三态。</li>
+                <li><strong>古今之贯通：</strong>古人盖章与今人打水印，同属后期施加；古人雕印与今人重排，同属全局定版。古今手法虽异，操作逻辑相通。</li>
+                <li><strong>载体之重建（第一层）：</strong>拟纸显真。以实纸的视觉属性为依归，从既存拟纸出发，重建一张无干扰的纯粹拟纸。此为一切技术之基石。</li>
+                <li><strong>内容之操作（第二层）：</strong>拟字/拟印。以淡化与深化为基本手法，对嵌入拟纸的文字与版印进行有选择的视觉增强或压制。此为技术之手段。</li>
+                <li><strong>本来之还原（第三层）：</strong>字印寻原。在重建的载体之上，让文字可读，让版印可辨，还历史图文以本来面目。此为技术之目标。</li>
+                <li><strong>价值之准则：</strong>唯雅是留，遇劣必清。审判之尺，只量施加者之用心与修养，无问古今。</li>
+            </ol>
+
+            <p>这一思想体系，将“去除干扰”的消极目标，转化为“载体重建”的积极建构；将“古今分别”的偏见，转化为“唯雅是留”的普世准则。它不再把纸张视为一个需要被穿透的障碍，而是<strong>尊其为信息与历史栖居的场所</strong>。先还原栖所，再迎回内容，终涤除以劣迹——这便是“拟纸显真”所蕴含的，对待一切图文遗产的深层态度与终极关怀。</p>
+
+        </div>
+
+        
+
+        <!-- ===== 系列底部导航 ===== -->
+        <div class="series-nav">
+            <a href="2.版面理论.html" class="prev">‹ 版面理论</a>
+            <a href="./index.html" class="index-link">返回目录</a>
+            <a href="javascript:void(0)" class="next disabled">下一篇 ›</a>
+        </div>
+
+        <!-- ===== 底部版权 ===== -->
+        <div class="footer-note">铭心阁 · 简帙工器谱</div>
+    </div>
+
+    <!-- ===== 返回顶部 ===== -->
+    <a href="#" id="backToTop" class="back-to-top-ball" aria-label="返回顶部">^</a>
+
+    <script>
+        document.getElementById('backToTop').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+
+</body>
+</html>
