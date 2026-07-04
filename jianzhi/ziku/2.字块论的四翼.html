@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>字块论的四翼 · 字库制作 · 简帙</title>
+    <style>
+        /* ===== 全局 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --paper: #f5f0e8;
+            --paper-white: #fcf9f5;
+            --ink: #2c1810;
+            --ink-light: #5a3f36;
+            --zhu-red: #8b1a1a;
+            --zhu-red-light: #b33a3a;
+            --gold: #c9a96e;
+            --border-light: #e8dfd6;
+            --radius: 6px;
+            --shadow: 0 2px 16px rgba(44, 24, 16, 0.08);
+            --transition: 0.25s ease;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: "Noto Serif SC", "思源宋体", "Source Han Serif SC", "华文宋体", serif;
+            background: var(--paper);
+            color: var(--ink);
+            line-height: 1.8;
+            padding: 2rem 1rem;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: var(--paper-white);
+            padding: 2rem 2.5rem 3rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-light);
+        }
+
+        /* ===== 顶部 ===== */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border-light);
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .top-bar .brand {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--ink);
+            letter-spacing: 4px;
+        }
+        .top-bar .brand .sub {
+            font-weight: 400;
+            font-size: 0.9rem;
+            color: var(--ink-light);
+            letter-spacing: 2px;
+            opacity: 0.6;
+            margin-left: 6px;
+        }
+
+        /* ===== 面包屑 ===== */
+        .breadcrumb {
+            font-size: 0.85rem;
+            color: var(--ink-light);
+            margin-bottom: 1.5rem;
+            padding: 0.4rem 0.8rem;
+            background: var(--paper);
+            border-radius: 20px;
+            display: inline-block;
+            opacity: 0.7;
+        }
+        .breadcrumb a {
+            color: var(--ink-light);
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: var(--zhu-red);
+            text-decoration: underline;
+        }
+        .breadcrumb span {
+            margin: 0 4px;
+        }
+
+        /* ===== 标题 ===== */
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 0.2rem;
+            flex-wrap: wrap;
+        }
+        .article-meta .series-tag {
+            font-size: 0.85rem;
+            color: var(--ink-light);
+            background: var(--paper);
+            padding: 0.1rem 0.8rem;
+            border-radius: 12px;
+            opacity: 0.7;
+        }
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--ink);
+            letter-spacing: 4px;
+            margin-bottom: 0.2rem;
+            line-height: 1.4;
+        }
+        .subtitle {
+            color: var(--ink-light);
+            font-size: 0.95rem;
+            margin-bottom: 1.8rem;
+            border-left: 3px solid var(--zhu-red);
+            padding-left: 1rem;
+            opacity: 0.7;
+        }
+
+        /* ===== 章内目录 ===== */
+        .toc {
+            background: var(--paper);
+            border-left: 4px solid var(--zhu-red);
+            padding: 0.8rem 1.2rem;
+            margin: 1.2rem 0 1.8rem;
+            border-radius: var(--radius);
+        }
+        .toc h3 {
+            font-size: 1rem;
+            margin: 0 0 0.4rem 0;
+            color: var(--ink);
+            letter-spacing: 2px;
+        }
+        .toc ul {
+            margin: 0;
+            padding-left: 1.2rem;
+        }
+        .toc li {
+            margin: 0.2rem 0;
+        }
+        .toc a {
+            text-decoration: none;
+            color: var(--ink);
+            border-bottom: 1px dotted var(--border-light);
+            transition: 0.2s;
+        }
+        .toc a:hover {
+            border-bottom-style: solid;
+            color: var(--zhu-red);
+            border-bottom-color: var(--zhu-red);
+        }
+        .toc ul ul {
+            padding-left: 1.5rem;
+        }
+
+        /* ===== 正文 ===== */
+        .article-body p {
+            text-indent: 2em;
+            margin-bottom: 1rem;
+            line-height: 2.2;
+        }
+        .article-body h2 {
+            font-size: 1.4rem;
+            color: var(--ink);
+            margin: 2rem 0 1rem 0;
+            padding-bottom: 0.3rem;
+            border-bottom: 2px solid var(--border-light);
+            letter-spacing: 3px;
+        }
+        .article-body h3 {
+            font-size: 1.1rem;
+            color: var(--ink);
+            margin-top: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .article-body h4 {
+            font-size: 1rem;
+            color: var(--ink);
+            margin-top: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            opacity: 0.8;
+        }
+        .article-body strong {
+            color: var(--zhu-red);
+            font-weight: 600;
+        }
+        .article-body ul {
+            padding-left: 2rem;
+            margin: 0.5rem 0 1rem;
+        }
+        .article-body ul li {
+            margin-bottom: 0.3rem;
+            list-style-type: disc;
+        }
+        .article-body ul ul li {
+            list-style-type: circle;
+        }
+        .article-body .no-indent {
+            text-indent: 0;
+        }
+        .quote-block {
+            display: block;
+            margin: 1.2rem 0;
+            padding: 0.8rem 1.2rem;
+            font-style: italic;
+            color: var(--ink);
+            background: var(--paper);
+            border-radius: var(--radius);
+            border-left: 3px solid var(--gold);
+            line-height: 2.2;
+            text-align: center;
+            font-size: 1.05rem;
+            letter-spacing: 0.04em;
+        }
+        .inline-quote {
+            color: var(--ink);
+            font-style: italic;
+            background: var(--paper);
+            padding: 0.1rem 0.4rem;
+            border-radius: 3px;
+            white-space: nowrap;
+        }
+
+        /* ===== 表格 ===== */
+        .table-wrap {
+            overflow-x: auto;
+            margin: 1rem 0 1.2rem;
+        }
+        .table-wrap table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            background: var(--paper);
+            border-radius: var(--radius);
+        }
+        .table-wrap table th {
+            padding: 0.5rem 0.8rem;
+            text-align: left;
+            border-right: 1px solid var(--border-light);
+            background: var(--paper);
+            border-bottom: 2px solid var(--border-light);
+            font-weight: 600;
+        }
+        .table-wrap table td {
+            padding: 0.4rem 0.8rem;
+            border-right: 1px solid var(--border-light);
+            border-bottom: 1px solid var(--border-light);
+        }
+        .table-wrap table tr:last-child td {
+            border-bottom: none;
+        }
+        .table-wrap table th:last-child,
+        .table-wrap table td:last-child {
+            border-right: none;
+        }
+
+        /* ===== 单篇文章下载 ===== */
+        .article-download {
+            margin-top: 2rem;
+            padding: 1rem 1.2rem;
+            background: var(--paper);
+            border-radius: var(--radius);
+            border-left: 4px solid var(--zhu-red);
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: space-between;
+        }
+        .article-download .info {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.9rem;
+            color: var(--ink);
+        }
+        .article-download .btn-group {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+        .article-download .btn-sm {
+            display: inline-block;
+            background: var(--zhu-red);
+            color: #fff;
+            padding: 0.3rem 1.2rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            border: 1px solid var(--zhu-red);
+            transition: var(--transition);
+            letter-spacing: 0.5px;
+        }
+        .article-download .btn-sm:hover {
+            background: var(--zhu-red-light);
+            transform: translateY(-1px);
+        }
+        .article-download .btn-sm-outline {
+            background: transparent;
+            color: var(--zhu-red);
+            border-color: var(--zhu-red);
+        }
+        .article-download .btn-sm-outline:hover {
+            background: var(--zhu-red);
+            color: #fff;
+        }
+
+        /* ===== 系列底部导航 ===== */
+        .series-nav {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2.5rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid var(--border-light);
+            flex-wrap: wrap;
+        }
+        .series-nav a {
+            display: inline-block;
+            background: var(--paper);
+            color: var(--ink);
+            padding: 0.4rem 1.2rem;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            border: 1px solid var(--border-light);
+            transition: 0.2s;
+        }
+        .series-nav a:hover {
+            background: #f0ebe2;
+            border-color: var(--gold);
+            color: var(--zhu-red);
+        }
+        .series-nav .prev {
+            margin-right: auto;
+        }
+        .series-nav .next {
+            margin-left: auto;
+        }
+        .series-nav a.disabled {
+            cursor: default;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        .series-nav a.index-link {
+            background: var(--zhu-red);
+            color: #fff;
+            border-color: var(--zhu-red);
+        }
+        .series-nav a.index-link:hover {
+            background: var(--zhu-red-light);
+            color: #fff;
+        }
+        @media (max-width: 600px) {
+            .series-nav {
+                gap: 0.8rem;
+            }
+            .series-nav .prev,
+            .series-nav .next {
+                margin: 0;
+            }
+            .series-nav a {
+                font-size: 0.8rem;
+                padding: 0.3rem 0.8rem;
+            }
+        }
+
+        /* ===== 底部版权 ===== */
+        .footer-note {
+            margin-top: 2.5rem;
+            font-size: 0.8rem;
+            text-align: center;
+            color: var(--ink-light);
+            border-top: 1px solid var(--border-light);
+            padding-top: 1.2rem;
+            letter-spacing: 1px;
+            opacity: 0.5;
+        }
+
+        /* ===== 返回顶部 ===== */
+        .back-to-top-ball {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(44, 24, 16, 0.04);
+            border: 1px solid rgba(44, 24, 16, 0.10);
+            color: var(--ink-light);
+            font-size: 1.4rem;
+            line-height: 44px;
+            text-align: center;
+            text-decoration: none;
+            transition: var(--transition);
+            backdrop-filter: blur(4px);
+            box-shadow: 0 2px 12px rgba(44, 24, 16, 0.04);
+            font-family: serif;
+        }
+        .back-to-top-ball:hover {
+            background: rgba(44, 24, 16, 0.08);
+            transform: translateY(-2px);
+            color: var(--zhu-red);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1.2rem 1rem 2rem;
+            }
+            h1 {
+                font-size: 1.5rem;
+                letter-spacing: 3px;
+            }
+            .top-bar .brand {
+                font-size: 1.2rem;
+            }
+            .article-download {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.8rem;
+            }
+            .article-download .btn-group {
+                justify-content: center;
+            }
+            .quote-block {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.95rem;
+                border-left-width: 2px;
+            }
+            .toc ul ul {
+                padding-left: 1rem;
+            }
+            .article-body ul {
+                padding-left: 1.2rem;
+            }
+            .table-wrap table {
+                font-size: 0.8rem;
+            }
+            .table-wrap table th,
+            .table-wrap table td {
+                padding: 0.3rem 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- ===== 顶部栏 ===== -->
+        <div class="top-bar">
+            <div class="brand">
+                简帙<span class="sub">· 工器谱</span>
+            </div>
+        </div>
+
+        <!-- ===== 面包屑 ===== -->
+        <div class="breadcrumb">
+            <a href="../index.html">简帙</a> <span>›</span>
+            <a href="./index.html">字库制作</a> <span>›</span>
+            字块论的四翼
+        </div>
+
+        <!-- ===== 标题 ===== -->
+        <div class="article-meta">
+            <span class="series-tag">字库制作 · 第 2 篇</span>
+        </div>
+        <h1>字块论的四翼</h1>
+        <div class="subtitle">从字形迁移到文本复生的四个延伸维度</div>
+
+        <!-- ===== 章内目录 ===== -->
+        <nav class="toc" aria-label="章节目录">
+            <h3>目 录</h3>
+            <ul>
+                <li><a href="#intro">引言：基础既成，羽翼自生</a></li>
+                <li><a href="#wing1">第一翼：缺字推断——当母字从未出现时</a>
+                    <ul>
+                        <li><a href="#wing1-1">1.1 问题的提出</a></li>
+                        <li><a href="#wing1-2">1.2 推断的三重约束</a></li>
+                        <li><a href="#wing1-3">1.3 推断结果的存疑标记</a></li>
+                    </ul>
+                </li>
+                <li><a href="#wing2">第二翼：异写规整——不消灭差异，让差异可视化</a>
+                    <ul>
+                        <li><a href="#wing2-1">2.1 异写的两种根本类型</a></li>
+                        <li><a href="#wing2-2">2.2 同版异工的微规整</a></li>
+                        <li><a href="#wing2-3">2.3 异写异构的差异存留与标注</a></li>
+                    </ul>
+                </li>
+                <li><a href="#wing3">第三翼：跨版比对——让字迹自己说话</a>
+                    <ul>
+                        <li><a href="#wing3-1">3.1 从单版到多版的跃迁</a></li>
+                        <li><a href="#wing3-2">3.2 骨骼对齐：超越分辨率与光照</a></li>
+                        <li><a href="#wing3-3">3.3 刻工指纹的显现</a></li>
+                    </ul>
+                </li>
+                <li><a href="#wing4">第四翼：全息复本的生成——以字块迁移为基的出版级合成</a>
+                    <ul>
+                        <li><a href="#wing4-1">4.1 问题的提出</a></li>
+                        <li><a href="#wing4-2">4.2 合成的四项操作</a></li>
+                        <li><a href="#wing4-3">4.3 全息复本的哲学位置</a></li>
+                    </ul>
+                </li>
+                <li><a href="#summary">总结：四翼与道</a></li>
+            </ul>
+        </nav>
+
+        <!-- ===== 正文 ===== -->
+        <div class="article-body">
+
+            <!-- ===== 引言 ===== -->
+            <h2 id="intro">引言：基础既成，羽翼自生</h2>
+
+            <p>字块迁移理论确立了一个核心操作：不依赖Unicode编码，仅凭视觉同一性，在同一版本书页中完成字块的识别、聚合与迁移。它以“有基覆盖”和“无基聚形”两条路径，解决了同版同字在不同实例间的复现与规整。</p>
+
+            <p>这是字块论的“道基”。基既立，便有了向外延伸的逻辑根系。当我们把这个看似仅服务于“替换残字”的工具，放进更广阔的典籍处理场景中，它会自动长出四只翅膀——每一只都带着它飞向一个此前未被充分言明的领域，而这些领域合在一起，构成了从“单字修复”到“文本复生”的完整图谱。</p>
+
+            <p>这不是给理论添加外挂，而是理论本身的内在要求：字块迁移一旦真的被实现，它必然会遇到缺失字、异写字、跨页字迹比对、以及最终呈现形态等问题。这些问题在传统字库制作的框架下，往往被隐藏或绕开；但在不依赖编码的字块迁移框架下，它们必须被正视和解决。而道论已经给出了解决它们所需的所有概念工具。</p>
+
+            <!-- ===== 第一翼 ===== -->
+            <h2 id="wing1">第一翼：缺字推断——当母字从未出现时</h2>
+
+            <h3 id="wing1-1">1.1 问题的提出</h3>
+
+            <p>字块迁移理论假定了一个前提：同一个字，至少在一个页面上以可辨识的形态出现过。但现实中的古籍——尤其是残卷、孤本、或仅存的零页——常常面临更严峻的局面：某个字在全书范围内，没有任何一个实例是完整的，甚至根本没有出现过。</p>
+
+            <p>这不是“基字块不好找”，而是“基字块不存在”。此时，字块迁移的两条原始路径都遇到了入参缺失：由巨到微没有最优实例可甄选，由微到巨没有足够多的骨骼片段可供投票聚合。</p>
+
+            <p>我们需要第三条路径：<strong>基于相邻字块、上下文语义、版式规律，推断出缺失之字的应然形态，然后在目标空缺处生成一个不与任何已有实例完全相同、但符合所有约束条件的字形。</strong></p>
+
+            <h3 id="wing1-2">1.2 推断的三重约束</h3>
+
+            <p>缺字推断绝不等于主观臆造。它受三重可操作的视觉与文本规律约束：</p>
+
+            <p><strong>约束一：部件的可迁移性。</strong>汉字不是由孤立笔画堆砌而成，而是由有限数量的部件（偏旁、声旁、构形模块）按规律组合的。在道论的框架下，我们可以从全书已出现的其他字中提取这些部件——不是作为编码后的“部首”，而是作为视觉可切割的部件块。一个字缺失了，但如果它的“木”旁在全书中其他字里大量出现，如果它的“白”声旁在别处可见，那么这两个部件都可以从它们的实际呈现中迁移出来。缺字的生成，就是以部件为基元的再组合——这相当于在字形内部，完成一次“由微到巨”的骨骼重建，只不过此时的“微”不再是同字的不同实例，而是全书共享的部件库存。</p>
+
+            <p><strong>约束二：版式与笔法的同一性约束。</strong>同一本书、同一块版、同一名刻工，其字形在笔画粗细、结字松紧、起笔收笔的锋毫习惯上，存在统计上稳定的整体特征。这些特征构成一个风格场：它可以被量化为全书字形的笔画宽度分布、重心高度均值、部件间距偏好等参数。缺字推断出的字形，必须落入这个风格场的合理区间内——不能凭空生出一个与该版风格完全相悖的异样字形。这相当于清晰化中“全局约束”在字形生成中的翻版：纸张底色必须均匀，文字风格必须一贯。</p>
+
+            <p><strong>约束三：上下文语法与语义的负向排除。</strong>我们不要求系统理解句子的含义，但我们要求系统能利用非常基本的文本统计规律：在“上○下”这样的二字格中，这个缺失的字在字形上必须是一个独体或合体，不能是一个已知不用于此位置的极罕见字。这不是积极推断，而是消极排除——把那些与语境结构明显相悖的可能字形筛掉，缩小候选项范围，但不要求唯一解。</p>
+
+            <h3 id="wing1-3">1.3 推断结果的存疑标记</h3>
+
+            <p>缺字推断出的字形，在任何情况下都不与“确有实例”的字形享有同等的确定性。系统必须在生成的字形周边，施加一层半透明底色或标记层，直观地向读者传达：<strong>此字是推演所得，非原书所有。</strong>这种标记不是示弱，而是诚实——它贯彻了道论的根本精神：知之为知之，不知为不知。已知的字从实例中显现，未知的字从约束中推演，两者的显现层级不同，必须在视觉上保持可区分的差异。</p>
+
+            <!-- ===== 第二翼 ===== -->
+            <h2 id="wing2">第二翼：异写规整——不消灭差异，让差异可视化</h2>
+
+            <h3 id="wing2-1">2.1 异写的两种根本类型</h3>
+
+            <p>同一版本的古籍中，同一个字出现不同写法，有两种完全不同的来源：</p>
+
+            <p><strong>刻工差异（同版异工）。</strong>一块版上，不同位置出现的同一个字由不同刻工所刻。两人虽遵循同一母本，但刀法深浅、转折习惯、笔画间距容差各有不同。这种差异不影响字种认定——它们就是同一个字，只是面貌有参差。</p>
+
+            <p><strong>构形差异（异写异构）。</strong>同一个字种在不同历史时期或不同抄刻传统中，产生了系统性的笔画增减或部件替换——“為”与“为”、“煙”与“烟”。在同一版本中，如果这两种写法并存，它反映的可能是底本来源的不统一，或是刻工个人的书写习惯侵入。</p>
+
+            <p>传统的字库制作，通常将第一种差异抹平（只取一个代表字形编码），将第二种差异分立（各自赋予不同码位，如果已被纳入Unicode）。字块迁移理论提供了完全不同的处理方式：<strong>不合并，不强行分码，而是在视觉层面对两类差异做出不同策略的规整。</strong></p>
+
+            <h3 id="wing2-2">2.2 同版异工的微规整</h3>
+
+            <p>对于刻工差异，规整的方向是“收拢”。操作方式与字块迁移正论中所述一致：甄选最优实例作为基，将其他实例的不规范处（断笔、粗细不均）微调至与基一致。但这里多了一个重要的保留机制：<strong>不是每个差异都值得被抹平。</strong>如果某个刻工的“异”恰好是其特征所在——比如他的竖笔总是略向左倾，而这在全版中构成了可辨认的个人风格——那么这种差异不应当被规整掉。</p>
+
+            <p>实现方式，是引入一个“规整强度”参数。读者或研究者可以选择：</p>
+
+            <ul>
+                <li><strong>强规整：</strong>所有字趋于一致，适用于阅读流畅性优先的场景</li>
+                <li><strong>弱规整：</strong>仅修复明显缺陷，保留刀法差异，适用于版本学研究的场景</li>
+                <li><strong>分区规整：</strong>前半本书由刻工甲所刻的部分内部规整，后半本由刻工乙所刻的部分内部规整，但不跨区抹平差异</li>
+            </ul>
+
+            <p>这是“此强彼弱”逻辑在风格层面的精妙应用：<strong>不消灭差异，而是让差异被理性地控制在一个可阅读、可研究的范围之内。</strong></p>
+
+            <h3 id="wing2-3">2.3 异写异构的差异存留与标注</h3>
+
+            <p>对于构形差异，规整的方向截然相反：<strong>不合并，不替换，而是让差异可视化。</strong>如果同一版本书中，“為”和“为”并存，“煙”和“烟”同在，字块迁移不会将其互相替换——因为它们是不同的字形实体，视觉特征差异超过了同字变异阈值。</p>
+
+            <p>系统会将其识别为两个不同的字块聚团，各自独立进行内部规整。在两个聚团的关联层，系统可以标记“视觉聚类A与视觉聚类B在本书中功能等价”（如果研究者确认它们在此书中确实表示同一个字），但关联不导致合并。读者在阅读时看到的，是保留了原貌的字形多样性，同时被告知：这两个不同的样子，在此书中是同一个意思。</p>
+
+            <p class="quote-block">这为异体字研究提供了传统字库无法提供的信息：异写不是错误，而是这个版本原貌的一部分。研究者可以看到一个字在本书中有多少种写法、每种写法出现在哪些页、哪些章节，而不是只看到一个被现代统一后的标准字形。</p>
+
+            <!-- ===== 第三翼 ===== -->
+            <h2 id="wing3">第三翼：跨版比对——让字迹自己说话</h2>
+
+            <h3 id="wing3-1">3.1 从单版到多版的跃迁</h3>
+
+            <p>字块迁移理论的原始场景是同一版本内部的字块复用。但当场景从“单版”跃迁到“多版”——不同版本的同一种书、同一碑刻的不同拓本、同一刻经的不同印次——字块迁移的逻辑将展开为一个新的维度：<strong>跨版本的字形比对。</strong></p>
+
+            <p>这不是简单的两张图对比。不同版本的字，尺寸不同、光照不同、纸张颜色不同。硬性叠加无法比对。传统的做法是分别做OCR，然后比对文本差异。但OCR丢失了字形信息——它只能比对“是什么字”，无法比对“这个字写得怎样”。</p>
+
+            <p>字块迁移理论提供了第三条路：<strong>基于视觉骨骼的跨版本对齐与差异提取。</strong></p>
+
+            <h3 id="wing3-2">3.2 骨骼对齐：超越分辨率与光照</h3>
+
+            <p>字块迁移正论中，第二路线提出的“骨骼共识提取”，天然适配跨版本比对：</p>
+
+            <ul>
+                <li>对版本A的某字实例和版本B的同一字实例，分别提取笔画骨骼</li>
+                <li>基于骨骼的关键节点（交叉、端点、拐角）做特征点匹配，估算两者之间的形变场</li>
+                <li>将B的骨骼和轮廓通过形变场映射到A的坐标系</li>
+                <li>在统一坐标系下，叠加两版骨骼，差异自动显形</li>
+            </ul>
+
+            <p>这个差异层可以表现为差异热力图：骨骼一致处无色或浅色，骨骼偏离处深色。研究者一眼就可以看到，版本B的该字在哪些笔画上发生了系统性的位移、增粗、减细——这是版本断代的直接视觉证据，不需任何人用文字描述“此本笔画偏瘦”——图自己会说。</p>
+
+            <h3 id="wing3-3">3.3 刻工指纹的显现</h3>
+
+            <p>当这一比对扩大到全书的成百上千字时，便不再是单字的比对，而是全版风格场的比对。</p>
+
+            <p>每个刻工（或每个版本）的字形风格，在统计意义上是一个高维特征向量：笔画宽度均值与方差、重心高度的分布、转折处的曲率分布、部件间距比值的分布。两个版本的特征向量之间的距离，就是它们的风格差异度。</p>
+
+            <p>但这种统计比对仍然可能丢失关键信息：<strong>孤立的证据字。</strong>有时候，两个版本几乎完全一致，只有一个字的一个笔画不同。这个孤立的差异，可能是翻刻时的一次失误、一次有意的修改、或是底本本身的异文线索。字块迁移的跨版比对，通过在每一对同字之间做差异显著性检验，能够让这个“万里挑一”的孤异笔画自动跳出——不需要研究者逐字比对，系统会自动标记出全书中差异超阈值的字对。</p>
+
+            <p class="quote-block">此强彼弱，一以贯之——这次，被“强出来”的不是书页的边界或笔画的锐度，而是版本的差异本身。</p>
+
+            <!-- ===== 第四翼 ===== -->
+            <h2 id="wing4">第四翼：全息复本的生成——以字块迁移为基的出版级合成</h2>
+
+            <h3 id="wing4-1">4.1 问题的提出</h3>
+
+            <p>前三翼分别解决了“缺字如何推演”“异写如何规整”“版本如何比对”。这三者合在一起，把我们推向一个极具野心的终点：<strong>是否可能利用字块迁移理论，从一份或多份有残缺的古籍扫描件出发，生成一套完整、清晰、风格统一、可供出版的精校复本？</strong></p>
+
+            <p>这不同于传统的影印——影印保留了所有历史痕迹，包括模糊、残缺、透字。这也不同于排印——排印丢失了原刻本的全部字形特征，将其统一转换为当代标准字体。这里提出的是第三条道路：<strong>全息复本</strong>——以原始字形为基本单元，通过字块迁移与智能规整，生成一份“与原本字形完全一致，但清晰度与完整度超越任何单份实体”的再造本。</p>
+
+            <h3 id="wing4-2">4.2 合成的四项操作</h3>
+
+            <p>全息复本不是一次性的渲染，而是四项操作的有序组合：</p>
+
+            <p><strong>操作一：字库的自底构建。</strong>通过字块迁移正论中的“有基覆盖”与“无基聚形”以及第一翼的缺字推断，构建出覆盖全书所需全部字种的自力字库。这个字库不依赖任何外部编码或标准字体——它是一个纯粹从此书自身的视觉资料中生长出来的字库。每个字都有其在此书中的最优视觉形态，并附带了局部墨色、纸张纹理的环境信息。</p>
+
+            <p><strong>操作二：版式规整与行款复原。</strong>原书存在行线歪斜、版框断裂、页序混乱等问题。全息复本需要将这些结构性问题修复：行线通过直线检测与旋转校正拉直，缺失的版框墨线基于现存部分推演补全，页序依据页码或内容衔接重新排列。这些操作是裁剪论与清晰化论在版式维度的延伸应用。</p>
+
+            <p><strong>操作三：字迹的密度均衡与风格统一。</strong>同一版本书的不同页面，因印刷先后、着墨深浅、保存条件，墨色浓淡差异显著。全息复本通过对全书字迹的全局分析，建立该版本的“理想墨色”基准，然后将所有字迹的墨色映射到这个基准上。这不是简单地把所有字调成一样的灰度，而是保留每个字内部的墨色纹理变化（浓淡干枯），同时消除页与页之间的整体漂移——使得全书翻阅时，视觉密度连贯如一。</p>
+
+            <p><strong>操作四：页面合成与纹理再生。</strong>合成一张页面时，不能只是把字块贴在白色背景上——那样的页面是“死”的。需要通过清晰化论中提取的纸张纹理模型，生成与原本纹理统计特征一致的基底，然后在基底上以骨骼为锚放置字形，字形周边的墨色晕染与纸张纤维的局部交互也需模拟。</p>
+
+            <h3 id="wing4-3">4.3 全息复本的哲学位置</h3>
+
+            <p>全息复本不是真本，也不是假本。它是一个道论意义上的“演物”：它以原本的字形为基，以视觉同一性为规，以双路径迁移为操作，将一份因岁月而残缺、模糊、变异的古籍，推进到它“应然”的清晰完整形态。</p>
+
+            <p class="quote-block">在道论的术语中，它是“一”——欲求的那个完满版本——从许多残损的“万物”（各页面的具体实例）中，被显现了出来。它不是对任何一个具体实体的忠实复制，但它忠实于所有这些实体共同指向的那个母型。</p>
+
+            <p>全息复本之上，每个字的来源可溯：哪些来自原字块迁移，哪些来自缺字推断，哪些来自跨版补配。读者在每个字上悬停，可以查看它的“身世”——来自第几页第几行、是原本还是推断、如果推断则有几重证据支持。复本是透明的，它的每一个像素都对自己的显现过程负责。</p>
+
+            <!-- ===== 总结 ===== -->
+            <h2 id="summary">总结：四翼与道</h2>
+
+            <p><strong>缺字推断（第一翼）</strong>解决的是“当母字不存在时如何推演”——这是基的延伸，将“基”从“已有最优实例”延伸到“由已知局部与全局约束推演”。</p>
+
+            <p><strong>异写规整（第二翼）</strong>解决的是“差异如何处理”——这不是抹平，而是让差异在控制下可读、可研究。这是“此强彼弱”在风格维度的施用。</p>
+
+            <p><strong>跨版比对（第三翼）</strong>解决的是“多版之间如何对话”——字形骨骼成为不需要编码的比对界面，差异自己显现出来。</p>
+
+            <p><strong>全息复本（第四翼）</strong>解决的是复本的终极形态——以自力字库为基、以密度均衡为规、以纹理再生为场，生成一份在物理世界从未存在、但在形态世界里理应存在的清晰完整本。</p>
+
+            <p>四翼齐飞，字块理论便不再只是一个“替换残字”的工具。它成为一套从单字到全书、从修复到再造、从保真到演真的完整生成体系。</p>
+
+            <p style="margin-top:1.2rem; color:var(--ink-light); opacity:0.6; letter-spacing:2px;">在道论的总图中，裁剪给出书的边界；清晰化给出墨迹的锐度；超分辨率给出细节的密度；字块迁移与四翼，给出全书文本最可读、最可溯、最完整的显现形态。道在书中，每个字都获得了它应有的清晰面孔。</p>
+
+        </div>
+
+
+
+        <!-- ===== 系列底部导航 ===== -->
+        <div class="series-nav">
+            <a href="1.字块论.html" class="prev">‹ 字块论</a>
+            <a href="./index.html" class="index-link">返回目录</a>
+            <a href="javascript:void(0)" class="next disabled">下一篇 ›</a>
+        </div>
+
+        <!-- ===== 底部版权 ===== -->
+        <div class="footer-note">铭心阁 · 简帙工器谱</div>
+    </div>
+
+    <!-- ===== 返回顶部 ===== -->
+    <a href="#" id="backToTop" class="back-to-top-ball" aria-label="返回顶部">^</a>
+
+    <script>
+        document.getElementById('backToTop').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+
+</body>
+</html>
