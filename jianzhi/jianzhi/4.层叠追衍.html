@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>层叠追衍 · 简帙古籍整理系统 · 简帙</title>
+    <style>
+        /* ===== 全局 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --paper: #f5f0e8;
+            --paper-white: #fcf9f5;
+            --ink: #2c1810;
+            --ink-light: #5a3f36;
+            --zhu-red: #8b1a1a;
+            --zhu-red-light: #b33a3a;
+            --gold: #c9a96e;
+            --border-light: #e8dfd6;
+            --radius: 6px;
+            --shadow: 0 2px 16px rgba(44, 24, 16, 0.08);
+            --transition: 0.25s ease;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: "Noto Serif SC", "思源宋体", "Source Han Serif SC", "华文宋体", serif;
+            background: var(--paper);
+            color: var(--ink);
+            line-height: 1.8;
+            padding: 2rem 1rem;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: var(--paper-white);
+            padding: 2rem 2.5rem 3rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-light);
+        }
+
+        /* ===== 顶部 ===== */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border-light);
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .top-bar .brand {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--ink);
+            letter-spacing: 4px;
+        }
+        .top-bar .brand .sub {
+            font-weight: 400;
+            font-size: 0.9rem;
+            color: var(--ink-light);
+            letter-spacing: 2px;
+            opacity: 0.6;
+            margin-left: 6px;
+        }
+
+        /* ===== 面包屑 ===== */
+        .breadcrumb {
+            font-size: 0.85rem;
+            color: var(--ink-light);
+            margin-bottom: 1.5rem;
+            padding: 0.4rem 0.8rem;
+            background: var(--paper);
+            border-radius: 20px;
+            display: inline-block;
+            opacity: 0.7;
+        }
+        .breadcrumb a {
+            color: var(--ink-light);
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: var(--zhu-red);
+            text-decoration: underline;
+        }
+        .breadcrumb span {
+            margin: 0 4px;
+        }
+
+        /* ===== 标题 ===== */
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 0.2rem;
+            flex-wrap: wrap;
+        }
+        .article-meta .series-tag {
+            font-size: 0.85rem;
+            color: var(--ink-light);
+            background: var(--paper);
+            padding: 0.1rem 0.8rem;
+            border-radius: 12px;
+            opacity: 0.7;
+        }
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--ink);
+            letter-spacing: 4px;
+            margin-bottom: 0.2rem;
+            line-height: 1.4;
+        }
+        .subtitle {
+            color: var(--ink-light);
+            font-size: 0.95rem;
+            margin-bottom: 1.8rem;
+            border-left: 3px solid var(--zhu-red);
+            padding-left: 1rem;
+            opacity: 0.7;
+        }
+
+        /* ===== 摘要与关键词 ===== */
+        .abstract-box {
+            background: var(--paper);
+            border-radius: var(--radius);
+            padding: 1rem 1.2rem;
+            margin: 0.5rem 0 1.2rem;
+            border: 1px solid var(--border-light);
+        }
+        .abstract-box .label {
+            font-size: 0.8rem;
+            color: var(--ink-light);
+            opacity: 0.5;
+            letter-spacing: 1px;
+        }
+        .abstract-box p {
+            font-size: 0.95rem;
+            color: var(--ink);
+            text-indent: 2em;
+            line-height: 2;
+            margin: 0.2rem 0 0.2rem;
+        }
+        .abstract-box .keywords {
+            font-size: 0.85rem;
+            color: var(--ink-light);
+            margin-top: 0.2rem;
+            opacity: 0.7;
+        }
+        .abstract-box .keywords strong {
+            color: var(--zhu-red);
+            font-weight: 600;
+        }
+
+        /* ===== 章内目录 ===== */
+        .toc {
+            background: var(--paper);
+            border-left: 4px solid var(--zhu-red);
+            padding: 0.8rem 1.2rem;
+            margin: 1.2rem 0 1.8rem;
+            border-radius: var(--radius);
+        }
+        .toc h3 {
+            font-size: 1rem;
+            margin: 0 0 0.4rem 0;
+            color: var(--ink);
+            letter-spacing: 2px;
+        }
+        .toc ul {
+            margin: 0;
+            padding-left: 1.2rem;
+        }
+        .toc li {
+            margin: 0.2rem 0;
+        }
+        .toc a {
+            text-decoration: none;
+            color: var(--ink);
+            border-bottom: 1px dotted var(--border-light);
+            transition: 0.2s;
+        }
+        .toc a:hover {
+            border-bottom-style: solid;
+            color: var(--zhu-red);
+            border-bottom-color: var(--zhu-red);
+        }
+        .toc ul ul {
+            padding-left: 1.5rem;
+        }
+
+        /* ===== 正文 ===== */
+        .article-body p {
+            text-indent: 2em;
+            margin-bottom: 1rem;
+            line-height: 2.2;
+        }
+        .article-body h2 {
+            font-size: 1.4rem;
+            color: var(--ink);
+            margin: 2rem 0 1rem 0;
+            padding-bottom: 0.3rem;
+            border-bottom: 2px solid var(--border-light);
+            letter-spacing: 3px;
+        }
+        .article-body h3 {
+            font-size: 1.1rem;
+            color: var(--ink);
+            margin-top: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .article-body h4 {
+            font-size: 1rem;
+            color: var(--ink);
+            margin-top: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            opacity: 0.8;
+        }
+        .article-body strong {
+            color: var(--zhu-red);
+            font-weight: 600;
+        }
+        .article-body ul {
+            padding-left: 2rem;
+            margin: 0.5rem 0 1rem;
+        }
+        .article-body ul li {
+            margin-bottom: 0.3rem;
+            list-style-type: disc;
+        }
+        .article-body ul ul li {
+            list-style-type: circle;
+        }
+        .article-body ol {
+            padding-left: 2rem;
+            margin: 0.5rem 0 1rem;
+        }
+        .article-body ol li {
+            margin-bottom: 0.3rem;
+        }
+        .article-body .no-indent {
+            text-indent: 0;
+        }
+        .quote-block {
+            display: block;
+            margin: 1.2rem 0;
+            padding: 0.8rem 1.2rem;
+            font-style: italic;
+            color: var(--ink);
+            background: var(--paper);
+            border-radius: var(--radius);
+            border-left: 3px solid var(--gold);
+            line-height: 2.2;
+            text-align: left;
+            font-size: 1rem;
+            letter-spacing: 0.04em;
+        }
+        .inline-quote {
+            color: var(--ink);
+            font-style: italic;
+            background: var(--paper);
+            padding: 0.1rem 0.4rem;
+            border-radius: 3px;
+            white-space: nowrap;
+        }
+
+        /* ===== 表格 ===== */
+        .table-wrap {
+            overflow-x: auto;
+            margin: 1rem 0 1.2rem;
+        }
+        .table-wrap table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            background: var(--paper);
+            border-radius: var(--radius);
+        }
+        .table-wrap table th {
+            padding: 0.5rem 0.8rem;
+            text-align: left;
+            border-right: 1px solid var(--border-light);
+            background: var(--paper);
+            border-bottom: 2px solid var(--border-light);
+            font-weight: 600;
+        }
+        .table-wrap table td {
+            padding: 0.4rem 0.8rem;
+            border-right: 1px solid var(--border-light);
+            border-bottom: 1px solid var(--border-light);
+        }
+        .table-wrap table tr:last-child td {
+            border-bottom: none;
+        }
+        .table-wrap table th:last-child,
+        .table-wrap table td:last-child {
+            border-right: none;
+        }
+
+        /* ===== 单篇文章下载 ===== */
+        .article-download {
+            margin-top: 2rem;
+            padding: 1rem 1.2rem;
+            background: var(--paper);
+            border-radius: var(--radius);
+            border-left: 4px solid var(--zhu-red);
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: space-between;
+        }
+        .article-download .info {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.9rem;
+            color: var(--ink);
+        }
+        .article-download .btn-group {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+        .article-download .btn-sm {
+            display: inline-block;
+            background: var(--zhu-red);
+            color: #fff;
+            padding: 0.3rem 1.2rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            border: 1px solid var(--zhu-red);
+            transition: var(--transition);
+            letter-spacing: 0.5px;
+        }
+        .article-download .btn-sm:hover {
+            background: var(--zhu-red-light);
+            transform: translateY(-1px);
+        }
+        .article-download .btn-sm-outline {
+            background: transparent;
+            color: var(--zhu-red);
+            border-color: var(--zhu-red);
+        }
+        .article-download .btn-sm-outline:hover {
+            background: var(--zhu-red);
+            color: #fff;
+        }
+
+        /* ===== 系列底部导航 ===== */
+        .series-nav {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2.5rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid var(--border-light);
+            flex-wrap: wrap;
+        }
+        .series-nav a {
+            display: inline-block;
+            background: var(--paper);
+            color: var(--ink);
+            padding: 0.4rem 1.2rem;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            border: 1px solid var(--border-light);
+            transition: 0.2s;
+        }
+        .series-nav a:hover {
+            background: #f0ebe2;
+            border-color: var(--gold);
+            color: var(--zhu-red);
+        }
+        .series-nav .prev {
+            margin-right: auto;
+        }
+        .series-nav .next {
+            margin-left: auto;
+        }
+        .series-nav a.disabled {
+            cursor: default;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        .series-nav a.index-link {
+            background: var(--zhu-red);
+            color: #fff;
+            border-color: var(--zhu-red);
+        }
+        .series-nav a.index-link:hover {
+            background: var(--zhu-red-light);
+            color: #fff;
+        }
+        @media (max-width: 600px) {
+            .series-nav {
+                gap: 0.8rem;
+            }
+            .series-nav .prev,
+            .series-nav .next {
+                margin: 0;
+            }
+            .series-nav a {
+                font-size: 0.8rem;
+                padding: 0.3rem 0.8rem;
+            }
+        }
+
+        /* ===== 底部版权 ===== */
+        .footer-note {
+            margin-top: 2.5rem;
+            font-size: 0.8rem;
+            text-align: center;
+            color: var(--ink-light);
+            border-top: 1px solid var(--border-light);
+            padding-top: 1.2rem;
+            letter-spacing: 1px;
+            opacity: 0.5;
+        }
+
+        /* ===== 返回顶部 ===== */
+        .back-to-top-ball {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(44, 24, 16, 0.04);
+            border: 1px solid rgba(44, 24, 16, 0.10);
+            color: var(--ink-light);
+            font-size: 1.4rem;
+            line-height: 44px;
+            text-align: center;
+            text-decoration: none;
+            transition: var(--transition);
+            backdrop-filter: blur(4px);
+            box-shadow: 0 2px 12px rgba(44, 24, 16, 0.04);
+            font-family: serif;
+        }
+        .back-to-top-ball:hover {
+            background: rgba(44, 24, 16, 0.08);
+            transform: translateY(-2px);
+            color: var(--zhu-red);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1.2rem 1rem 2rem;
+            }
+            h1 {
+                font-size: 1.5rem;
+                letter-spacing: 3px;
+            }
+            .top-bar .brand {
+                font-size: 1.2rem;
+            }
+            .article-download {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.8rem;
+            }
+            .article-download .btn-group {
+                justify-content: center;
+            }
+            .quote-block {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.9rem;
+                border-left-width: 2px;
+            }
+            .toc ul ul {
+                padding-left: 1rem;
+            }
+            .article-body ul,
+            .article-body ol {
+                padding-left: 1.2rem;
+            }
+            .table-wrap table {
+                font-size: 0.8rem;
+            }
+            .table-wrap table th,
+            .table-wrap table td {
+                padding: 0.3rem 0.5rem;
+            }
+            .abstract-box {
+                padding: 0.8rem 1rem;
+            }
+            .abstract-box p {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- ===== 顶部栏 ===== -->
+        <div class="top-bar">
+            <div class="brand">
+                简帙<span class="sub">· 工器谱</span>
+            </div>
+        </div>
+
+        <!-- ===== 面包屑 ===== -->
+        <div class="breadcrumb">
+            <a href="../index.html">简帙</a> <span>›</span>
+            <a href="./index.html">简帙古籍整理系统</a> <span>›</span>
+            层叠追衍
+        </div>
+
+        <!-- ===== 标题 ===== -->
+        <div class="article-meta">
+            <span class="series-tag">简帙古籍整理系统 · 第 4 篇</span>
+        </div>
+        <h1>层叠追衍</h1>
+        <div class="subtitle">古籍视觉考古与思想溯源体系建构</div>
+
+        <!-- ===== 摘要与关键词 ===== -->
+        <div class="abstract-box">
+            <div class="label">摘要</div>
+            <p>传统古籍整理长期困于“文字中心主义”范式，以OCR转录、标点、排印、全文检索为主要手段，将古籍简化为可被机器处理的字符流。然而，这种路径在面对避讳字、异体字、俗字、漫漶字等库外字时必然失效，在标点时强加个人理解，在排印中丢失物质信息，在检索中助长断章取义。本文提出一种革命性的“层叠追衍”古籍整理新范式，以“图像本体论”取代“文字中心主义”，以“以图解图”为核心方法，构建起二十五参数库与六座拟态图书馆的完整体系，实现从扫描物质形态到思想内核推衍的全流程贯通。</p>
+            <div class="keywords"><strong>关键词：</strong>古籍数字化；多模态大模型；图像本体论；层叠追衍；拟体参数库；视觉考古</div>
+        </div>
+
+        <!-- ===== 章内目录 ===== -->
+        <nav class="toc" aria-label="章节目录">
+            <h3>目 录</h3>
+            <ul>
+                <li><a href="#ch1">一、引言：古籍整理的范式困境</a></li>
+                <li><a href="#ch2">二、理论基础：实体与拟体的二元建构</a>
+                    <ul>
+                        <li><a href="#ch2-1">2.1 概念定义</a></li>
+                        <li><a href="#ch2-2">2.2 扫描的本体论意义</a></li>
+                        <li><a href="#ch2-3">2.3 拟面的形态学分类</a></li>
+                    </ul>
+                </li>
+                <li><a href="#ch3">三、核心方法：层叠追衍</a></li>
+                <li><a href="#ch4">四、二十五参数库体系</a>
+                    <ul>
+                        <li><a href="#ch4-1">第一阶段：来源鉴定（3库）</a></li>
+                        <li><a href="#ch4-2">第二阶段：来源推理（3库）</a></li>
+                        <li><a href="#ch4-3">第三阶段：视觉统一（1库）</a></li>
+                        <li><a href="#ch4-4">第四阶段：学术分级（3库）</a></li>
+                        <li><a href="#ch4-5">第五阶段：姿态诊断（2库）</a></li>
+                        <li><a href="#ch4-6">第六阶段：形状净化（4库）</a></li>
+                        <li><a href="#ch4-7">第七阶段：结构还原（2库）</a></li>
+                        <li><a href="#ch4-8">第八阶段：读图五层（5库）</a></li>
+                        <li><a href="#ch4-9">第九阶段：字块级读图（1库）</a></li>
+                        <li><a href="#ch4-10">第十阶段：思想溯源（1库）</a></li>
+                    </ul>
+                </li>
+                <li><a href="#ch5">五、六座拟态图书馆</a></li>
+                <li><a href="#ch6">六、技术路径：依托通用大模型的专项训练</a>
+                    <ul>
+                        <li><a href="#ch6-1">6.1 训练数据集构建</a></li>
+                        <li><a href="#ch6-2">6.2 参数高效微调</a></li>
+                        <li><a href="#ch6-3">6.3 Agent工作流</a></li>
+                    </ul>
+                </li>
+                <li><a href="#ch7">七、结语：从文字到图像，从检索到理解</a></li>
+            </ul>
+        </nav>
+
+        <!-- ===== 正文 ===== -->
+        <div class="article-body">
+
+            <!-- ===== 第一章 ===== -->
+            <h2 id="ch1">一、引言：古籍整理的范式困境</h2>
+
+            <p>古籍整理，是传承文明的基础性工程。据估算，中国现存古籍约20万种，文本总量超50亿字。然而，传统的整理方式面临三重尖锐矛盾：海量遗存与有限人力的矛盾、超高门槛与普及传承的矛盾、知识网络的“暗数据”与发现能力不足的矛盾。</p>
+
+            <p>更为根本的是，传统范式建立在两个未经验证的预设之上：其一，今人已经充分理解古籍；其二，古籍可以被无损地转化为现代文本。这两个预设，均不成立。</p>
+
+            <p>当前古籍数字化工作，主要围绕OCR转录、自动标点、排印出版、全文检索展开。这些工作的通病在于：转录者往往读不通文言文，便臆改妄补；标点者将个人理解强加于经典；排印者未搞清版本源流便匆忙付梓；检索者不知全书宗旨，只会断章取义。一言以蔽之，这是用现代文本范式覆盖古代文献现实的失败尝试。</p>
+
+            <p>本文提出的“层叠追衍”体系，正是对这一困境的根本性回应。</p>
+
+            <!-- ===== 第二章 ===== -->
+            <h2 id="ch2">二、理论基础：实体与拟体的二元建构</h2>
+
+            <h3 id="ch2-1">2.1 概念定义</h3>
+
+            <p>本体系的首要工作，是确立两组核心概念：</p>
+
+            <ul>
+                <li><strong>实体：</strong>碳基世界的古籍本身，是唯一的、物质的、不可逆地老去的“物自体”。</li>
+                <li><strong>拟体：</strong>实体经由扫描、校正、统一后的数字映射，是古籍在硅基世界的“第二肉身”。拟体不是实体的复制，而是拥有独立属性的数字存在——像素矩阵、色彩配置文件、畸变参数、压缩痕迹。</li>
+            </ul>
+
+            <h3 id="ch2-2">2.2 扫描的本体论意义</h3>
+
+            <p>扫描，是实体到拟体的“诞生仪式”。它不是简单的复制，而是一次本体转换的事件。扫描同时具备“传真”与“失真”的二重性：传真，在于将物质形态转化为可复现、可审计的像素矩阵；失真，在于三维到二维的坍缩、光谱的囚禁、采样率的暴力切割。</p>
+
+            <p>本体系不追求天真的“还原”，而是将传真与失真的辩证关系对象化、课题化，使失真本身成为可度量的信息。</p>
+
+            <h3 id="ch2-3">2.3 拟面的形态学分类</h3>
+
+            <p>为进一步精确定义，本体系建立了一套完整的“拟面”形态学：</p>
+
+            <ul>
+                <li><strong>整实面：</strong>一块完整的雕版单次印刷所得的一个完整书叶，是雕版印刷的最小完整产品单元。</li>
+                <li><strong>半实面：</strong>整实面沿中缝折叠后形成的前后两个半面之一。</li>
+                <li><strong>合实面：</strong>古籍翻开摊平时，左右两个分属不同雕版的半实面因装订而临时拼合的状态。</li>
+                <li><strong>整拟面：</strong>由两个半拟面拼接而成的、恢复整实面形态的完整数字书叶。</li>
+                <li><strong>半拟面：</strong>未经拼接的、独立的半个雕版印刷面的数字形态。</li>
+                <li><strong>合拟面：</strong>翻开扫描直接捕获的、包含左右两个半面的原始数字图像。</li>
+                <li><strong>印拟面：</strong>为印刷出版而标准化拼版后的版面。</li>
+            </ul>
+
+            <!-- ===== 第三章 ===== -->
+            <h2 id="ch3">三、核心方法：层叠追衍</h2>
+
+            <p>“层叠追衍”是本体系的方法论总纲。</p>
+
+            <p><strong>层叠：</strong>从最底层的扫描开始，一层一层叠加理解——同源聚类、设备定感、转化识别、背景消除、展平校正、书口裁切、版框拼接、色彩统一……每一层都是对前一层的校正与提纯，是对古籍物质生命的数字考古学发掘。</p>
+
+            <p><strong>追衍：</strong>不满足于被动记录，而是主动追溯与推演。从拟体追实体，从二手图追原始扫描，从残缺本追完整版，从字块追字体源流，从全书追思想内核。对于失传之书，凭参数推衍；对于存世之书，用反推验证。</p>
+
+            <!-- ===== 第四章 ===== -->
+            <h2 id="ch4">四、二十五参数库体系</h2>
+
+            <p>二十五参数库，是本体系的知识生产引擎。按其功能，分为十大阶段：</p>
+
+            <h3 id="ch4-1">第一阶段：来源鉴定（3库）</h3>
+
+            <p><strong>1. 同源参数库：</strong>记录拟体所属的同源簇，通过谱系聚类识别共享同一转化管道的拟体集群。参数包括：同源簇ID、来源机构、扫描项目编号、簇内成员清单、聚类依据。</p>
+            <p><strong>2. 设备参数库：</strong>记录扫描仪这一“转化管道”的光学物理特性。参数包括：扫描仪型号、光源估计、传感器灵敏度曲线、色彩转换矩阵、畸变模型系数、暗电流噪声模式。</p>
+            <p><strong>3. 转化参数库：</strong>记录扫描后施加的所有数字后处理痕迹。参数包括：压缩格式与质量因子、锐化核参数、降噪算法类型与强度、处理软件元数据。</p>
+
+            <h3 id="ch4-2">第二阶段：来源推理（3库）</h3>
+
+            <p><strong>4. 扩同源参数库：</strong>在视觉统一后，基于更本真的相似性重新聚类，发现深层版本亲缘关系。</p>
+            <p><strong>5. 扩设备参数库：</strong>利用大量统一处理结果，修正、精细化设备传递函数模型。</p>
+            <p><strong>6. 扩转化参数库：</strong>在逆转后处理时，发现并归档新的数字处理工艺模板。</p>
+
+            <h3 id="ch4-3">第三阶段：视觉统一（1库）</h3>
+
+            <p><strong>7. 拟态参数库：</strong>定义观看规则。参数包括：目标色彩空间、灰度映射规则、动态范围映射曲线、纹理增强规则、虚拟光照设置。同一原始拟体在不同拟态参数下可生成不同视觉呈现，构成不同的拟态图书馆。</p>
+
+            <h3 id="ch4-4">第四阶段：学术分级（3库）</h3>
+
+            <p><strong>8. 善本参数库：</strong>记录文本完整的拟体。参数包括：拟体唯一ID、书目信息、内容次序、完整的调整历史链。</p>
+            <p><strong>9. 待善参数库：</strong>为无法归入现有书目体系但信息完整的善本建档。</p>
+            <p><strong>10. 残本参数库：</strong>记录残缺文本的物质信息与损伤状态。参数包括：残缺状态标记图、残缺原因推测、与完整本的比对结果。</p>
+
+            <h3 id="ch4-5">第五阶段：姿态诊断（2库）</h3>
+
+            <p><strong>11. 展平参数库：</strong>诊断拟体的原始扫描姿态，预定反向处理方案。参数包括：姿态类型（合拟面/半拟面/二手图）、畸变模型、中缝识别路径。</p>
+            <p><strong>12. 背景参数库：</strong>识别图像中一切非书叶元素。参数包括：背景分割掩膜、各背景元素描述、基底背景特征。</p>
+
+            <h3 id="ch4-6">第六阶段：形状净化（4库）</h3>
+
+            <p><strong>13. 消景参数库：</strong>执行背景移除。参数包括：操作类型、填充策略、边缘处理算法。</p>
+            <p><strong>14. 扩展参数库：</strong>执行分割操作，将合拟面或带邻页的半拟面分离为独立的半拟面。参数包括：输入状态、分割路径、分离算法、输出对象。</p>
+            <p><strong>15. 半拟面参数库：</strong>为每个半拟面建立静态档案。参数包括：半拟面唯一ID、来源信息、形态来源、源图坐标、对页ID。</p>
+            <p><strong>16. 半原参数库：</strong>对半拟面进行最终净化。参数包括：书口裁除记录、校正变换矩阵、尺寸信息、干预掩膜。</p>
+
+            <h3 id="ch4-7">第七阶段：结构还原（2库）</h3>
+
+            <p><strong>17. 整拟面参数库：</strong>将两个半拟面拼接为完整雕版书叶。参数包括：组成半面ID、控制点对、中缝配准算法、拼接后尺寸、配准误差报告。</p>
+            <p><strong>18. 印拟面参数库：</strong>统一所有页面版框尺寸与位置，按出版逻辑拼版。参数包括：目标版框尺寸与位置、单页缩放因子与平移矩阵、拼版逻辑。</p>
+
+            <h3 id="ch4-8">第八阶段：读图五层（5库）</h3>
+
+            <p><strong>19. 纸张参数库（纸面层）：</strong>帘纹密度与走向、纸色Lab值、老化痕迹分布、损伤区域坐标。</p>
+            <p><strong>20. 版式参数库（版面层）：</strong>版框尺寸与栏线、界栏行数与字数、版心中缝与鱼尾、书耳位置、天头地脚尺寸。</p>
+            <p><strong>21. 文字图像参数库（文字图像层）：</strong>单字坐标与边界框、墨迹特征向量、字体风格标签。此为视觉符号记录，非文本识别。</p>
+            <p><strong>22. 实附参数库（实体附加层）：</strong>批校的墨色笔迹与位置、圈点的形态与颜色、印章的篆文与叠压关系。</p>
+            <p><strong>23. 拟附参数库（拟体附加层）：</strong>数字水印内容与位置、元数据植入识别、OCR绑定文本与置信度。</p>
+
+            <h3 id="ch4-9">第九阶段：字块级读图（1库）</h3>
+
+            <p><strong>24. 字块参数库：</strong>本体系的核心创新之一。将每个文字作为独立的视觉图像块处理，彻底摆脱Unicode字符集的约束。参数包括：字块无损图像数据、整拟面坐标与边界框、墨迹特征向量、视觉相似字块列表、OCR猜测值（仅供后台索引，不呈现）。避讳字、异体字、俗字、漫漶字皆被完整保存，研究者在视觉比对中直接“看出”其含义。</p>
+
+            <h3 id="ch4-10">第十阶段：思想溯源（1库）</h3>
+
+            <p><strong>25. 意象参数库（图书源理论参数）：</strong>本体系的终极创新。记录一部书的思想DNA，不依赖于具体文字排列，而是提取其问题域、概念体系、论证结构、价值取向、知识坐标。支持“图书源理论推衍”——哪怕仅剩书名，也可推衍出系统自洽的著作内核；支持“反推验证”——对存世完整之书，比对推衍内核与实际内核，判定理解是否正确。</p>
+
+            <!-- ===== 第五章 ===== -->
+            <h2 id="ch5">五、六座拟态图书馆</h2>
+
+            <p>六座图书馆，是二十五参数库的最终产出物，对应拟体从原始混沌到意义理解的六个成品形态：</p>
+
+            <p><strong>第一馆：扫描原始来源图书馆</strong><br>
+            入库原始扫描与各类二手图的大杂烩，保留扫描仪的全部“指纹”与后处理痕迹。此为最原始的数字材料库，是后续一切提纯操作的原料仓，也是存档与回溯的起点。</p>
+
+            <p><strong>第二馆：拟态图书馆</strong><br>
+            在经过来源鉴定与推理的原始图像上，应用拟态参数进行色彩统一。所有图像被映射至标准色彩空间，实现跨馆藏、跨设备的视觉一致。此时背景、畸变、姿态等问题依旧存在，是后续形状处理的起点。</p>
+
+            <p><strong>第三馆：半原面图书馆</strong><br>
+            依次经过背景消除、展平校正、扩展分割、书口裁切后的半拟原面。每一张图都是独立、干净、平直、无畸变的单面书叶。完美适配手机竖屏、逐面翻阅的阅读习惯，是面向大众传播与移动端阅读的最终交付形态。</p>
+
+            <p><strong>第四馆：整拟面图书馆</strong><br>
+            由两个相应的半原面，通过版框与中缝元素的精确配准，拼接为完整的雕版书叶。恢复古籍物质生产的最小完整单元，是深度“读图”的核心对象。研究者在此进行版式测量、刻工比对、墨色分析、图文互证等全部版本学核心研究。</p>
+
+            <p><strong>第五馆：拟印图书馆</strong><br>
+            应用印拟面参数，强制统一所有页面的版框尺寸与画布位置，并按印刷折页逻辑进行标准化拼版。直接交付印刷厂或生成出版格式，是古籍内容从学术复原走向现代出版的最终出口。本馆不含整拟面参数，因其产品是从半原面直接按出版规则拼版而成。</p>
+
+            <p><strong>第六馆：追衍图书馆</strong><br>
+            本体系的终极归宿。不存图像，存“理解”。每一部经过全流程处理与解读的古籍，在此存下其意象参数档案，以及由系统推衍生成的思想模型。研究者可在此进行跨书的思想比对、内核验证，不断修正对古籍的深层理解。这是“层叠追衍”的最终产出地。</p>
+
+            <!-- ===== 第六章 ===== -->
+            <h2 id="ch6">六、技术路径：依托通用大模型的专项训练</h2>
+
+            <p>本体系不要求从零构建基座模型，而是依托通用多模态大模型进行深度适配。</p>
+
+            <h3 id="ch6-1">6.1 训练数据集构建</h3>
+
+            <p>将二十五参数库的内涵转化为图文并茂的指令数据：全流程指令数据（同源聚类、背景消除、展开校正、字块切割等）、读图五层描述数据（纸张、版式、文字、实附、拟附）、图书源理论推衍数据（内核推衍与反推验证）。</p>
+
+            <h3 id="ch6-2">6.2 参数高效微调</h3>
+
+            <p>采用LoRA（低秩适应）等高效微调技术，在冻结的基座大模型上外挂极小规模的“古籍视觉理解适配器”，以极低成本将二十五参数库与“层叠追衍”逻辑注入模型。</p>
+
+            <h3 id="ch6-3">6.3 Agent工作流</h3>
+
+            <p>大模型作为Agent，自动调度每一步工序，调用相应参数库，将产出存入对应图书馆。字块级视觉检索以向量化的特征作为检索键，在整拟面图书馆中完成毫秒级的“以图搜图”比对。</p>
+
+            <!-- ===== 第七章 ===== -->
+            <h2 id="ch7">七、结语：从文字到图像，从检索到理解</h2>
+
+            <p>“层叠追衍”体系的终极目标，不是生产一堆方便检索的文本文件，而是为每一部古籍在数字世界里建立一座全息的、可被视觉穷尽的、忠实于物质本真的生命纪念馆。</p>
+
+            <p>我们不做转录，而保存字块——让原刻的每一个细节都在。</p>
+            <p>我们不做标点，而呈现版面——让研究者自己去“离经辨志”。</p>
+            <p>我们不做排印，而构建整拟面图书馆——让版本的物质形态在数字世界复活。</p>
+            <p>我们不做关键词搜索，而建立视觉宗图与思想追衍——让研究者以图像的方式浏览、比对、发现，最终抵达对古籍思想内核的深层理解。</p>
+
+            <p>这是从“文字中心主义”向“图像本体论”的范式革命。<br>
+            这是从“可搜索的文本”到“可阅读的图像”再到“可推衍的思想”的认知跃迁。<br>
+            这是古籍整理从文献工作升华为思想考古的历史转折。</p>
+
+            <p style="margin-top:1.2rem; color:var(--ink-light); opacity:0.6; letter-spacing:2px;">二十五参数库，是这座大厦的基石。六座拟态图书馆，是这座大厦的房间。层叠追衍，是贯穿始终的灵魂。</p>
+
+        </div>
+
+        <!-- ===== 单篇文章下载 ===== -->
+        <div class="article-download">
+            <div class="info">
+                <span>📄</span>
+                <span><strong>下载本文</strong> · PDF / EPUB 版本</span>
+            </div>
+            <div class="btn-group">
+                <a href="#" class="btn-sm" target="_blank">下载 PDF</a>
+                <a href="#" class="btn-sm btn-sm-outline" target="_blank">下载 EPUB</a>
+            </div>
+        </div>
+
+        <!-- ===== 系列底部导航 ===== -->
+        <div class="series-nav">
+            <a href="3.拟纸显真.html" class="prev">‹ 拟纸显真</a>
+            <a href="./index.html" class="index-link">返回目录</a>
+            <a href="javascript:void(0)" class="next disabled">下一篇 ›</a>
+        </div>
+
+        <!-- ===== 底部版权 ===== -->
+        <div class="footer-note">铭心阁 · 简帙工器谱</div>
+    </div>
+
+    <!-- ===== 返回顶部 ===== -->
+    <a href="#" id="backToTop" class="back-to-top-ball" aria-label="返回顶部">^</a>
+
+    <script>
+        document.getElementById('backToTop').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+
+</body>
+</html>
