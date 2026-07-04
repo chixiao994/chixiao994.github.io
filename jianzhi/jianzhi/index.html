@@ -326,7 +326,7 @@
         <div class="page-title" id="seriesTitle">简帙古籍整理系统 <span class="sub">系列</span></div>
         <div class="subtitle" id="seriesSub">系统整体理论 · 共 <span id="articleCount">0</span> 篇</div>
 
-        <!-- ===== 文章列表（由 JS 动态生成） ===== -->
+        <!-- ===== 文章列表 ===== -->
         <ul class="catalog-list" id="catalogList">
             <!-- JS 渲染 -->
         </ul>
@@ -357,10 +357,9 @@
                 name: '简帙古籍整理系统',
                 subtitle: '系统整体理论',
                 articles: [
-                    // 预留位置，后续添加理论文章
-                    // 示例：
-                    // { id: '01-系统架构', title: '简帙系统架构总论', desc: '整体设计理念与模块划分' },
-                    // { id: '02-工作流设计', title: '古籍整理工作流的设计哲学', desc: '从扫描到输出的完整流程' }
+                    { id: '1.道论', title: '道论：演道者的根本原理', desc: '从道基到演道的完整推导' },
+                    { id: '2.版面理论', title: '版面理论：书页的结构本体', desc: '版心、鱼尾、界栏的哲学基础' },
+                    { id: '3.拟纸显真', title: '拟纸显真：数字书页的质感论', desc: '从像素到纸质的感知跃迁' }
                 ]
             };
 
@@ -377,14 +376,6 @@
             countEl.textContent = seriesData.articles.length;
 
             function renderList() {
-                if (seriesData.articles.length === 0) {
-                    listEl.innerHTML = `
-                        <li style="padding:1.5rem 0.8rem; text-align:center; color:var(--ink-light); opacity:0.5; font-size:0.9rem; border-bottom:none; justify-content:center;">
-                            暂无文章 · 敬请期待
-                        </li>
-                    `;
-                    return;
-                }
                 const html = seriesData.articles.map((item, idx) => {
                     const num = String(idx + 1).padStart(2, '0');
                     return `
