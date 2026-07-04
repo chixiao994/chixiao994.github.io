@@ -41,11 +41,11 @@
       line-height: 1.15;
       text-shadow: 0 2px 4px rgba(44, 31, 21, 0.06);
       /* 
-        优先篆体 → 若无则用黑体 → 再回退楷体 → 宋体 
-        黑体选项覆盖 Windows (Microsoft YaHei, SimHei) 与 macOS (PingFang SC, Heiti SC)
+        篆体 → 黑体系列（Windows雅黑/黑体，macOS苹方/黑体） → 楷体 → 宋体 
+        确保在无篆体时优先显示黑体，而非直接跳到楷体
       */
       font-family: '华文篆书', '方正小篆体', 'STZhongsong', '汉仪篆书', '篆体',
-                   'Microsoft YaHei', 'SimHei', 'PingFang SC', 'Heiti SC',
+                   'Microsoft YaHei', 'SimHei', 'PingFang SC', 'Heiti SC', 'STHeiti',
                    '华文楷体', 'KaiTi', '宋体', serif;
     }
 
@@ -59,10 +59,12 @@
       padding: 0 1.5rem;
       font-weight: 300;
       opacity: 0.8;
+      text-align: left;      /* 左对齐便于首行缩进生效 */
     }
 
     .preface p {
-      display: inline;
+      text-indent: 2em;      /* 首行缩进2字符 */
+      margin: 0;
     }
 
     /* ===== 第三层 · 四个版块 ===== */
@@ -91,7 +93,7 @@
       border: none;
       transform: translateY(0);
       /* 
-        优先隶书 → 若无则用楷体 → 再回退宋体 
+        优先隶书 → 若无则用楷体 → 宋体 
         楷体在手机和电脑上普遍存在，作为可靠回退
       */
       font-family: '华文隶书', '方正隶书', '汉仪隶书', 'STLiti', '隶书',
@@ -166,9 +168,9 @@
     <h1>铭心阁</h1>
   </div>
 
-  <!-- 第二层 · 序言 -->
+  <!-- 第二层 · 序言（首行缩进2字符） -->
   <div class="preface">
-    <p>铭心阁者，聚简帙以齐古籍，立识辨辑以辨源流，设自然钟以观天时，创医战以习岐黄。愿承先贤之智，以启后学之思。</p>
+    <p>铭心阁者，聚简帙以齐古籍，立识辨辑以辨源流，设自然钟以观天时，创医战以习岐黄。愿承先贤之智，启后学之思。</p>
   </div>
 
   <!-- 第三层 · 四个版块（隶书 → 楷体） -->
