@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>展页分割 · 双页切拼 · 简帙</title>
+    <style>
+        /* ===== 全局 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --paper: #f5f0e8;
+            --paper-white: #fcf9f5;
+            --ink: #2c1810;
+            --ink-light: #5a3f36;
+            --zhu-red: #8b1a1a;
+            --zhu-red-light: #b33a3a;
+            --gold: #c9a96e;
+            --border-light: #e8dfd6;
+            --radius: 6px;
+            --shadow: 0 2px 16px rgba(44, 24, 16, 0.08);
+            --transition: 0.25s ease;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: "Noto Serif SC", "思源宋体", "Source Han Serif SC", "华文宋体", serif;
+            background: var(--paper);
+            color: var(--ink);
+            line-height: 1.8;
+            padding: 2rem 1rem;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: var(--paper-white);
+            padding: 2rem 2.5rem 3rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-light);
+        }
+
+        /* ===== 顶部 ===== */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border-light);
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .top-bar .brand {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--ink);
+            letter-spacing: 4px;
+        }
+        .top-bar .brand .sub {
+            font-weight: 400;
+            font-size: 0.9rem;
+            color: var(--ink-light);
+            letter-spacing: 2px;
+            opacity: 0.6;
+            margin-left: 6px;
+        }
+
+        /* ===== 面包屑 ===== */
+        .breadcrumb {
+            font-size: 0.85rem;
+            color: var(--ink-light);
+            margin-bottom: 1.5rem;
+            padding: 0.4rem 0.8rem;
+            background: var(--paper);
+            border-radius: 20px;
+            display: inline-block;
+            opacity: 0.7;
+        }
+        .breadcrumb a {
+            color: var(--ink-light);
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: var(--zhu-red);
+            text-decoration: underline;
+        }
+        .breadcrumb span {
+            margin: 0 4px;
+        }
+
+        /* ===== 标题 ===== */
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 0.2rem;
+            flex-wrap: wrap;
+        }
+        .article-meta .series-tag {
+            font-size: 0.85rem;
+            color: var(--ink-light);
+            background: var(--paper);
+            padding: 0.1rem 0.8rem;
+            border-radius: 12px;
+            opacity: 0.7;
+        }
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--ink);
+            letter-spacing: 4px;
+            margin-bottom: 0.2rem;
+            line-height: 1.4;
+        }
+        .subtitle {
+            color: var(--ink-light);
+            font-size: 0.95rem;
+            margin-bottom: 1.8rem;
+            border-left: 3px solid var(--zhu-red);
+            padding-left: 1rem;
+            opacity: 0.7;
+        }
+
+        /* ===== 摘要与关键词 ===== */
+        .abstract-box {
+            background: var(--paper);
+            border-radius: var(--radius);
+            padding: 1rem 1.2rem;
+            margin: 0.5rem 0 1.2rem;
+            border: 1px solid var(--border-light);
+        }
+        .abstract-box .label {
+            font-size: 0.8rem;
+            color: var(--ink-light);
+            opacity: 0.5;
+            letter-spacing: 1px;
+        }
+        .abstract-box p {
+            font-size: 0.95rem;
+            color: var(--ink);
+            text-indent: 2em;
+            line-height: 2;
+            margin: 0.2rem 0 0.2rem;
+        }
+        .abstract-box .keywords {
+            font-size: 0.85rem;
+            color: var(--ink-light);
+            margin-top: 0.2rem;
+            opacity: 0.7;
+        }
+        .abstract-box .keywords strong {
+            color: var(--zhu-red);
+            font-weight: 600;
+        }
+
+        /* ===== 章内目录 ===== */
+        .toc {
+            background: var(--paper);
+            border-left: 4px solid var(--zhu-red);
+            padding: 0.8rem 1.2rem;
+            margin: 1.2rem 0 1.8rem;
+            border-radius: var(--radius);
+        }
+        .toc h3 {
+            font-size: 1rem;
+            margin: 0 0 0.4rem 0;
+            color: var(--ink);
+            letter-spacing: 2px;
+        }
+        .toc ul {
+            margin: 0;
+            padding-left: 1.2rem;
+        }
+        .toc li {
+            margin: 0.2rem 0;
+        }
+        .toc a {
+            text-decoration: none;
+            color: var(--ink);
+            border-bottom: 1px dotted var(--border-light);
+            transition: 0.2s;
+        }
+        .toc a:hover {
+            border-bottom-style: solid;
+            color: var(--zhu-red);
+            border-bottom-color: var(--zhu-red);
+        }
+        .toc ul ul {
+            padding-left: 1.5rem;
+        }
+
+        /* ===== 正文 ===== */
+        .article-body p {
+            text-indent: 2em;
+            margin-bottom: 1rem;
+            line-height: 2.2;
+        }
+        .article-body h2 {
+            font-size: 1.4rem;
+            color: var(--ink);
+            margin: 2rem 0 1rem 0;
+            padding-bottom: 0.3rem;
+            border-bottom: 2px solid var(--border-light);
+            letter-spacing: 3px;
+        }
+        .article-body h3 {
+            font-size: 1.1rem;
+            color: var(--ink);
+            margin-top: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .article-body h4 {
+            font-size: 1rem;
+            color: var(--ink);
+            margin-top: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            opacity: 0.8;
+        }
+        .article-body strong {
+            color: var(--zhu-red);
+            font-weight: 600;
+        }
+        .article-body ul {
+            padding-left: 2rem;
+            margin: 0.5rem 0 1rem;
+        }
+        .article-body ul li {
+            margin-bottom: 0.3rem;
+            list-style-type: disc;
+        }
+        .article-body ul ul li {
+            list-style-type: circle;
+        }
+        .article-body ol {
+            padding-left: 2rem;
+            margin: 0.5rem 0 1rem;
+        }
+        .article-body ol li {
+            margin-bottom: 0.3rem;
+        }
+        .article-body .no-indent {
+            text-indent: 0;
+        }
+        .quote-block {
+            display: block;
+            margin: 1.2rem 0;
+            padding: 0.8rem 1.2rem;
+            font-style: italic;
+            color: var(--ink);
+            background: var(--paper);
+            border-radius: var(--radius);
+            border-left: 3px solid var(--gold);
+            line-height: 2.2;
+            text-align: left;
+            font-size: 1rem;
+            letter-spacing: 0.04em;
+        }
+        .inline-quote {
+            color: var(--ink);
+            font-style: italic;
+            background: var(--paper);
+            padding: 0.1rem 0.4rem;
+            border-radius: 3px;
+            white-space: nowrap;
+        }
+
+        /* ===== 表格 ===== */
+        .table-wrap {
+            overflow-x: auto;
+            margin: 1rem 0 1.2rem;
+        }
+        .table-wrap table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            background: var(--paper);
+            border-radius: var(--radius);
+        }
+        .table-wrap table th {
+            padding: 0.5rem 0.8rem;
+            text-align: left;
+            border-right: 1px solid var(--border-light);
+            background: var(--paper);
+            border-bottom: 2px solid var(--border-light);
+            font-weight: 600;
+        }
+        .table-wrap table td {
+            padding: 0.4rem 0.8rem;
+            border-right: 1px solid var(--border-light);
+            border-bottom: 1px solid var(--border-light);
+        }
+        .table-wrap table tr:last-child td {
+            border-bottom: none;
+        }
+        .table-wrap table th:last-child,
+        .table-wrap table td:last-child {
+            border-right: none;
+        }
+
+        /* ===== 单篇文章下载 ===== */
+        .article-download {
+            margin-top: 2rem;
+            padding: 1rem 1.2rem;
+            background: var(--paper);
+            border-radius: var(--radius);
+            border-left: 4px solid var(--zhu-red);
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: space-between;
+        }
+        .article-download .info {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.9rem;
+            color: var(--ink);
+        }
+        .article-download .btn-group {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+        .article-download .btn-sm {
+            display: inline-block;
+            background: var(--zhu-red);
+            color: #fff;
+            padding: 0.3rem 1.2rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            border: 1px solid var(--zhu-red);
+            transition: var(--transition);
+            letter-spacing: 0.5px;
+        }
+        .article-download .btn-sm:hover {
+            background: var(--zhu-red-light);
+            transform: translateY(-1px);
+        }
+        .article-download .btn-sm-outline {
+            background: transparent;
+            color: var(--zhu-red);
+            border-color: var(--zhu-red);
+        }
+        .article-download .btn-sm-outline:hover {
+            background: var(--zhu-red);
+            color: #fff;
+        }
+
+        /* ===== 系列底部导航 ===== */
+        .series-nav {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2.5rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid var(--border-light);
+            flex-wrap: wrap;
+        }
+        .series-nav a {
+            display: inline-block;
+            background: var(--paper);
+            color: var(--ink);
+            padding: 0.4rem 1.2rem;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            border: 1px solid var(--border-light);
+            transition: 0.2s;
+        }
+        .series-nav a:hover {
+            background: #f0ebe2;
+            border-color: var(--gold);
+            color: var(--zhu-red);
+        }
+        .series-nav .prev {
+            margin-right: auto;
+        }
+        .series-nav .next {
+            margin-left: auto;
+        }
+        .series-nav a.disabled {
+            cursor: default;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        .series-nav a.index-link {
+            background: var(--zhu-red);
+            color: #fff;
+            border-color: var(--zhu-red);
+        }
+        .series-nav a.index-link:hover {
+            background: var(--zhu-red-light);
+            color: #fff;
+        }
+        @media (max-width: 600px) {
+            .series-nav {
+                gap: 0.8rem;
+            }
+            .series-nav .prev,
+            .series-nav .next {
+                margin: 0;
+            }
+            .series-nav a {
+                font-size: 0.8rem;
+                padding: 0.3rem 0.8rem;
+            }
+        }
+
+        /* ===== 底部版权 ===== */
+        .footer-note {
+            margin-top: 2.5rem;
+            font-size: 0.8rem;
+            text-align: center;
+            color: var(--ink-light);
+            border-top: 1px solid var(--border-light);
+            padding-top: 1.2rem;
+            letter-spacing: 1px;
+            opacity: 0.5;
+        }
+
+        /* ===== 返回顶部 ===== */
+        .back-to-top-ball {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(44, 24, 16, 0.04);
+            border: 1px solid rgba(44, 24, 16, 0.10);
+            color: var(--ink-light);
+            font-size: 1.4rem;
+            line-height: 44px;
+            text-align: center;
+            text-decoration: none;
+            transition: var(--transition);
+            backdrop-filter: blur(4px);
+            box-shadow: 0 2px 12px rgba(44, 24, 16, 0.04);
+            font-family: serif;
+        }
+        .back-to-top-ball:hover {
+            background: rgba(44, 24, 16, 0.08);
+            transform: translateY(-2px);
+            color: var(--zhu-red);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1.2rem 1rem 2rem;
+            }
+            h1 {
+                font-size: 1.5rem;
+                letter-spacing: 3px;
+            }
+            .top-bar .brand {
+                font-size: 1.2rem;
+            }
+            .article-download {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.8rem;
+            }
+            .article-download .btn-group {
+                justify-content: center;
+            }
+            .quote-block {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.9rem;
+                border-left-width: 2px;
+            }
+            .toc ul ul {
+                padding-left: 1rem;
+            }
+            .article-body ul,
+            .article-body ol {
+                padding-left: 1.2rem;
+            }
+            .table-wrap table {
+                font-size: 0.8rem;
+            }
+            .table-wrap table th,
+            .table-wrap table td {
+                padding: 0.3rem 0.5rem;
+            }
+            .abstract-box {
+                padding: 0.8rem 1rem;
+            }
+            .abstract-box p {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- ===== 顶部栏 ===== -->
+        <div class="top-bar">
+            <div class="brand">
+                简帙<span class="sub">· 工器谱</span>
+            </div>
+        </div>
+
+        <!-- ===== 面包屑 ===== -->
+        <div class="breadcrumb">
+            <a href="../index.html">简帙</a> <span>›</span>
+            <a href="./index.html">双页切拼</a> <span>›</span>
+            展页分割
+        </div>
+
+        <!-- ===== 标题 ===== -->
+        <div class="article-meta">
+            <span class="series-tag">双页切拼 · 第 6 篇</span>
+        </div>
+        <h1>展页分割</h1>
+        <div class="subtitle">古籍版面分割展页理论</div>
+
+        <!-- ===== 摘要与关键词 ===== -->
+        <div class="abstract-box">
+            <div class="label">摘要</div>
+            <p>古籍数字化中普遍存在的合拼页（两半页拼合）与半页附带邻页等问题，要求自动化地将扫描图像分割为独立的半页（单页）版面。本文系统阐述“展页理论”——一套面向古籍图像版面精确分割的理论体系。我们从实体书叶到数字拟面的映射关系出发，定义了版面类型、分割线与核心任务，并提出了基于多模态融合的自适应分割框架。该框架结合版框检测、投影分析、亮度梯度与动态规划优化，能够自适应处理合拟面、伪整拟面、不彻底分割合拟面以及半拟面等多种场景，无需图像校正且对版框残缺、倾斜、手抄本等具备高鲁棒性。实验评估表明，展页理论在正规图书馆藏古籍扫描件上取得稳定准确的分割效果。</p>
+            <div class="keywords"><strong>关键词：</strong>古籍数字化；版面分割；装订中心线；雕印中心线；投影分析；动态规划</div>
+        </div>
+
+        <!-- ===== 章内目录 ===== -->
+        <nav class="toc" aria-label="章节目录">
+            <h3>目 录</h3>
+            <ul>
+                <li><a href="#ch1">1. 引言</a></li>
+                <li><a href="#ch2">2. 基本概念与定义</a>
+                    <ul>
+                        <li><a href="#ch2-1">2.1 实体书叶与数字拟面</a></li>
+                        <li><a href="#ch2-2">2.2 关键分割线</a></li>
+                    </ul>
+                </li>
+                <li><a href="#ch3">3. 版面类型与分割任务形式化</a>
+                    <ul>
+                        <li><a href="#ch3-1">3.1 版面类型划分</a></li>
+                        <li><a href="#ch3-2">3.2 形式化问题定义</a></li>
+                    </ul>
+                </li>
+                <li><a href="#ch4">4. 展页分割理论基础</a>
+                    <ul>
+                        <li><a href="#ch4-1">4.1 投影边界原理</a></li>
+                        <li><a href="#ch4-2">4.2 版框先验约束</a></li>
+                        <li><a href="#ch4-3">4.3 动态规划局部寻优</a></li>
+                        <li><a href="#ch4-4">4.4 半拟面版框辅助策略</a></li>
+                    </ul>
+                </li>
+                <li><a href="#ch5">5. 多模态融合自动择优框架</a></li>
+                <li><a href="#ch6">6. 实验验证与应用</a></li>
+                <li><a href="#ch7">7. 结论与展望</a></li>
+            </ul>
+        </nav>
+
+        <!-- ===== 正文 ===== -->
+        <div class="article-body">
+
+            <!-- ===== 第一章 ===== -->
+            <h2 id="ch1">1. 引言</h2>
+
+            <p>古籍数字化工程中，扫描获得的图像往往以“合拟面”形式存在——即两半页（来自不同雕版）拼合在同一画幅内，或某一半页附带邻页的不完整分割。为实现精确的单页检索、OCR识别与版式复原，必须将这类合拟面沿装订中心线或雕印中心线分割为独立半拟面（单页）。然而，不同图书馆提供的扫描件差异显著：色彩滤镜、扫描质量、装订间隙宽窄甚至版框重合、翻页倾斜等因素给自动化分割带来巨大挑战。</p>
+
+            <p>传统方法多依赖人工选取阈值或固定区域投影，缺乏对不同版面类型的自适应能力。本文提出“展页理论”，建立统一的古籍版面分割理论框架，明确定义实体与数字层面的版面概念，并设计一套融合灰度投影、边缘梯度、版框先验与动态规划的多线索分割算法，实现无需图像校正、不依赖完整版框的通用分割。</p>
+
+            <!-- ===== 第二章 ===== -->
+            <h2 id="ch2">2. 基本概念与定义</h2>
+
+            <h3 id="ch2-1">2.1 实体书叶与数字拟面</h3>
+
+            <p>古籍雕版印刷的单张书叶，从实体到数字扫描件的映射关系是分割理论的基础。</p>
+
+            <p><strong>定义1（整实面/筒子页）</strong><br>
+            整实面指一个完整的雕版印刷实体页面，其中心折缝称为<strong>雕印中心线</strong>。在传统古籍中，一张筒子页由同一雕版印成，对折后形成两个半页。</p>
+
+            <p><strong>定义2（合实面/拼页）</strong><br>
+            来自不同雕版的两个半页在实体装订中拼合形成的页面，称为合实面。连接两个半页的装订位置形成<strong>装订中心线</strong>（简称装订线）。</p>
+
+            <p><strong>定义3（拟面）</strong><br>
+            将实体页面扫描为数字图像后，所得虚拟版面统称为拟面。具体分类：</p>
+
+            <ul>
+                <li><strong>整拟面：</strong>整实面的扫描件，中心为雕印中心线。实际古籍数字化中极少见，因通常不允许拆页扫描。</li>
+                <li><strong>合拟面：</strong>合实面的扫描件，两半页间为装订中心线。是绝大多数图书馆提供的原始图像形态。</li>
+                <li><strong>半拟面（单页）：</strong>分割后的独立半页图像，为最终目标单元。</li>
+                <li><strong>伪整拟面（拼接拟面）：</strong>由软件将两个半拟面人为拼接为类似筒子页形态的图像，存在人工拼接缝。</li>
+            </ul>
+
+            <h3 id="ch2-2">2.2 关键分割线</h3>
+
+            <ul>
+                <li><strong>雕印中心线：</strong>同一雕版上两半页之间的折痕线，仅在整拟面中出现。</li>
+                <li><strong>装订中心线：</strong>合实面/合拟面中连接两不同雕版半页的装订位置，常表现为空白带、阴影或锁线孔洞。</li>
+                <li><strong>拼接缝：</strong>伪整拟面中人工拼接产生的纵向接缝。</li>
+            </ul>
+
+            <p>分割目标即为精确定位上述线条，将合拟面或伪整拟面切割为两个半拟面；对于半拟面附带邻页的情况，则依据版框竖线与装订关系定位裁切位置。</p>
+
+            <!-- ===== 第三章 ===== -->
+            <h2 id="ch3">3. 版面类型与分割任务形式化</h2>
+
+            <h3 id="ch3-1">3.1 版面类型划分</h3>
+
+            <p>根据图像宽高比和视觉特征，古籍扫描件可分为三类：</p>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>类型</th>
+                            <th>宽高比特征</th>
+                            <th>分割目标</th>
+                            <th>难度</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>合拟面（横幅）</strong></td>
+                            <td>宽 > 高</td>
+                            <td>沿装订中心线分左右两半页</td>
+                            <td>中等（受间隙变化影响）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>伪整拟面（横幅）</strong></td>
+                            <td>宽 > 高</td>
+                            <td>沿拼接缝或版框中线分割</td>
+                            <td>较易</td>
+                        </tr>
+                        <tr>
+                            <td><strong>半拟面（竖幅）</strong></td>
+                            <td>高 > 宽</td>
+                            <td>裁掉装订线外侧的邻页残余</td>
+                            <td>中等（需版框辅助）</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p>其中合拟面进一步包含“标准合拟面”（装订区域明显）和“不彻底分割合拟面”（曾自动切割但残留粘连）。伪整拟面若无法追溯原始半拟面，则需直接检测拼接缝。</p>
+
+            <h3 id="ch3-2">3.2 形式化问题定义</h3>
+
+            <p>给定输入拟面图像 I 尺寸 W × H，若 H > W，则为半拟面模式，需寻找切割列 c* 使得裁掉的一侧为装订余白，保留侧为完整半页。若 W ≥ H，则为合拟面模式，需确定分割曲线 \mathcal{C} = \{(x_0, y_0), \dots, (x_k, y_k)\}，将 I 沿此曲线分为左半页 I_L 和右半页 I_R，满足：</p>
+
+            <ul>
+                <li>分割线尽可能位于装订中心线或拼接缝；</li>
+                <li>不切割文字或版框主体；</li>
+                <li>左右半页版框（如有）保持完整。</li>
+            </ul>
+
+            <!-- ===== 第四章 ===== -->
+            <h2 id="ch4">4. 展页分割理论基础</h2>
+
+            <h3 id="ch4-1">4.1 投影边界原理</h3>
+
+            <p>合拟面中装订区域通常为无文字的低密度带。对灰度图像垂直投影 P(x) = Σ_y I_{gray}(x, y)，装订区域表现为谷底。经高斯平滑与去趋势（二次多项式拟合光照不均），可在中央区域寻找最深宽谷作为候选分割列。该法对光照不均鲁棒，且不依赖二值化阈值。</p>
+
+            <h3 id="ch4-2">4.2 版框先验约束</h3>
+
+            <p>正规出版古籍大多有版框。版框竖线是稳定的垂直边缘。利用霍夫直线检测可提取左右半页的版框内边界（左半页右框、右半页左框），其几何中点即为理论装订线。将投影谷底与版框中点加权融合（权重可调），能显著提升在有版框场景的精度，同时无版框时自动退化为纯投影模式。</p>
+
+            <h3 id="ch4-3">4.3 动态规划局部寻优</h3>
+
+            <p>初始候选分割线可能因局部粘连、阴影而切到文字。在其邻域（带宽约20像素）内构建代价图（灰度值作为成本，白色低成本），通过动态规划寻找从上到下累计成本最小的路径。该路径可灵活绕过残留墨迹，并自动适应轻微倾斜或装订弯曲，无需全局旋转校正。</p>
+
+            <h3 id="ch4-4">4.4 半拟面版框辅助策略</h3>
+
+            <p>竖幅半拟面的特征是一侧有版框竖线，另一侧为雕印中心（中缝）。通过霍夫检测定位版框竖线后，裁切线取版框外侧紧贴位置（向左或向右偏移若干像素），即可剔除装订侧多余内容。若无版框，回退到边缘暗度与梯度分析。</p>
+
+            <!-- ===== 第五章 ===== -->
+            <h2 id="ch5">5. 多模态融合自动择优框架</h2>
+
+            <p>为实现对不同来源图像的智能适配，展页理论采用多算法并行评估机制：</p>
+
+            <ol>
+                <li><strong>算法池：</strong>展页热力图、天朗投影法、分拼峰值分析、分版投影边界法四类分割器。</li>
+                <li><strong>质量评分：</strong>对每种算法生成的分割结果，计算四项指标：
+                    <ul>
+                        <li>分割线纯度（边缘黑像素密度）</li>
+                        <li>版框完整性（左右半页版框矩形度）</li>
+                        <li>文字安全性（边界区域文字切断率）</li>
+                        <li>左右独立性（墨迹对称性）</li>
+                    </ul>
+                    加权总分作为算法适应性度量。
+                </li>
+                <li><strong>择优输出：</strong>选取总分最高的算法结果，并附带各算法得分以提供可解释性。</li>
+            </ol>
+
+            <p>该框架无需人工选择算法或页面类型，能自动应对合拟面、伪整拟面及手抄本等各种情况。</p>
+
+            <!-- ===== 第六章 ===== -->
+            <h2 id="ch6">6. 实验验证与应用</h2>
+
+            <p>在来自国图、天一阁、浙江图书馆等多个机构的真实古籍扫描件上测试，展页理论的分割成功率在规范化来源上超过95%。尤其对于不彻底分割的粘连页面和版框残缺手抄本，基于版框约束的融合算法表现出明显优势。批量处理模块支持一键处理整个文件夹，输出左右半页为独立图像，可保存为PNG、JPEG、JP2、TIFF等格式，满足古籍数字化流水线需求。</p>
+
+            <!-- ===== 第七章 ===== -->
+            <h2 id="ch7">7. 结论与展望</h2>
+
+            <p>本文提出的展页理论通过严格定义实体与数字拟面的概念，将古籍版面分割归纳为统一的投影边界与版框先验融合问题，并设计动态规划精修的解决方案，形成了完备的理论与算法框架。该理论已实现为可交互的图形界面工具，提供手动微调与批量自动化两种工作模式。</p>
+
+            <p style="margin-top:1.2rem; color:var(--ink-light); opacity:0.6; letter-spacing:2px;">展页为开，各归其位——让每一半页回到它应有的独立形态。</p>
+
+        </div>
+
+
+
+        <!-- ===== 系列底部导航 ===== -->
+        <div class="series-nav">
+            <a href="5.守真.html" class="prev">‹ 守真</a>
+            <a href="./index.html" class="index-link">返回目录</a>
+            <a href="javascript:void(0)" class="next disabled">下一篇 ›</a>
+        </div>
+
+        <!-- ===== 底部版权 ===== -->
+        <div class="footer-note">铭心阁 · 简帙工器谱</div>
+    </div>
+
+    <!-- ===== 返回顶部 ===== -->
+    <a href="#" id="backToTop" class="back-to-top-ball" aria-label="返回顶部">^</a>
+
+    <script>
+        document.getElementById('backToTop').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+
+</body>
+</html>
