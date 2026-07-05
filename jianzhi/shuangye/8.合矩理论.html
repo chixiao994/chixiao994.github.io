@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>合矩理论 · 双页切拼 · 简帙</title>
+    <style>
+        /* ===== 全局 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --paper: #f5f0e8;
+            --paper-white: #fcf9f5;
+            --ink: #2c1810;
+            --ink-light: #5a3f36;
+            --zhu-red: #8b1a1a;
+            --zhu-red-light: #b33a3a;
+            --gold: #c9a96e;
+            --border-light: #e8dfd6;
+            --radius: 6px;
+            --shadow: 0 2px 16px rgba(44, 24, 16, 0.08);
+            --transition: 0.25s ease;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: "Noto Serif SC", "思源宋体", "Source Han Serif SC", "华文宋体", serif;
+            background: var(--paper);
+            color: var(--ink);
+            line-height: 1.8;
+            padding: 2rem 1rem;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: var(--paper-white);
+            padding: 2rem 2.5rem 3rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-light);
+        }
+
+        /* ===== 顶部 ===== */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border-light);
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .top-bar .brand {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--ink);
+            letter-spacing: 4px;
+        }
+        .top-bar .brand .sub {
+            font-weight: 400;
+            font-size: 0.9rem;
+            color: var(--ink-light);
+            letter-spacing: 2px;
+            opacity: 0.6;
+            margin-left: 6px;
+        }
+
+        /* ===== 面包屑 ===== */
+        .breadcrumb {
+            font-size: 0.85rem;
+            color: var(--ink-light);
+            margin-bottom: 1.5rem;
+            padding: 0.4rem 0.8rem;
+            background: var(--paper);
+            border-radius: 20px;
+            display: inline-block;
+            opacity: 0.7;
+        }
+        .breadcrumb a {
+            color: var(--ink-light);
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: var(--zhu-red);
+            text-decoration: underline;
+        }
+        .breadcrumb span {
+            margin: 0 4px;
+        }
+
+        /* ===== 标题 ===== */
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 0.2rem;
+            flex-wrap: wrap;
+        }
+        .article-meta .series-tag {
+            font-size: 0.85rem;
+            color: var(--ink-light);
+            background: var(--paper);
+            padding: 0.1rem 0.8rem;
+            border-radius: 12px;
+            opacity: 0.7;
+        }
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--ink);
+            letter-spacing: 4px;
+            margin-bottom: 0.2rem;
+            line-height: 1.4;
+        }
+        .subtitle {
+            color: var(--ink-light);
+            font-size: 0.95rem;
+            margin-bottom: 1.8rem;
+            border-left: 3px solid var(--zhu-red);
+            padding-left: 1rem;
+            opacity: 0.7;
+        }
+
+        /* ===== 章内目录 ===== */
+        .toc {
+            background: var(--paper);
+            border-left: 4px solid var(--zhu-red);
+            padding: 0.8rem 1.2rem;
+            margin: 1.2rem 0 1.8rem;
+            border-radius: var(--radius);
+        }
+        .toc h3 {
+            font-size: 1rem;
+            margin: 0 0 0.4rem 0;
+            color: var(--ink);
+            letter-spacing: 2px;
+        }
+        .toc ul {
+            margin: 0;
+            padding-left: 1.2rem;
+        }
+        .toc li {
+            margin: 0.2rem 0;
+        }
+        .toc a {
+            text-decoration: none;
+            color: var(--ink);
+            border-bottom: 1px dotted var(--border-light);
+            transition: 0.2s;
+        }
+        .toc a:hover {
+            border-bottom-style: solid;
+            color: var(--zhu-red);
+            border-bottom-color: var(--zhu-red);
+        }
+        .toc ul ul {
+            padding-left: 1.5rem;
+        }
+
+        /* ===== 正文 ===== */
+        .article-body p {
+            text-indent: 2em;
+            margin-bottom: 1rem;
+            line-height: 2.2;
+        }
+        .article-body h2 {
+            font-size: 1.4rem;
+            color: var(--ink);
+            margin: 2rem 0 1rem 0;
+            padding-bottom: 0.3rem;
+            border-bottom: 2px solid var(--border-light);
+            letter-spacing: 3px;
+        }
+        .article-body h3 {
+            font-size: 1.1rem;
+            color: var(--ink);
+            margin-top: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .article-body h4 {
+            font-size: 1rem;
+            color: var(--ink);
+            margin-top: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            opacity: 0.8;
+        }
+        .article-body strong {
+            color: var(--zhu-red);
+            font-weight: 600;
+        }
+        .article-body ul {
+            padding-left: 2rem;
+            margin: 0.5rem 0 1rem;
+        }
+        .article-body ul li {
+            margin-bottom: 0.3rem;
+            list-style-type: disc;
+        }
+        .article-body ul ul li {
+            list-style-type: circle;
+        }
+        .article-body ol {
+            padding-left: 2rem;
+            margin: 0.5rem 0 1rem;
+        }
+        .article-body ol li {
+            margin-bottom: 0.3rem;
+        }
+        .article-body .no-indent {
+            text-indent: 0;
+        }
+        .article-body .formula-box {
+            margin: 0.8rem 0 1rem 0;
+            padding: 0.6rem 1rem;
+            background: var(--paper);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-light);
+            overflow-x: auto;
+            font-family: "Times New Roman", serif;
+            font-size: 0.95rem;
+            line-height: 2;
+            text-indent: 0;
+            text-align: center;
+        }
+        .article-body .formula-box .math {
+            font-style: italic;
+        }
+        .article-body .code-block {
+            margin: 0.8rem 0 1rem 0;
+            padding: 0.8rem 1rem;
+            background: var(--paper);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-light);
+            overflow-x: auto;
+            font-family: "JetBrains Mono", "Consolas", monospace;
+            font-size: 0.85rem;
+            line-height: 1.8;
+            text-indent: 0;
+            white-space: pre-wrap;
+            color: var(--ink);
+        }
+        .quote-block {
+            display: block;
+            margin: 1.2rem 0;
+            padding: 0.8rem 1.2rem;
+            font-style: italic;
+            color: var(--ink);
+            background: var(--paper);
+            border-radius: var(--radius);
+            border-left: 3px solid var(--gold);
+            line-height: 2.2;
+            text-align: left;
+            font-size: 1rem;
+            letter-spacing: 0.04em;
+        }
+        .inline-quote {
+            color: var(--ink);
+            font-style: italic;
+            background: var(--paper);
+            padding: 0.1rem 0.4rem;
+            border-radius: 3px;
+            white-space: nowrap;
+        }
+
+        /* ===== 表格 ===== */
+        .table-wrap {
+            overflow-x: auto;
+            margin: 1rem 0 1.2rem;
+        }
+        .table-wrap table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            background: var(--paper);
+            border-radius: var(--radius);
+        }
+        .table-wrap table th {
+            padding: 0.5rem 0.8rem;
+            text-align: left;
+            border-right: 1px solid var(--border-light);
+            background: var(--paper);
+            border-bottom: 2px solid var(--border-light);
+            font-weight: 600;
+        }
+        .table-wrap table td {
+            padding: 0.4rem 0.8rem;
+            border-right: 1px solid var(--border-light);
+            border-bottom: 1px solid var(--border-light);
+        }
+        .table-wrap table tr:last-child td {
+            border-bottom: none;
+        }
+        .table-wrap table th:last-child,
+        .table-wrap table td:last-child {
+            border-right: none;
+        }
+
+        /* ===== 单篇文章下载 ===== */
+        .article-download {
+            margin-top: 2rem;
+            padding: 1rem 1.2rem;
+            background: var(--paper);
+            border-radius: var(--radius);
+            border-left: 4px solid var(--zhu-red);
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: space-between;
+        }
+        .article-download .info {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.9rem;
+            color: var(--ink);
+        }
+        .article-download .btn-group {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+        .article-download .btn-sm {
+            display: inline-block;
+            background: var(--zhu-red);
+            color: #fff;
+            padding: 0.3rem 1.2rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            border: 1px solid var(--zhu-red);
+            transition: var(--transition);
+            letter-spacing: 0.5px;
+        }
+        .article-download .btn-sm:hover {
+            background: var(--zhu-red-light);
+            transform: translateY(-1px);
+        }
+        .article-download .btn-sm-outline {
+            background: transparent;
+            color: var(--zhu-red);
+            border-color: var(--zhu-red);
+        }
+        .article-download .btn-sm-outline:hover {
+            background: var(--zhu-red);
+            color: #fff;
+        }
+
+        /* ===== 系列底部导航 ===== */
+        .series-nav {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2.5rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid var(--border-light);
+            flex-wrap: wrap;
+        }
+        .series-nav a {
+            display: inline-block;
+            background: var(--paper);
+            color: var(--ink);
+            padding: 0.4rem 1.2rem;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            border: 1px solid var(--border-light);
+            transition: 0.2s;
+        }
+        .series-nav a:hover {
+            background: #f0ebe2;
+            border-color: var(--gold);
+            color: var(--zhu-red);
+        }
+        .series-nav .prev {
+            margin-right: auto;
+        }
+        .series-nav .next {
+            margin-left: auto;
+        }
+        .series-nav a.disabled {
+            cursor: default;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        .series-nav a.index-link {
+            background: var(--zhu-red);
+            color: #fff;
+            border-color: var(--zhu-red);
+        }
+        .series-nav a.index-link:hover {
+            background: var(--zhu-red-light);
+            color: #fff;
+        }
+        @media (max-width: 600px) {
+            .series-nav {
+                gap: 0.8rem;
+            }
+            .series-nav .prev,
+            .series-nav .next {
+                margin: 0;
+            }
+            .series-nav a {
+                font-size: 0.8rem;
+                padding: 0.3rem 0.8rem;
+            }
+        }
+
+        /* ===== 底部版权 ===== */
+        .footer-note {
+            margin-top: 2.5rem;
+            font-size: 0.8rem;
+            text-align: center;
+            color: var(--ink-light);
+            border-top: 1px solid var(--border-light);
+            padding-top: 1.2rem;
+            letter-spacing: 1px;
+            opacity: 0.5;
+        }
+
+        /* ===== 返回顶部 ===== */
+        .back-to-top-ball {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(44, 24, 16, 0.04);
+            border: 1px solid rgba(44, 24, 16, 0.10);
+            color: var(--ink-light);
+            font-size: 1.4rem;
+            line-height: 44px;
+            text-align: center;
+            text-decoration: none;
+            transition: var(--transition);
+            backdrop-filter: blur(4px);
+            box-shadow: 0 2px 12px rgba(44, 24, 16, 0.04);
+            font-family: serif;
+        }
+        .back-to-top-ball:hover {
+            background: rgba(44, 24, 16, 0.08);
+            transform: translateY(-2px);
+            color: var(--zhu-red);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1.2rem 1rem 2rem;
+            }
+            h1 {
+                font-size: 1.5rem;
+                letter-spacing: 3px;
+            }
+            .top-bar .brand {
+                font-size: 1.2rem;
+            }
+            .article-download {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.8rem;
+            }
+            .article-download .btn-group {
+                justify-content: center;
+            }
+            .quote-block {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.9rem;
+                border-left-width: 2px;
+            }
+            .toc ul ul {
+                padding-left: 1rem;
+            }
+            .article-body ul,
+            .article-body ol {
+                padding-left: 1.2rem;
+            }
+            .article-body .formula-box {
+                font-size: 0.8rem;
+                padding: 0.4rem 0.6rem;
+            }
+            .article-body .code-block {
+                font-size: 0.75rem;
+                padding: 0.4rem 0.6rem;
+            }
+            .table-wrap table {
+                font-size: 0.8rem;
+            }
+            .table-wrap table th,
+            .table-wrap table td {
+                padding: 0.3rem 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- ===== 顶部栏 ===== -->
+        <div class="top-bar">
+            <div class="brand">
+                简帙<span class="sub">· 工器谱</span>
+            </div>
+        </div>
+
+        <!-- ===== 面包屑 ===== -->
+        <div class="breadcrumb">
+            <a href="../index.html">简帙</a> <span>›</span>
+            <a href="./index.html">双页切拼</a> <span>›</span>
+            合矩理论
+        </div>
+
+        <!-- ===== 标题 ===== -->
+        <div class="article-meta">
+            <span class="series-tag">双页切拼 · 第 8 篇</span>
+        </div>
+        <h1>古籍版框合矩理论</h1>
+        <div class="subtitle">从透视变形到标准画布的数学原理与系统实现</div>
+
+        <!-- ===== 章内目录 ===== -->
+        <nav class="toc" aria-label="章节目录">
+            <h3>目 录</h3>
+            <ul>
+                <li><a href="#ch1">一、核心思想</a></li>
+                <li><a href="#ch2">二、数学模型</a>
+                    <ul>
+                        <li><a href="#ch2-1">2.1 问题形式化</a></li>
+                        <li><a href="#ch2-2">2.2 透视变换（单应性变换）</a></li>
+                        <li><a href="#ch2-3">2.3 逆向映射与整幅图像处理</a></li>
+                        <li><a href="#ch2-4">2.4 四点自动排序</a></li>
+                        <li><a href="#ch2-5">2.5 裁边与半页分割</a></li>
+                        <li><a href="#ch2-6">2.6 保持原图比例</a></li>
+                    </ul>
+                </li>
+                <li><a href="#ch3">三、系统设计</a>
+                    <ul>
+                        <li><a href="#ch3-1">3.1 模块化架构</a></li>
+                        <li><a href="#ch3-2">3.2 交互设计</a></li>
+                        <li><a href="#ch3-3">3.3 数据结构设计</a></li>
+                        <li><a href="#ch3-4">3.4 批量处理流水线</a></li>
+                    </ul>
+                </li>
+                <li><a href="#ch4">四、实现细节</a>
+                    <ul>
+                        <li><a href="#ch4-1">4.1 单应性矩阵求解</a></li>
+                        <li><a href="#ch4-2">4.2 插值方法</a></li>
+                        <li><a href="#ch4-3">4.3 画布背景处理</a></li>
+                        <li><a href="#ch4-4">4.4 批量导出优化</a></li>
+                    </ul>
+                </li>
+                <li><a href="#ch5">五、结论</a></li>
+            </ul>
+        </nav>
+
+        <!-- ===== 正文 ===== -->
+        <div class="article-body">
+
+            <!-- ===== 第一章 ===== -->
+            <h2 id="ch1">一、核心思想</h2>
+
+            <p>古籍数字化过程中，因拍摄角度、纸张变形等因素，扫描图像普遍存在透视畸变——原本矩形的版框在图像中呈现为任意四边形。这种变形不仅影响版面的美观性，更严重干扰后续的文字识别、版面分析和出版还原。</p>
+
+            <p>合矩理论建立在这样一个观察之上：古籍版框在物理世界中是一规则的矩形，其在图像中的变形完全由透视投影引起，因此可以通过四个角点的对应关系，建立一个平面到平面的单应性变换，将变形的版框连同整幅图像一起精确地复原为标准矩形画布中的内容。</p>
+
+            <p>我们以<strong>“棉絮套被套”</strong>作为核心理解：原图中的版框如同柔软的棉絮，目标矩形如同固定尺寸的被套。校正过程即是将棉絮的四个角点对准被套的四个角点，通过适当的拉伸与压缩，使棉絮平整地填充被套。这种变换保留了版框内部所有内容的相对位置与比例关系，只改变版框的全局几何形状。</p>
+
+            <p>更为重要的是，校正并不局限于版框本身——图像的整个外围区域（即照片的“外框”）也同步参与变换。我们可以将整张原始图像看作一张照片，四周的背景是照片的一部分，而版框是照片中的主体。合矩校正好比将这张照片放入一个新的“相框”（画布）中，并且要求主体（版框）在相框内的位置和大小符合预设。为了达到这一目的，整张照片（包括四周的背景）都被拉伸、压缩或旋转，使得版框恰好对准目标矩形，而照片的四边则随之内缩或外扩。这种整体变换保证了图像的所有内容保持连续，没有割裂感，也使得背景得到自然的延伸或裁剪。这种<strong>“相框与照相”</strong>的直观理解，与“套被子”的核心思想相辅相成：套被子聚焦于版框的精准对齐，而相框比喻则强调整个图像边界的同步调整。</p>
+
+            <p>因此，合矩理论的本质是对整幅图像的透视变换，版框四角与目标矩形的对应关系驱动了变换参数的计算，而图像的所有其他区域（包括四周背景）依据同一变换被重新映射到画布上。这为后续的裁边与半页分割提供了完整的图像数据。</p>
+
+            <!-- ===== 第二章 ===== -->
+            <h2 id="ch2">二、数学模型</h2>
+
+            <h3 id="ch2-1">2.1 问题形式化</h3>
+
+            <p>给定输入图像 I（尺寸 W \times H），其上版框的四个角点（按顺时针排列）：</p>
+
+            <div class="formula-box">
+                P = {(x₁, y₁), (x₂, y₂), (x₃, y₃), (x₄, y₄)}
+            </div>
+
+            <p>依次对应：左上 A、右上 B、右下 C、左下 D。图像的外边界（外框）为 (0,0), (W,0), (W,H), (0,H)。</p>
+
+            <p>预设输出画布尺寸为 W<sub>out</sub> × H<sub>out</sub>，目标版框矩形尺寸为 W<sub>rect</sub> × H<sub>rect</sub>。目标矩形在画布中的四个角点为：</p>
+
+            <div class="formula-box">
+                Q = {(u₁, v₁), (u₂, v₂), (u₃, v₃), (u₄, v₄)}
+            </div>
+
+            <p>通常居中放置，即：</p>
+
+            <div class="formula-box">
+                u₁ = (W<sub>out</sub> − W<sub>rect</sub>) / 2, &nbsp; v₁ = (H<sub>out</sub> − H<sub>rect</sub>) / 2<br>
+                u₂ = u₁ + W<sub>rect</sub>, &nbsp; v₂ = v₁<br>
+                u₃ = u₁ + W<sub>rect</sub>, &nbsp; v₃ = v₁ + H<sub>rect</sub><br>
+                u₄ = u₁, &nbsp; v₄ = v₁ + H<sub>rect</sub>
+            </div>
+
+            <p>合矩理论的目标是找到一个映射函数 T: ℝ² → ℝ²，使得对于每个版框角点 pᵢ ∈ P 有 T(pᵢ) = qᵢ，并以此变换映射整幅图像到画布上。变换后的图像中，外边界（原图的四个角）被映射到画布的某四个点，可能超出或未充满画布，这正体现了“相框”中整个照片被重新摆放的过程。</p>
+
+            <h3 id="ch2-2">2.2 透视变换（单应性变换）</h3>
+
+            <p>平面透视变换（单应性）是满足上述要求的最一般平面变换。在齐次坐标下，变换可表示为：</p>
+
+            <div class="formula-box">
+                <span class="math">u</span> = (h₁₁<span class="math">x</span> + h₁₂<span class="math">y</span> + h₁₃) / (h₃₁<span class="math">x</span> + h₃₂<span class="math">y</span> + 1), &nbsp;
+                <span class="math">v</span> = (h₂₁<span class="math">x</span> + h₂₂<span class="math">y</span> + h₂₃) / (h₃₁<span class="math">x</span> + h₃₂<span class="math">y</span> + 1)
+            </div>
+
+            <p>其中 H 为 3×3 的单应性矩阵，具有 8 个自由度（通常设 h₃₃ = 1）。给定四对对应点 (pᵢ, qᵢ)ᵢ₌₁⁴，可建立 8 个线性方程，写成矩阵形式 A<b>h</b> = <b>b</b>，其中 <b>h</b> = [h₁₁, h₁₂, h₁₃, h₂₁, h₂₂, h₂₃, h₃₁, h₃₂]ᵀ。该线性方程组可通过高斯消元或奇异值分解（SVD）求解。</p>
+
+            <h3 id="ch2-3">2.3 逆向映射与整幅图像处理</h3>
+
+            <p>在实际图像生成中，为避免前向映射（从原图到目标）可能产生的像素空洞问题，我们采用逆向映射策略：对输出画布中的每个像素 (u, v)，计算其在原图中的对应位置 (x, y)，然后通过插值获取颜色值。</p>
+
+            <p>这需要使用逆变换矩阵 H<sub>inv</sub> = H⁻¹。根据四对点求解时，若交换源点与目标点的角色——以 Q 为源、P 为目标——则得到的矩阵直接就是所需的 H<sub>inv</sub>。这是实现中的关键技巧：我们在构建方程组时，将目标矩形的角点作为输入、源四边形的角点作为输出，求解出的系数即为从画布到原图的逆映射。</p>
+
+            <p>设逆变换矩阵为：</p>
+
+            <div class="formula-box">
+                <span class="math">x</span> = (<span class="math">a</span><span class="math">u</span> + <span class="math">b</span><span class="math">v</span> + <span class="math">c</span>) / (<span class="math">g</span><span class="math">u</span> + <span class="math">h</span><span class="math">v</span> + 1), &nbsp;
+                <span class="math">y</span> = (<span class="math">d</span><span class="math">u</span> + <span class="math">e</span><span class="math">v</span> + <span class="math">f</span>) / (<span class="math">g</span><span class="math">u</span> + <span class="math">h</span><span class="math">v</span> + 1)
+            </div>
+
+            <p>此映射应用于画布上的每一个像素，因此整幅原图（包括版框外的所有背景）都通过同一变换被拉伸至画布空间。原图的四边 (0,0) 等点在变换后可能落在画布之外或之内，超出的部分被裁切，未覆盖的区域则填充为白色背景，如同照片被裁切或留白放入新相框。</p>
+
+            <h3 id="ch2-4">2.4 四点自动排序</h3>
+
+            <p>用户或检测算法提供的四个角点可能顺序任意。为确保映射的正确性，需要在计算变换矩阵前将点集排列为标准的顺时针顺序。</p>
+
+            <p>排序算法基于点的坐标几何特征：</p>
+
+            <ul>
+                <li><strong>左上角 A：</strong>在笛卡尔坐标系中，左上角的 x + y 值最小；</li>
+                <li><strong>右下角 C：</strong>右下角的 x + y 值最大；</li>
+                <li><strong>右上角 B：</strong>右上角的 x − y 值最小；</li>
+                <li><strong>左下角 D：</strong>左下角的 x − y 值最大。</li>
+            </ul>
+
+            <p>该方法对于旋转角度不超过 45° 的四边形具有完全的鲁棒性，且计算复杂度为 O(1)（仅需四次遍历比较）。</p>
+
+            <h3 id="ch2-5">2.5 裁边与半页分割</h3>
+
+            <p>校正后的画布通常含有大量白色背景，裁边操作用于去除这些多余的空白区域。设上、下、左、右裁边量分别为 c<sub>t</sub>, c<sub>b</sub>, c<sub>l</sub>, c<sub>r</sub>，裁切后的保留区域为：</p>
+
+            <div class="formula-box">
+                x<sub>crop</sub> = c<sub>l</sub> &nbsp;|&nbsp; y<sub>crop</sub> = c<sub>t</sub> &nbsp;|&nbsp; w<sub>crop</sub> = W<sub>out</sub> − c<sub>l</sub> − c<sub>r</sub> &nbsp;|&nbsp; h<sub>crop</sub> = H<sub>out</sub> − c<sub>t</sub> − c<sub>b</sub>
+            </div>
+
+            <p>为确保版框内容不被误裁，裁边量的上限为画布边缘到目标矩形相应边缘的距离。</p>
+
+            <p>半页分割依据版框的纵向中线。在裁剪后的坐标系中，版框左边界为 x<sub>left</sub>，右边界为 x<sub>right</sub>。引入留边机制，允许在分割线两侧各保留指定像素的额外空间，左半页和右半页的最终保留区域分别为：</p>
+
+            <ul>
+                <li><strong>左半页：</strong>[0, min(x<sub>right</sub> + m<sub>left</sub>, w<sub>crop</sub>)]</li>
+                <li><strong>右半页：</strong>[max(0, x<sub>left</sub> − m<sub>right</sub>), w<sub>crop</sub>]</li>
+            </ul>
+
+            <p>其中 m<sub>left</sub> 和 m<sub>right</sub> 分别为左、右留边距。</p>
+
+            <h3 id="ch2-6">2.6 保持原图比例</h3>
+
+            <p>当用户选择保持版框原始宽高比时，目标矩形的尺寸需根据源四边形的近似宽高进行调整。源四边形宽度和高度分别取对边的平均长度：</p>
+
+            <div class="formula-box">
+                W<sub>src</sub> = (|x₂ − x₁| + |x₃ − x₄|) / 2 &nbsp;|&nbsp; H<sub>src</sub> = (|y₄ − y₁| + |y₃ − y₂|) / 2
+            </div>
+
+            <p>设原始目标矩形尺寸为 W<sub>rect</sub>, H<sub>rect</sub>，调整后的尺寸为：若 W<sub>rect</sub> / H<sub>rect</sub> > W<sub>src</sub> / H<sub>src</sub>，则 W<sub>rect</sub> 调整为 H<sub>rect</sub> · W<sub>src</sub> / H<sub>src</sub>；否则 H<sub>rect</sub> 调整为 W<sub>rect</sub> · H<sub>src</sub> / W<sub>src</sub>。此操作确保校正后版框不发生非等比拉伸，版框内文字和图案的比例保持真实。</p>
+
+            <!-- ===== 第三章 ===== -->
+            <h2 id="ch3">三、系统设计</h2>
+
+            <h3 id="ch3-1">3.1 模块化架构</h3>
+
+            <p>合矩理论指导下的校正系统由以下核心模块组成：</p>
+
+            <ul>
+                <li><strong>图像管理模块：</strong>负责加载图像（单张或 PDF 多页），缩放适配显示区域，管理页面导航。</li>
+                <li><strong>交互标注模块：</strong>提供鼠标/触摸交互界面，支持四点点击、撤销、预览十字准星、画布缩放与平移。</li>
+                <li><strong>透视变换模块：</strong>实现四点排序、单应性矩阵求解、逆向映射与图像重采样。</li>
+                <li><strong>配置管理模块：</strong>维护画布、矩形、裁边、留边等参数，支持设置面板动态调整。</li>
+                <li><strong>输出生成模块：</strong>根据当前参数和导出模式（左半/右半/全图），生成校正后的图像并保存。</li>
+                <li><strong>项目持久化模块：</strong>将标注数据、配置参数序列化为 JSON 格式，支持项目保存与加载。</li>
+            </ul>
+
+            <h3 id="ch3-2">3.2 交互设计</h3>
+
+            <p>标注工具的核心交互流程为：</p>
+
+            <ol>
+                <li>上传图像（或打开 PDF）</li>
+                <li>单指按住并拖动以移动预览十字准星，另一指轻触确认角点</li>
+                <li>四个角点收集完毕后，自动按左上→右上→右下→左下排序</li>
+                <li>用户可选择“预览校正”查看透视变换效果</li>
+                <li>调整裁边、留边等参数后，选择保存左半或右半</li>
+            </ol>
+
+            <p>为适应触摸屏操作，交互设计充分考虑了以下要点：</p>
+
+            <ul>
+                <li><strong>预览十字偏移：</strong>十字准星显示在手指正上方 80px 处，避免被手指遮挡</li>
+                <li><strong>触摸行为控制：</strong>标记未满四点时，禁用画布的缩放与滚动，防止误操作；满四点后自动恢复自由缩放，方便查看细节</li>
+                <li><strong>双指缩放：</strong>在未进入标记状态时，支持双指缩放查看高分辨率古籍页面</li>
+            </ul>
+
+            <h3 id="ch3-3">3.3 数据结构设计</h3>
+
+            <p>整个项目的核心数据结构为标注字典，以文件名为键，存储每页的四点坐标或“skip”标记，以及全局配置参数。这种统一的 JSON 格式确保工作进度可以随时保存与恢复，也便于在不同计算机间协作。</p>
+
+            <h3 id="ch3-4">3.4 批量处理流水线</h3>
+
+            <p>对于 PDF 格式的古籍扫描件，系统支持以下批量处理流程：</p>
+
+            <ol>
+                <li>使用 PDF.js 渲染 PDF 的每一页为图像</li>
+                <li>用户逐页标注四角，或标记为“空页”（封面、保护页等）</li>
+                <li>所有页面的标注数据统一存储</li>
+                <li>导出时，按有效页序列（跳过空页）交替输出右半和左半页，确保古籍半页的正确顺序</li>
+                <li>导出进度以进度条实时反馈，完成后生成合并的 PDF 文件</li>
+            </ol>
+
+            <!-- ===== 第四章 ===== -->
+            <h2 id="ch4">四、实现细节</h2>
+
+            <h3 id="ch4-1">4.1 单应性矩阵求解</h3>
+
+            <p>在实现中，我们使用 NumPy 的 linalg.solve 函数求解 8 元线性方程组。构建方程组时，以目标矩形的角点为源点、源四边形的角点为目标点，直接得到逆映射矩阵，避免额外的矩阵求逆步骤。</p>
+
+            <div class="code-block">A = []
+B = []
+for (dx, dy), (sx, sy) in zip(dst_pts, src_pts):  # dst → 画布, src → 原图
+    A.append([dx, dy, 1, 0, 0, 0, -sx*dx, -sx*dy])
+    A.append([0, 0, 0, dx, dy, 1, -sy*dx, -sy*dy])
+    B.extend([sx, sy])
+h = np.linalg.solve(A, B)  # 8个系数</div>
+
+            <p>求得系数后，使用 PIL 的 Image.transform 方法，指定 Image.PERSPECTIVE 模式并传入系数，即可完成变换。变换作用于原图的全部像素。</p>
+
+            <h3 id="ch4-2">4.2 插值方法</h3>
+
+            <p>为在变换质量与计算效率之间取得平衡，系统默认采用双三次插值（Image.BICUBIC）。对于高分辨率古籍图像，双三次插值能产生更为平滑的文本边缘，减少摩尔纹和锯齿。</p>
+
+            <h3 id="ch4-3">4.3 画布背景处理</h3>
+
+            <p>校正后的画布可能包含大片空白区域（当版框歪斜严重时，透视变换会拉伸背景）。为获得干净的输出，系统统一以纯白色填充画布背景。在预览界面中，裁边辅助线以红色虚线绘制，但输出图像中不包含这些辅助线。</p>
+
+            <h3 id="ch4-4">4.4 批量导出优化</h3>
+
+            <p>批量导出 PDF 时，系统采用以下策略优化性能：</p>
+
+            <ul>
+                <li><strong>分页渲染：</strong>逐页进行透视变换和裁切，而非一次性加载所有页面到内存</li>
+                <li><strong>进度反馈：</strong>每完成一页即更新进度条，避免长时间无响应</li>
+                <li><strong>错误容忍：</strong>单页失败不中断整个流程，最终报告完成情况</li>
+            </ul>
+
+            <!-- ===== 第五章 ===== -->
+            <h2 id="ch5">五、结论</h2>
+
+            <p>合矩理论是一套完整、规范的古籍版框几何校正理论。其以透视变换为核心，通过四点对应建立单应性映射，将变形版框连同整幅图像一起复原至标准矩形画布中。我们以“套被子”为直观核心理解，以“相框与照相”为扩展，完整描述了版框拉正与外框同步处理的统一过程。该理论指导下的系统设计兼顾了操作的便捷性与处理的批量性，并以结构化的项目文件管理全过程。实现中充分考虑了精度、鲁棒性和用户体验，已在实际古籍数字化项目中得到验证和应用。</p>
+
+            <p style="margin-top:1.2rem; color:var(--ink-light); opacity:0.6; letter-spacing:2px;">合矩理论不仅适用于古籍，亦可扩展至任何需要将透视变形矩形校正为规整矩形的场景，如文档扫描、铭牌识别、建筑摄影等。</p>
+
+        </div>
+
+        
+
+        <!-- ===== 系列底部导航 ===== -->
+        <div class="series-nav">
+            <a href="7.展页理论.html" class="prev">‹ 展页理论</a>
+            <a href="./index.html" class="index-link">返回目录</a>
+            <a href="javascript:void(0)" class="next disabled">下一篇 ›</a>
+        </div>
+
+        <!-- ===== 底部版权 ===== -->
+        <div class="footer-note">铭心阁 · 简帙工器谱</div>
+    </div>
+
+    <!-- ===== 返回顶部 ===== -->
+    <a href="#" id="backToTop" class="back-to-top-ball" aria-label="返回顶部">^</a>
+
+    <script>
+        document.getElementById('backToTop').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+
+</body>
+</html>
