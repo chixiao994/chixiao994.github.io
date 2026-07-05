@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>展页理论 · 双页切拼 · 简帙</title>
+    <style>
+        /* ===== 全局 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --paper: #f5f0e8;
+            --paper-white: #fcf9f5;
+            --ink: #2c1810;
+            --ink-light: #5a3f36;
+            --zhu-red: #8b1a1a;
+            --zhu-red-light: #b33a3a;
+            --gold: #c9a96e;
+            --border-light: #e8dfd6;
+            --radius: 6px;
+            --shadow: 0 2px 16px rgba(44, 24, 16, 0.08);
+            --transition: 0.25s ease;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: "Noto Serif SC", "思源宋体", "Source Han Serif SC", "华文宋体", serif;
+            background: var(--paper);
+            color: var(--ink);
+            line-height: 1.8;
+            padding: 2rem 1rem;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: var(--paper-white);
+            padding: 2rem 2.5rem 3rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-light);
+        }
+
+        /* ===== 顶部 ===== */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border-light);
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .top-bar .brand {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--ink);
+            letter-spacing: 4px;
+        }
+        .top-bar .brand .sub {
+            font-weight: 400;
+            font-size: 0.9rem;
+            color: var(--ink-light);
+            letter-spacing: 2px;
+            opacity: 0.6;
+            margin-left: 6px;
+        }
+
+        /* ===== 面包屑 ===== */
+        .breadcrumb {
+            font-size: 0.85rem;
+            color: var(--ink-light);
+            margin-bottom: 1.5rem;
+            padding: 0.4rem 0.8rem;
+            background: var(--paper);
+            border-radius: 20px;
+            display: inline-block;
+            opacity: 0.7;
+        }
+        .breadcrumb a {
+            color: var(--ink-light);
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: var(--zhu-red);
+            text-decoration: underline;
+        }
+        .breadcrumb span {
+            margin: 0 4px;
+        }
+
+        /* ===== 标题 ===== */
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 0.2rem;
+            flex-wrap: wrap;
+        }
+        .article-meta .series-tag {
+            font-size: 0.85rem;
+            color: var(--ink-light);
+            background: var(--paper);
+            padding: 0.1rem 0.8rem;
+            border-radius: 12px;
+            opacity: 0.7;
+        }
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--ink);
+            letter-spacing: 4px;
+            margin-bottom: 0.2rem;
+            line-height: 1.4;
+        }
+        .subtitle {
+            color: var(--ink-light);
+            font-size: 0.95rem;
+            margin-bottom: 1.8rem;
+            border-left: 3px solid var(--zhu-red);
+            padding-left: 1rem;
+            opacity: 0.7;
+        }
+
+        /* ===== 章内目录 ===== */
+        .toc {
+            background: var(--paper);
+            border-left: 4px solid var(--zhu-red);
+            padding: 0.8rem 1.2rem;
+            margin: 1.2rem 0 1.8rem;
+            border-radius: var(--radius);
+        }
+        .toc h3 {
+            font-size: 1rem;
+            margin: 0 0 0.4rem 0;
+            color: var(--ink);
+            letter-spacing: 2px;
+        }
+        .toc ul {
+            margin: 0;
+            padding-left: 1.2rem;
+        }
+        .toc li {
+            margin: 0.2rem 0;
+        }
+        .toc a {
+            text-decoration: none;
+            color: var(--ink);
+            border-bottom: 1px dotted var(--border-light);
+            transition: 0.2s;
+        }
+        .toc a:hover {
+            border-bottom-style: solid;
+            color: var(--zhu-red);
+            border-bottom-color: var(--zhu-red);
+        }
+        .toc ul ul {
+            padding-left: 1.5rem;
+        }
+
+        /* ===== 正文 ===== */
+        .article-body p {
+            text-indent: 2em;
+            margin-bottom: 1rem;
+            line-height: 2.2;
+        }
+        .article-body h2 {
+            font-size: 1.4rem;
+            color: var(--ink);
+            margin: 2rem 0 1rem 0;
+            padding-bottom: 0.3rem;
+            border-bottom: 2px solid var(--border-light);
+            letter-spacing: 3px;
+        }
+        .article-body h3 {
+            font-size: 1.1rem;
+            color: var(--ink);
+            margin-top: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .article-body h4 {
+            font-size: 1rem;
+            color: var(--ink);
+            margin-top: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            opacity: 0.8;
+        }
+        .article-body strong {
+            color: var(--zhu-red);
+            font-weight: 600;
+        }
+        .article-body ul {
+            padding-left: 2rem;
+            margin: 0.5rem 0 1rem;
+        }
+        .article-body ul li {
+            margin-bottom: 0.3rem;
+            list-style-type: disc;
+        }
+        .article-body ul ul li {
+            list-style-type: circle;
+        }
+        .article-body ol {
+            padding-left: 2rem;
+            margin: 0.5rem 0 1rem;
+        }
+        .article-body ol li {
+            margin-bottom: 0.3rem;
+        }
+        .article-body .no-indent {
+            text-indent: 0;
+        }
+        .quote-block {
+            display: block;
+            margin: 1.2rem 0;
+            padding: 0.8rem 1.2rem;
+            font-style: italic;
+            color: var(--ink);
+            background: var(--paper);
+            border-radius: var(--radius);
+            border-left: 3px solid var(--gold);
+            line-height: 2.2;
+            text-align: left;
+            font-size: 1rem;
+            letter-spacing: 0.04em;
+        }
+        .inline-quote {
+            color: var(--ink);
+            font-style: italic;
+            background: var(--paper);
+            padding: 0.1rem 0.4rem;
+            border-radius: 3px;
+            white-space: nowrap;
+        }
+
+        /* ===== 单篇文章下载 ===== */
+        .article-download {
+            margin-top: 2rem;
+            padding: 1rem 1.2rem;
+            background: var(--paper);
+            border-radius: var(--radius);
+            border-left: 4px solid var(--zhu-red);
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: space-between;
+        }
+        .article-download .info {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.9rem;
+            color: var(--ink);
+        }
+        .article-download .btn-group {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+        .article-download .btn-sm {
+            display: inline-block;
+            background: var(--zhu-red);
+            color: #fff;
+            padding: 0.3rem 1.2rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            border: 1px solid var(--zhu-red);
+            transition: var(--transition);
+            letter-spacing: 0.5px;
+        }
+        .article-download .btn-sm:hover {
+            background: var(--zhu-red-light);
+            transform: translateY(-1px);
+        }
+        .article-download .btn-sm-outline {
+            background: transparent;
+            color: var(--zhu-red);
+            border-color: var(--zhu-red);
+        }
+        .article-download .btn-sm-outline:hover {
+            background: var(--zhu-red);
+            color: #fff;
+        }
+
+        /* ===== 系列底部导航 ===== */
+        .series-nav {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2.5rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid var(--border-light);
+            flex-wrap: wrap;
+        }
+        .series-nav a {
+            display: inline-block;
+            background: var(--paper);
+            color: var(--ink);
+            padding: 0.4rem 1.2rem;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            border: 1px solid var(--border-light);
+            transition: 0.2s;
+        }
+        .series-nav a:hover {
+            background: #f0ebe2;
+            border-color: var(--gold);
+            color: var(--zhu-red);
+        }
+        .series-nav .prev {
+            margin-right: auto;
+        }
+        .series-nav .next {
+            margin-left: auto;
+        }
+        .series-nav a.disabled {
+            cursor: default;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        .series-nav a.index-link {
+            background: var(--zhu-red);
+            color: #fff;
+            border-color: var(--zhu-red);
+        }
+        .series-nav a.index-link:hover {
+            background: var(--zhu-red-light);
+            color: #fff;
+        }
+        @media (max-width: 600px) {
+            .series-nav {
+                gap: 0.8rem;
+            }
+            .series-nav .prev,
+            .series-nav .next {
+                margin: 0;
+            }
+            .series-nav a {
+                font-size: 0.8rem;
+                padding: 0.3rem 0.8rem;
+            }
+        }
+
+        /* ===== 底部版权 ===== */
+        .footer-note {
+            margin-top: 2.5rem;
+            font-size: 0.8rem;
+            text-align: center;
+            color: var(--ink-light);
+            border-top: 1px solid var(--border-light);
+            padding-top: 1.2rem;
+            letter-spacing: 1px;
+            opacity: 0.5;
+        }
+
+        /* ===== 返回顶部 ===== */
+        .back-to-top-ball {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(44, 24, 16, 0.04);
+            border: 1px solid rgba(44, 24, 16, 0.10);
+            color: var(--ink-light);
+            font-size: 1.4rem;
+            line-height: 44px;
+            text-align: center;
+            text-decoration: none;
+            transition: var(--transition);
+            backdrop-filter: blur(4px);
+            box-shadow: 0 2px 12px rgba(44, 24, 16, 0.04);
+            font-family: serif;
+        }
+        .back-to-top-ball:hover {
+            background: rgba(44, 24, 16, 0.08);
+            transform: translateY(-2px);
+            color: var(--zhu-red);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1.2rem 1rem 2rem;
+            }
+            h1 {
+                font-size: 1.5rem;
+                letter-spacing: 3px;
+            }
+            .top-bar .brand {
+                font-size: 1.2rem;
+            }
+            .article-download {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.8rem;
+            }
+            .article-download .btn-group {
+                justify-content: center;
+            }
+            .quote-block {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.9rem;
+                border-left-width: 2px;
+            }
+            .toc ul ul {
+                padding-left: 1rem;
+            }
+            .article-body ul,
+            .article-body ol {
+                padding-left: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- ===== 顶部栏 ===== -->
+        <div class="top-bar">
+            <div class="brand">
+                简帙<span class="sub">· 工器谱</span>
+            </div>
+        </div>
+
+        <!-- ===== 面包屑 ===== -->
+        <div class="breadcrumb">
+            <a href="../index.html">简帙</a> <span>›</span>
+            <a href="./index.html">双页切拼</a> <span>›</span>
+            展页理论
+        </div>
+
+        <!-- ===== 标题 ===== -->
+        <div class="article-meta">
+            <span class="series-tag">双页切拼 · 第 7 篇</span>
+        </div>
+        <h1>展页理论</h1>
+        <div class="subtitle">古籍图像标准化处理的算法体系</div>
+
+        <!-- ===== 章内目录 ===== -->
+        <nav class="toc" aria-label="章节目录">
+            <h3>目 录</h3>
+            <ul>
+                <li><a href="#ch1">一、核心哲学：图像本体论</a></li>
+                <li><a href="#ch2">二、核心方法论：以图解图</a></li>
+                <li><a href="#ch3">三、核心架构：层叠与独立</a>
+                    <ul>
+                        <li><a href="#ch3-1">3.1 层叠性（垂直传递）</a></li>
+                        <li><a href="#ch3-2">3.2 独立性（水平自洽）</a></li>
+                        <li><a href="#ch3-3">3.3 模块间通信：ProcessingContext</a></li>
+                    </ul>
+                </li>
+                <li><a href="#ch4">四、核心操作模型：检测—标记—应用—重置</a>
+                    <ul>
+                        <li><a href="#ch4-1">4.1 检测（Detect）</a></li>
+                        <li><a href="#ch4-2">4.2 标记（Mark / Adjust）</a></li>
+                        <li><a href="#ch4-3">4.3 应用（Apply）</a></li>
+                        <li><a href="#ch4-4">4.4 重置（Reset）</a></li>
+                    </ul>
+                </li>
+                <li><a href="#ch5">五、四大算法模块</a>
+                    <ul>
+                        <li><a href="#ch5-1">5.1 背景裁切算法：连通性与色彩恒常性原理</a></li>
+                        <li><a href="#ch5-2">5.2 分割算法：装订阴影与版框对称性原理</a></li>
+                        <li><a href="#ch5-3">5.3 书口堆叠裁切算法：纸张基底模型与异常检测原理</a></li>
+                        <li><a href="#ch5-4">5.4 统一版框算法：透视变换与多点吸附原理</a></li>
+                    </ul>
+                </li>
+                <li><a href="#ch6">六、四大模块的协同工作流</a></li>
+                <li><a href="#ch7">七、结语：从术到道</a></li>
+            </ul>
+        </nav>
+
+        <!-- ===== 正文 ===== -->
+        <div class="article-body">
+
+            <!-- ===== 第一章 ===== -->
+            <h2 id="ch1">一、核心哲学：图像本体论</h2>
+
+            <p>展页理论的核心出发点是图像本体论。它主张古籍的数字化处理，不应以“可检索的文本”为终极目标，而应以“可阅读的图像”为最高追求。传统的OCR转录、标点、排印，本质上是将古籍从一种媒介（图像）强行转换为另一种媒介（字符编码）。在这个过程中，大量承载着版本学、刻工、纸墨、递藏信息的视觉元素——字块的墨色浓枯、版框的刀法走势、水渍虫蛀的边缘形态——被永久性地丢失了。</p>
+
+            <p>展页理论认为，<strong>图像本身就是信息</strong>。处理的核心应该是“净化”与“标准化”，而非“转写”。我们的目标不是生产一堆方便检索的文本文件，而是为每一部古籍在数字世界里建立一座全息的、可被视觉穷尽的、忠实于物质本真的生命纪念馆。</p>
+
+            <!-- ===== 第二章 ===== -->
+            <h2 id="ch2">二、核心方法论：以图解图</h2>
+
+            <p>“以图解图”是展页理论的核心方法论，具有两层递进的含义：</p>
+
+            <p><strong>第一层：用图像算法解读图像内容。</strong>不依赖文本层面的识别（OCR），而是利用计算机视觉技术直接分析图像的物理特征——边缘、纹理、色彩、亮度梯度——来识别书页边界、版框位置、装订折痕、堆叠阴影等。这是从“读字”到“读图”的根本性转变。</p>
+
+            <p><strong>第二层：用图像参数指导图像处理。</strong>所有操作（裁切、分割、变换）的参数，都来源于对图像本身的分析，而非预设的固定值或人为臆断。这些参数被记录、传递、可回溯，形成图像处理的完整“基因图谱”。</p>
+
+            <!-- ===== 第三章 ===== -->
+            <h2 id="ch3">三、核心架构：层叠与独立</h2>
+
+            <p>展页理论将古籍图像处理分解为四个逻辑清晰、功能独立的算法模块。这些模块既可以按顺序“层叠”执行，形成完整的处理管道，也可以各自独立运行，灵活应对不同的输入状态。</p>
+
+            <h3 id="ch3-1">3.1 层叠性（垂直传递）</h3>
+
+            <p>每一模块处理完成后，将产生的关键参数（如书叶轮廓、分割线位置、奇偶属性）传递给下一模块。下一模块可以优先利用这些参数，避免重复计算，提高效率。例如：</p>
+
+            <ul>
+                <li>裁背景模块输出的书叶轮廓，可以为后续的版框检测提供搜索范围约束。</li>
+                <li>分割模块输出的奇偶属性和分割线位置，可以指导裁堆叠模块精确定位书口侧。</li>
+                <li>裁堆叠模块输出的堆叠边界，可以为统一版框模块提供版框外侧的有效区域参考。</li>
+            </ul>
+
+            <h3 id="ch3-2">3.2 独立性（水平自洽）</h3>
+
+            <p>每一模块都具备独立处理一张原始图像的能力。如果上层没有传递参数，本模块可以自行从图像中检测所需特征。这种独立性保证了任一模块都可以作为独立工具使用，也保证了整个体系在面对不同输入状态时的鲁棒性。</p>
+
+            <h3 id="ch3-3">3.3 模块间通信：ProcessingContext</h3>
+
+            <p>层间参数通过 ProcessingContext 数据结构进行传递。每一层处理完成后，将其产出写入上下文，并自动清除该层之后所有层的旧数据（因为参数已过时）。下一层处理前，优先从上下文读取上一层的结果；如果上一层没有执行，则继续向更上层查找，直至原始图像为止。</p>
+
+            <!-- ===== 第四章 ===== -->
+            <h2 id="ch4">四、核心操作模型：检测—标记—应用—重置</h2>
+
+            <p>展页理论为每一算法模块定义了统一的操作模型，将“人工判断”与“算法执行”进行有机结合。这四个操作构成了一个完整的交互闭环：</p>
+
+            <h3 id="ch4-1">4.1 检测（Detect）</h3>
+
+            <p>算法根据当前参数，在图像上生成检测线（如书叶轮廓线、版框分割线、堆叠边界裁切线、版框控制点）。这一步是实时、无损的预览，不修改原始图像数据。算法的核心在于“猜”，但猜得要有依据——所有检测都基于图像的物理特征，而非预设模板。</p>
+
+            <h3 id="ch4-2">4.2 标记（Mark / Adjust）</h3>
+
+            <p>用户可以通过拖拽控制点、调整参数滑块、右键增删控制点等方式，对算法自动检测的结果进行干预和修正。这一步是人与算法的协同，是展页理论区别于“一键式”全自动黑盒处理的核心。研究者将自身的版本学知识、对古籍物质形态的理解注入到处理流程中，算法则负责将这种理解精确地转化为几何参数。</p>
+
+            <h3 id="ch4-3">4.3 应用（Apply）</h3>
+
+            <p>用户确认标记无误后，点击“应用”，算法才真正执行图像处理操作（裁切、分割、透视变换），生成处理后的图像。应用操作会保存处理前的图像备份，以便后续重置。</p>
+
+            <h3 id="ch4-4">4.4 重置（Reset）</h3>
+
+            <p>用户可以随时撤销当前模块的“应用”操作，恢复到本模块处理前的图像状态。同时，检测线和参数保持可编辑状态，允许用户重新调整后再次应用。重置操作仅影响当前模块，不会干扰其他模块的处理结果。</p>
+
+            <!-- ===== 第五章 ===== -->
+            <h2 id="ch5">五、四大算法模块</h2>
+
+            <h3 id="ch5-1">5.1 背景裁切算法：连通性与色彩恒常性原理</h3>
+
+            <p>背景裁切的目标是将书叶从扫描背景（底板、色卡、标尺等）中精确分离。展页理论提出的背景裁切算法，基于两个核心洞察：</p>
+
+            <p><strong>背景连通性原理。</strong>在古籍扫描件中，背景通常包围着书页，形成一个连通的区域。这与Photoshop魔棒工具的工作逻辑一致——从图像四角任意一点出发，通过泛洪填充（Flood Fill）即可将整个背景区域选中，反选即得书页。算法首先检查四角颜色是否一致（色彩差异小于预设容差），若一致则直接从四角种子点执行泛洪填充获取背景掩膜，再通过形态学闭运算消除噪点、开运算断开细弱连接，最终提取最大连通域作为书页轮廓。</p>
+
+            <p><strong>内核生长原理。</strong>当四角颜色不一致（如背景有渐变、光照不均、或书页占满全图无背景）导致泛洪填充失败时，算法自动回退到“内核收缩+区域生长”策略。首先通过自适应阈值二值化获取大致前景区域，取最大连通域的凸包作为初始轮廓；然后对该轮廓进行腐蚀操作，得到一个肯定属于书页的内核区域；最后从内核出发，逐步向外扩展，每步都检查扩展区域与当前书页平均颜色（基于LAB色彩空间的欧氏距离）的差异，仅吸收颜色相近的像素。经过多轮迭代后，书页的边缘被精确吸收，而颜色明显不同的阴影、底板被排除。</p>
+
+            <p><strong>无背景检测。</strong>算法在开始前会分析四角的颜色方差。如果四角方差都很高（说明书页内容延伸到图像边缘，无纯色背景），则直接返回全图轮廓，避免误裁。</p>
+
+            <p><strong>书页完整性保障。</strong>对最终轮廓取凸包，确保书页边缘的凹痕、折角也被包含在内。</p>
+
+            <h3 id="ch5-2">5.2 分割算法：装订阴影与版框对称性原理</h3>
+
+            <p>分割算法的目标是将合拟面（翻开双页的扫描图像）精确分割为左右两个半拟面，同时支持半拟面和整拟面的检测线标注。</p>
+
+            <p><strong>合拟面模式。</strong>算法在图像中间区域（默认可配置，如35%–65%宽度范围）逐行寻找亮度最低的像素点，形成一条从上到下的点集。这是因为翻开扫描时，书脊处无法紧贴扫描仪，形成明显的暗带（装订阴影）。对点集进行高斯平滑消除局部噪点，得到一条平滑的装订中心线分割路径。分割时沿该曲线将图像一分为二，左侧标记为奇数页（recto），右侧标记为偶数页（verso）。</p>
+
+            <p><strong>整拟面模式。</strong>对于筒子页（完整雕版书叶），算法在左右版框线之间寻找分割线。首先利用边缘检测和投影分析定位左右两条垂直版框线的精确位置，然后在两条版框线的中点附近搜索最暗的垂直带（可能是版心鱼尾、中缝等元素），若找不到则直接使用中点连线作为分割线。</p>
+
+            <p><strong>半拟面模式。</strong>对于已分割的单页图像，算法检测版框所在的侧边（通过垂直投影判断版框在左还是右），并在版框外侧边缘处绘制贴边线。这为后续的裁堆叠操作提供了精确的参考位置。</p>
+
+            <h3 id="ch5-3">5.3 书口堆叠裁切算法：纸张基底模型与异常检测原理</h3>
+
+            <p>书口堆叠裁切的目标是裁除半拟面书口侧的前后页堆叠阴影与残影。展页理论提出的算法基于一个关键洞察：先确认什么是“正常的纸张”，凡是不符合纸张模型的区域即为需要裁除的堆叠。</p>
+
+            <p><strong>纸张基底模型。</strong>算法首先分析图像的中央区域（避开边缘和堆叠区），建立纸张的“指纹”：亮度均值和标准差。这构成了判断书页“正常状态”的基准。</p>
+
+            <p><strong>双通道异常检测。</strong>在书口侧的检测区域内，从外向内扫描。亮度通道检测与纸张基底亮度差异超过预设阈值（默认2.5σ）的暗区；形态通道利用边缘检测和轮廓分析，寻找与纸张边缘不自然的纹理突变（如后一页的文字重影）。两个通道的结果取交集，得到堆叠区域的初步掩膜。</p>
+
+            <p><strong>边界平滑与曲线裁切。</strong>对堆叠掩膜的边界进行高斯平滑，生成一条平滑的裁切曲线。裁切线可被用户以折线形式编辑（默认2个控制点，支持拖拽、增删、整体平移），提供了灵活的手动修正能力。最终沿裁切线执行像素级裁切，保留纸张的真实边界。</p>
+
+            <h3 id="ch5-4">5.4 统一版框算法：透视变换与多点吸附原理</h3>
+
+            <p>统一版框的目标是将半拟面的版框对齐到预设的标准矩形，使全书所有页面的版框位置、尺寸、天头地脚边距完全一致。</p>
+
+            <p><strong>版框检测与四点定位。</strong>算法通过霍夫线检测找到版框的四条边界线（上、下、左、右），计算四个交点作为版框的源控制点。若检测失败，自动回退到内容包围盒作为版框近似。默认生成4个控制点，支持右键在任意位置添加控制点（插入到最近边的中点），以应对扫描产生的弯曲、形变等情况。</p>
+
+            <p><strong>预设矩形与奇偶分设。</strong>用户定义一个标准矩形（宽度、高度、天头边距、地脚边距），并可为奇数页和偶数页分别设置左右边距（因为奇数页版框靠右、偶数页版框靠左）。预设矩形以白色虚线叠加在图像上，直观展示目标位置。</p>
+
+            <p><strong>拖拽吸附机制。</strong>当用户拖拽版框控制点时，算法自动计算该点与预设矩形最近边或顶点的距离；若距离小于预设阈值（默认15像素），控制点自动吸附到矩形边界上。这保证了版框线能精准对齐标准位置，无需手动微调。</p>
+
+            <p><strong>透视变换与全局应用。</strong>当用户确认控制点位置后，点击“应用”，算法计算当前控制点（源四边形）到预设矩形（目标四边形）的单应性变换矩阵，对整个图像执行透视变换。变换后，版框被精确映射到标准位置，同时图像其他区域（如天头地脚、批校文字）也随之合理变形。该变换矩阵可被保存和复现，保证处理的可追溯性。</p>
+
+            <!-- ===== 第六章 ===== -->
+            <h2 id="ch6">六、四大模块的协同工作流</h2>
+
+            <p>在展页理论中，四大算法模块并非孤立运行，而是通过ProcessingContext实现层间参数传递，形成一个灵活而强大的协同工作流：</p>
+
+            <ol>
+                <li><strong>裁背景（可选）：</strong>检测并输出书叶轮廓。轮廓数据被写入上下文，供后续模块使用。</li>
+                <li><strong>分割（可选）：</strong>接收书叶轮廓（若有）或自行检测，输出分割线和奇偶属性。分割线可指导裁堆叠模块定位书口侧；奇偶属性被传递给裁堆叠和统一版框。</li>
+                <li><strong>裁堆叠（可选）：</strong>接收奇偶属性（若有）或自行推断，接收分割线（若有）确定书口侧，输出堆叠边界。堆叠边界可指导统一版框模块排除非版框区域的干扰。</li>
+                <li><strong>统一版框（可选）：</strong>接收奇偶属性（若有）确定矩形对齐方式，接收堆叠边界（若有）约束版框检测范围。输出标准化图像。</li>
+            </ol>
+
+            <p>每层都具备“检测—标记—应用—重置”的完整交互闭环，既保证了用户对每一处理阶段的完全控制，又通过参数传递机制提升了处理效率和一致性。</p>
+
+            <!-- ===== 第七章 ===== -->
+            <h2 id="ch7">七、结语：从术到道</h2>
+
+            <p>展页理论不是凭空设计的抽象框架，而是在解决一个个具体问题（复杂背景裁切、装订阴影排除、版框精准对齐、扫描形变校正）的过程中，逐步归纳、抽象而成的实践性理论。它遵循着“从特殊到一般”的认知规律，最终形成了一个逻辑自洽、可扩展、可工程化的算法体系。</p>
+
+            <p>四大算法模块——背景裁切、分割、书口堆叠裁切、统一版框——各自封装了针对古籍图像特定问题的解决智慧，同时又通过层叠与独立的架构、检测—标记—应用—重置的操作模型、ProcessingContext的参数传递机制，构成了一个有机的、可协同的整体。</p>
+
+            <p style="margin-top:1.2rem; color:var(--ink-light); opacity:0.6; letter-spacing:2px;">这正是展页理论从“术”到“道”的升华：它不仅是一套可以落地的算法工具集，更是一种关于古籍图像标准化处理的系统化思考方式。</p>
+
+        </div>
+
+        
+
+        <!-- ===== 系列底部导航 ===== -->
+        <div class="series-nav">
+            <a href="6.展页分割.html" class="prev">‹ 展页分割</a>
+            <a href="./index.html" class="index-link">返回目录</a>
+            <a href="javascript:void(0)" class="next disabled">下一篇 ›</a>
+        </div>
+
+        <!-- ===== 底部版权 ===== -->
+        <div class="footer-note">铭心阁 · 简帙工器谱</div>
+    </div>
+
+    <!-- ===== 返回顶部 ===== -->
+    <a href="#" id="backToTop" class="back-to-top-ball" aria-label="返回顶部">^</a>
+
+    <script>
+        document.getElementById('backToTop').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+
+</body>
+</html>
