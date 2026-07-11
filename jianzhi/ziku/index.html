@@ -101,6 +101,28 @@
             list-style: none;
             padding: 0;
             margin: 1rem 0 1.5rem;
+         /* ===== 面包屑 ===== */
+        .breadcrumb {
+            font-size: 0.85rem;
+            color: var(--ink-light);
+            margin-bottom: 1.5rem;
+            padding: 0.4rem 0.8rem;
+            background: var(--paper);
+            border-radius: 20px;
+            display: inline-block;
+            opacity: 0.7;
+        }
+        .breadcrumb a {
+            color: var(--ink-light);
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: var(--zhu-red);
+            text-decoration: underline;
+        }
+        .breadcrumb span {
+            margin: 0 4px;
+        }
         }
         .catalog-list li {
             padding: 0.5rem 0.8rem;
@@ -287,7 +309,11 @@
                 简帙<span class="sub">· 工器谱</span>
             </div>
         </div>
-
+        <!-- ===== 面包屑导航 ===== -->
+        <div class="breadcrumb">
+            <a href="../index.html">简帙</a> <span>›</span>
+            字库制作
+        </div>
         <!-- ===== 标题 ===== -->
         <div class="page-title" id="seriesTitle">字库制作 <span class="sub">系列</span></div>
         <div class="subtitle" id="seriesSub">字体源流 · 字库建构 · 共 <span id="articleCount">0</span> 篇</div>
