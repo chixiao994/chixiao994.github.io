@@ -1,6 +1,6 @@
 /* ========================================
-   铭心阁识辨辑 · 全局通用样式
-   基于原有样式扩展，保留所有已有规则
+   铭心阁识辨辑 · 古风配色
+   色调：宣纸底、墨色字、朱红点缀、竹绿辅助
    ======================================== */
 
 * {
@@ -10,208 +10,133 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-    background-color: #faf9f8;
-    color: #1e1e1e;
-    line-height: 1.6;
+    font-family: "Noto Serif SC", "Source Han Serif SC", "STSong", "SimSun", "Times New Roman", serif;
+    background-color: #f5f0e8;
+    color: #3c342c;
+    line-height: 1.8;
     padding: 2rem 1rem;
 }
 
 .container {
     max-width: 800px;
     margin: 0 auto;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    padding: 2rem;
+    background: #fefcf7;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(60, 52, 44, 0.08);
+    padding: 2.5rem 2.5rem 2rem;
+    border: 1px solid #e8ddd0;
 }
 
-/* 一级标题居中 */
+/* ---------- 标题 ---------- */
 h1 {
     text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2c241c;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.2rem;
+}
+h1 + p {
+    text-align: center;
+    color: #8a7a6a;
+    font-size: 0.95rem;
+    margin-top: 0.2rem;
+    margin-bottom: 1.5rem;
 }
 
-/* h2 不做缩进，保留原有左边框 */
 h2 {
-    border-left: 3px solid #2c6e2f;
+    border-left: 3px solid #b53b2c;
     padding-left: 0.8rem;
+    color: #2c241c;
+    font-weight: 600;
 }
-
-/* 只对 h3 进行右缩（左边距） */
 h3 {
     margin-left: 2.5em;
+    color: #4a3c34;
+    font-weight: 600;
 }
-
-/* 正文段落首行缩进两字符 */
-.container p {
-    text-indent: 2em;
-    margin-bottom: 1rem;
-}
-
-/* 无缩进段落（用于特殊场景） */
-.container p.no-indent {
-    text-indent: 0;
-}
-
-.home-link {
-    display: inline-block;
-    margin-bottom: 1.5rem;
-    font-size: 0.9rem;
-    color: #2c6e2f;
-    text-decoration: none;
-    border-bottom: 1px solid #c8d6c8;
-}
-.home-link:hover {
-    color: #1a4a1c;
-    border-bottom-color: #2c6e2f;
-}
-
-/* 其余标题样式 */
 h2, h3, h4, h5, h6 {
     margin-top: 1.2em;
     margin-bottom: 0.5em;
     font-weight: 600;
 }
-/* h4/h5/h6 不缩进 */
 h4, h5, h6 {
     margin-left: 0;
 }
 
+/* ---------- 段落 ---------- */
+.container p {
+    text-indent: 2em;
+    margin-bottom: 0.9rem;
+    color: #3c342c;
+}
+.container p.no-indent {
+    text-indent: 0;
+}
+
+/* ---------- 链接 ---------- */
+a {
+    text-decoration: none;
+    color: #8b1a1a;
+    border-bottom: 1px solid #d4c8b8;
+    transition: 0.2s;
+}
+a:hover {
+    color: #5a1010;
+    border-bottom-color: #b53b2c;
+}
+
+/* ---------- 列表 ---------- */
 ul, ol {
     padding-left: 1.5rem;
     margin-bottom: 1rem;
 }
 li {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
+    color: #3c342c;
 }
-
-a {
-    text-decoration: none;
-    color: #2c6e2f;
-    border-bottom: 1px dotted #c8d6c8;
-}
-a:hover {
-    color: #1a4a1c;
-    border-bottom-color: #2c6e2f;
-}
-
-.download {
-    margin-top: 2rem;
-    padding-top: 1rem;
-    border-top: 1px solid #eaecef;
-    text-align: center;
-}
-.download a {
-    display: inline-block;
-    background-color: #2c6e2f;
-    color: white;
-    padding: 0.5rem 1.2rem;
-    border-radius: 6px;
-    text-decoration: none;
-    border: none;
-}
-.download a:hover {
-    background-color: #1a4a1c;
-}
-
-.footer-note {
-    margin-top: 1rem;
-    font-size: 0.8rem;
-    text-align: center;
-    color: #8a9b8a;
-}
-
-blockquote {
-    margin: 1rem 0;
-    padding: 0.5rem 1rem;
-    background-color: #fefaf0;
-    border-left: 4px solid #b88b4a;
-    color: #3a3a2a;
-    font-style: italic;
-}
-
-pre {
-    background-color: #f6f8fa;
-    padding: 1rem;
-    border-radius: 6px;
-    overflow-x: auto;
-    font-family: monospace;
-    font-size: 0.85rem;
-    margin-bottom: 1rem;
-}
-code {
-    background-color: #f6f8fa;
-    padding: 0.2em 0.4em;
-    border-radius: 3px;
-    font-family: monospace;
-    font-size: 0.85rem;
-}
-pre code {
-    background: none;
-    padding: 0;
-}
-
-table {
-    border-collapse: collapse;
-    width: 100%;
-    margin-bottom: 1rem;
-}
-th, td {
-    border: 1px solid #dfe2e5;
-    padding: 0.5rem 1rem;
-    text-align: left;
-}
-th {
-    background-color: #f6f8fa;
-}
-
-/* ========================================
-   以下为新增样式（面包屑、目录、引用块等）
-   ======================================== */
 
 /* ---------- 面包屑 ---------- */
 .breadcrumb {
     font-size: 0.85rem;
     margin-bottom: 1.5rem;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid #eaecef;
+    border-bottom: 1px solid #e8ddd0;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 0.3rem;
 }
 .breadcrumb a {
-    color: #2c6e2f;
-    text-decoration: none;
+    color: #8b6b4d;
     border-bottom: 1px solid transparent;
-    transition: 0.2s;
 }
 .breadcrumb a:hover {
-    border-bottom-color: #2c6e2f;
-    color: #1a4a1c;
+    border-bottom-color: #8b6b4d;
+    color: #5a4030;
 }
 .breadcrumb .sep {
-    color: #b0b8b0;
+    color: #c4b8a8;
     padding: 0 0.2rem;
     user-select: none;
 }
 .breadcrumb .current {
-    color: #4a5a4a;
+    color: #6a5a4a;
     font-weight: normal;
 }
 
 /* ---------- 章内目录 ---------- */
 .toc {
-    background: #f9fafb;
-    border-left: 4px solid #2c6e2f;
+    background: #f5efe8;
+    border-left: 4px solid #8b6b4d;
     padding: 0.8rem 1.2rem;
     margin: 1.5rem 0;
-    border-radius: 8px;
+    border-radius: 4px;
 }
 .toc h2 {
     font-size: 1.1rem;
     margin: 0 0 0.5rem 0;
-    color: #2c6e2f;
+    color: #5a4030;
     border-left: none;
     padding-left: 0;
 }
@@ -224,11 +149,11 @@ th {
     margin: 0.3rem 0;
 }
 .toc a {
-    text-decoration: none;
-    color: #2c6e2f;
-    border-bottom: 1px dotted #c8d6c8;
+    color: #6a4a3a;
+    border-bottom: 1px dotted #c8b8a8;
 }
 .toc a:hover {
+    color: #3c2418;
     border-bottom-style: solid;
 }
 .toc ul ul {
@@ -238,13 +163,13 @@ th {
 /* ---------- 独立引用块 ---------- */
 .quote-block {
     display: block;
-    margin: 1rem 0;
-    padding: 0.8rem 1.2rem;
+    margin: 1.2rem 0;
+    padding: 0.8rem 1.5rem;
     font-style: italic;
-    color: #2c6e2f;
-    background: #f0f5f0;
-    border-radius: 8px;
-    border-left: 3px solid #2c6e2f;
+    color: #4a3c34;
+    background: #f5efe8;
+    border-radius: 4px;
+    border-left: 3px solid #8b6b4d;
     line-height: 2;
     text-align: center;
     font-size: 1.05rem;
@@ -256,15 +181,15 @@ th {
 
 /* ---------- 行内引用 ---------- */
 .inline-quote {
-    color: #2c6e2f;
+    color: #6a4a3a;
     font-style: italic;
-    background: #f0f5f0;
+    background: #f0e8e0;
     padding: 0.1rem 0.4rem;
     border-radius: 3px;
     white-space: nowrap;
 }
 
-/* ---------- 目录列表（系列目录页） ---------- */
+/* ---------- 目录列表 ---------- */
 .catalog-list {
     list-style: none;
     padding: 0;
@@ -272,7 +197,7 @@ th {
 }
 .catalog-list li {
     padding: 0.4rem 0;
-    border-bottom: 1px solid #f0f2f0;
+    border-bottom: 1px solid #ede6dc;
     display: flex;
     align-items: baseline;
     gap: 0.8rem;
@@ -281,36 +206,34 @@ th {
     border-bottom: none;
 }
 .catalog-list .index {
-    color: #8a9b8a;
+    color: #9a8a7a;
     font-size: 0.85rem;
     min-width: 2.4rem;
     font-feature-settings: "tnum";
 }
 .catalog-list a {
-    color: #2c6e2f;
-    text-decoration: none;
-    border-bottom: 1px dotted #c8d6c8;
-    transition: 0.2s;
+    color: #6a4a3a;
+    border-bottom: 1px dotted #c8b8a8;
 }
 .catalog-list a:hover {
+    color: #3c2418;
     border-bottom-style: solid;
-    color: #1a4a1c;
 }
 .catalog-list .desc {
-    color: #8a9b8a;
+    color: #9a8a7a;
     font-size: 0.85rem;
     margin-left: auto;
     white-space: nowrap;
 }
 
-/* ---------- 下载链接区（双条并排） ---------- */
+/* ---------- 下载链接区 ---------- */
 .download-links {
     margin: 2rem 0;
 }
 .download-links h2 {
     font-size: 1.1rem;
     margin: 0 0 1rem 0;
-    color: #2c6e2f;
+    color: #5a4030;
     border-left: none;
     padding-left: 0;
 }
@@ -323,48 +246,48 @@ th {
     flex: 1;
     min-width: 160px;
     display: block;
-    padding: 0.8rem 1.2rem;
-    background: #f8f9fa;
-    border: 1px solid #eaecef;
-    border-radius: 8px;
+    padding: 0.7rem 1.2rem;
+    background: #f5efe8;
+    border: 1px solid #dccfc0;
+    border-radius: 4px;
     text-align: center;
     text-decoration: none;
-    color: #2c6e2f;
+    color: #5a4030;
     font-size: 1rem;
     transition: 0.2s;
-    border-bottom: 1px solid #eaecef;
+    border-bottom: 1px solid #dccfc0;
 }
 .download-grid a:hover {
-    background: #edf0f3;
-    border-color: #c8d6c8;
+    background: #ede4d8;
+    border-color: #b8a898;
     transform: translateY(-1px);
+    color: #3c2418;
 }
 
-/* ========================================
-   原有 .series-nav（系列底部导航，保留不变）
-   ======================================== */
+/* ---------- 系列底部导航 ---------- */
 .series-nav {
     display: flex;
     justify-content: center;
     gap: 2rem;
-    margin-top: 2rem;
+    margin-top: 2.5rem;
     padding-top: 1rem;
-    border-top: 1px solid #eaecef;
+    border-top: 1px solid #e8ddd0;
 }
 .series-nav a {
     display: inline-block;
-    background: #f6f8fa;
-    color: #2c6e2f;
-    padding: 0.4rem 1rem;
+    background: #f5efe8;
+    color: #5a4030;
+    padding: 0.4rem 1.2rem;
     border-radius: 20px;
     text-decoration: none;
     font-size: 0.9rem;
-    border: 1px solid #e2e4e8;
+    border: 1px solid #dccfc0;
     transition: 0.2s;
 }
 .series-nav a:hover {
-    background: #edf0f3;
-    border-color: #c8d6c8;
+    background: #ede4d8;
+    border-color: #b8a898;
+    color: #3c2418;
 }
 .series-nav .prev {
     margin-right: auto;
@@ -378,13 +301,72 @@ th {
     pointer-events: none;
 }
 .series-nav a.disabled:hover {
-    background: #f6f8fa;
-    border-color: #e2e4e8;
+    background: #f5efe8;
+    border-color: #dccfc0;
+    color: #5a4030;
 }
 
-/* ========================================
-   原有 .back-to-top-ball（返回顶部小圆球，保留不变）
-   ======================================== */
+/* ---------- 底部版权 ---------- */
+.footer-note {
+    margin-top: 1.5rem;
+    font-size: 0.8rem;
+    text-align: center;
+    color: #9a8a7a;
+    border-top: 1px solid #e8ddd0;
+    padding-top: 1.2rem;
+}
+
+/* ---------- blockquote 古风 ---------- */
+blockquote {
+    margin: 1rem 0;
+    padding: 0.5rem 1.2rem;
+    background-color: #f5efe8;
+    border-left: 4px solid #8b6b4d;
+    color: #4a3c34;
+    font-style: italic;
+}
+
+/* ---------- code / pre ---------- */
+pre {
+    background-color: #f0ece6;
+    padding: 1rem;
+    border-radius: 4px;
+    overflow-x: auto;
+    font-family: "Source Han Serif SC", "STSong", monospace;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+    border: 1px solid #e8ddd0;
+}
+code {
+    background-color: #f0ece6;
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+    font-family: "Source Han Serif SC", "STSong", monospace;
+    font-size: 0.85rem;
+    color: #5a4030;
+}
+pre code {
+    background: none;
+    padding: 0;
+}
+
+/* ---------- 表格 ---------- */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+th, td {
+    border: 1px solid #dccfc0;
+    padding: 0.5rem 1rem;
+    text-align: left;
+}
+th {
+    background-color: #f0ece6;
+    color: #4a3c34;
+}
+
+/* ---------- 返回顶部小圆球 ---------- */
 .back-to-top-ball {
     position: fixed;
     bottom: 20px;
@@ -393,7 +375,7 @@ th {
     height: 44px;
     border-radius: 50%;
     background: transparent;
-    color: #2c6e2f;
+    color: #8b6b4d;
     text-decoration: none;
     cursor: pointer;
     box-shadow: none;
@@ -405,25 +387,25 @@ th {
     font-size: 28px;
     font-weight: normal;
     transform: translateY(2px);
+    border: 1px solid #dccfc0;
 }
 .back-to-top-ball:hover {
-    background: rgba(44, 110, 47, 0.1);
+    background: rgba(139, 107, 77, 0.12);
     transform: scale(1.05) translateY(2px);
-    color: #1f5222;
+    color: #5a4030;
+    border-color: #b8a898;
 }
 
-/* ========================================
-   原有响应式（保留并扩展）
-   ======================================== */
+/* ---------- 响应式 ---------- */
 @media (max-width: 600px) {
     body {
         padding: 1rem;
     }
     .container {
-        padding: 1.5rem;
+        padding: 1.5rem 1.2rem;
     }
     h1 {
-        font-size: 1.5rem;
+        font-size: 1.6rem;
     }
     h2 {
         font-size: 1.2rem;
@@ -449,7 +431,6 @@ th {
     .back-to-top-ball:hover {
         transform: scale(1.05) translateY(2px);
     }
-    /* 新增响应式 */
     .breadcrumb {
         font-size: 0.78rem;
         gap: 0.15rem;
@@ -480,7 +461,7 @@ th {
         padding: 0.8rem 0.6rem;
     }
     h1 {
-        font-size: 1.2rem;
+        font-size: 1.3rem;
     }
     .toc {
         padding: 0.6rem 0.8rem;
