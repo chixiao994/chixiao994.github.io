@@ -136,7 +136,28 @@
         .timeline-item.collapsed .books-container {
             display: none;
         }
-
+        /* ===== 面包屑 ===== */
+        .breadcrumb {
+            font-size: 0.85rem;
+            color: var(--ink-light);
+            margin-bottom: 1.5rem;
+            padding: 0.4rem 0.8rem;
+            background: var(--paper);
+            border-radius: 20px;
+            display: inline-block;
+            opacity: 0.7;
+        }
+        .breadcrumb a {
+            color: var(--ink-light);
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: var(--zhu-red);
+            text-decoration: underline;
+        }
+        .breadcrumb span {
+            margin: 0 4px;
+        }
         /* 三列网格：桌面、平板、手机全部三列 */
         .book-list {
             display: grid;
@@ -249,6 +270,11 @@
 </head>
 <body>
 <div class="container">
+    <!-- ===== 面包屑导航 ===== -->
+    <div class="breadcrumb">
+        <a href="../index.html">铭心阁</a> <span>›</span>
+        识辨辑
+    </div>
     <div class="header">
         <h1>识辨辑</h1>
     </div>
